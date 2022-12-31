@@ -6,9 +6,5 @@ const cssThings = css`
 `;
 
 export default function Home() {
-  return (
-    <>
-      <h1 css={cssThings}>hi zz</h1>
-    </>
-  );
+  return <h1 css={cssThings}>hi zz</h1>;
 }
