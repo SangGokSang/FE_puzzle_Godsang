@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 interface IFooter {}
 
 const Wrapper = styled.footer`
-  width: 100vw;
+  /* width: 100vw; */
   height: 80px;
 `;
 
