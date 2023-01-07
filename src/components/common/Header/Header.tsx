@@ -9,9 +9,8 @@ import isMobile from 'src/core/recoil/isMobile';
 const Wrapper = styled.header`
   width: 100%;
   height: 60px;
-  padding: 0 10px;
-  padding-top: 5px;
   background-color: inherit;
+  margin-top: 15px;
 
   & .user__interface {
     display: flex;
@@ -21,8 +20,9 @@ const Wrapper = styled.header`
     font-size: 14px;
   }
 
-  @media screen and (min-width: 768px) {
-    padding-top: 15px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    margin: 0 auto;
   }
 `;
 

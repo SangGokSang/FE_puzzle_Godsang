@@ -11,26 +11,33 @@ interface ILayout {
 
 const Wrapper = styled.div`
   width: 768px;
-  min-height: 100vh;
+  height: 100%;
   margin: 0 auto;
+  padding: 0 10px;
+  padding-top: 5px;
+  /* overflow-y: hidden; */
   background: url('/assets/images/iphone-background.jpeg');
 
   @media screen and (max-width: 768px) {
     width: 100%;
+    padding-top: 15px;
   }
 `;
 
 const Body = styled.main`
-  width: 100%;
-  height: calc(100vh - 160px);
-  opacity: 0.8;
+  width: 80%;
+  height: calc(100% - 80px);
+  margin: 0 auto;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: calc(100% - 75px);
+  }
 `;
 
 export default function Layout({ children }: ILayout) {
   const isMobileSize = useMediaQuery({ minWidth: 768 });
   const setIsMobile = useSetRecoilState(isMobile);
-
-  console.log('isMobileSize(MediaQuery)', isMobileSize);
 
   useEffect(() => {
     setIsMobile(isMobileSize);

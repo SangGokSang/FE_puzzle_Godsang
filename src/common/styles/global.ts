@@ -129,4 +129,9 @@ export const globalStyle = css`
     width: 100vw;
     height: 100vh;
   }
+
+  #__next {
+    width: 100%;
+    height: 100%;
+  }
 `;
