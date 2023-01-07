@@ -1,10 +1,11 @@
 import React from 'react';
 import { css } from '@emotion/react';
+import Main from './main';
 
 const cssThings = css`
-  color: red;
+  color: black;
 `;
 
 export default function Home() {
-  return <h1 css={cssThings}>hi zz</h1>;
+  return <Main />;
 }
