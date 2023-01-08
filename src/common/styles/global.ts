@@ -125,10 +125,10 @@ export const globalStyle = css`
     border-collapse: collapse;
     border-spacing: 0;
   }
-  body {
+  /* body {
     width: 100vw;
     height: 100vh;
-  }
+  } */
 
   #__next {
     width: 100%;

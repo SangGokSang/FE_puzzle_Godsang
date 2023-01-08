@@ -1,13 +1,15 @@
+import React from 'react';
 import styled from '@emotion/styled';
-import React, { ReactNode } from 'react';
-
-interface IFooter {}
 
 const Wrapper = styled.footer`
-  /* width: 100vw; */
-  height: 80px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background-color: gray;
+  opacity: 0.8;
 `;
 
-export default function Footer(props: IFooter) {
+export default function Footer() {
   return <Wrapper>this is footer</Wrapper>;
 }
