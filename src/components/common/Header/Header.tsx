@@ -43,9 +43,6 @@ const roundQuadrangleCss = css`
 `;
 
 export default function Header() {
-  const isMobileSize = useRecoilValue(isMobile);
-
-  console.log('isMobile(Recoil)', isMobileSize);
   return (
     <Wrapper>
       <div css={roundQuadrangleCss}>
