@@ -17,8 +17,6 @@ const Wrapper = styled.div`
   margin: 0 auto;
   padding: 0 10px;
   padding-top: 5px;
-  /* background: url('/assets/images/iphone-background.jpeg'); */
-  background-color: #f8ede3;
 
   @media screen and (max-width: 768px) {
     width: 100%;
