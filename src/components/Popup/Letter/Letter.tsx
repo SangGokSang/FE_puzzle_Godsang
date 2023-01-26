@@ -1,7 +1,7 @@
 import React from 'react';
 
-function Main() {
+function Letter() {
   return <div></div>;
 }
 
-export default Main;
+export default Letter;

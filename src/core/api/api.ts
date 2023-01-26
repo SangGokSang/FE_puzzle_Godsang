@@ -16,15 +16,6 @@ const initialConfig: AxiosRequestConfig = Object.freeze({
   },
 });
 
-/**
- * set base url for api
- * @param baseUrl string
- */
-function setBaseUrl(baseUrl: string): void {
-  api.defaults.baseURL = baseUrl;
-  apiReturnsResponse.defaults.baseURL = baseUrl;
-}
-
 export const api = createApiInstance(getAccessToken({ bearer: true }));
 
 api.interceptors.response.use(
@@ -90,15 +81,12 @@ function createApiInstance(bearerJwt = '', options: AxiosRequestConfig = {}) {
   return api;
 }
 
+/** The API instance for refreshing; Refresh token fetched from cookies. */
 async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
-  /** The API instance for refreshing; Refresh token fetched from cookies. */
-  const refreshApi = createApiInstance(getRefreshToken({ bearer: true }), {
-    baseURL: '',
-  });
-
+  const refreshApi = createApiInstance(getRefreshToken({ bearer: true }));
   try {
     const result = await refreshApi({
-      url: `${API_BASE_URL}/api/auth/refresh-token`,
+      url: '/api/auth/refresh-token',
       method: 'get',
     });
     const { token, refreshToken } = result.data;
@@ -121,6 +109,6 @@ function setApiJwt(token: string): void {
   apiReturnsResponse.defaults.headers.common.Authorization = bearerToken;
 }
 
-export { API_BASE_URL, setBaseUrl, setApiJwt };
+export { API_BASE_URL, setApiJwt };
 
 export default api;
