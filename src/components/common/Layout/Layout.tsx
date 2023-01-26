@@ -16,11 +16,12 @@ const Wrapper = styled.div`
   height: 100%;
   margin: 0 auto;
   padding: 0 10px;
-  padding-top: 5px;
+  padding-top: 100px;
+  background: linear-gradient(rgba(255, 187, 187, 0.7), #fff);
 
   @media screen and (max-width: 768px) {
     width: 100%;
-    padding-top: 15px;
+    padding-top: 50px;
   }
 `;
 
