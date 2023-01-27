@@ -18,3 +18,4 @@
 - Recoil
 - React-query
 - react-hook-form
+- animation: Framer motion

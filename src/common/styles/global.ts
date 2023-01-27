@@ -125,6 +125,8 @@ export const globalStyle = css`
     border-collapse: collapse;
     border-spacing: 0;
   }
+  html,
+  body,
   #__next {
     width: 100%;
     height: 100%;
