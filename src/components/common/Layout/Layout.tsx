@@ -47,7 +47,7 @@ export default function Layout({ children }: ILayout) {
     <Wrapper>
       <Header />
       <Body>{children}</Body>
-      {/* <Footer /> */}
+      <Footer />
     </Wrapper>
   );
 }
