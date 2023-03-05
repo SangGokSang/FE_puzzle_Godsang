@@ -9,7 +9,7 @@ import landing_header_img from '/assets/images/header.svg';
 
 const Wrapper = styled.header`
   width: 100%;
-  margin-top: 50px;
+  /* margin-top: 50px; */
   display: flex;
   justify-content: center;
 

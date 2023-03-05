@@ -23,9 +23,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <Global styles={globalStyle} />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Component {...pageProps} />
+        {/* <Layout>
+        </Layout> */}
       </RecoilRoot>
     </QueryClientProvider>
   );

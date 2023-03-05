@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 
 export const globalStyle = css`
+  @import url('https://webfontworld.github.io/gmarket/GmarketSans.css');
   html,
   body,
   div,
@@ -81,6 +82,7 @@ export const globalStyle = css`
   time,
   mark,
   audio,
+  button,
   video {
     margin: 0;
     padding: 0;
@@ -89,6 +91,7 @@ export const globalStyle = css`
     font: inherit;
     vertical-align: baseline;
     box-sizing: border-box;
+    font-family: 'GmarketSans';
   }
   article,
   aside,
