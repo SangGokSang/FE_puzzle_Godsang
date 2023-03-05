@@ -5,49 +5,41 @@ import { useSetRecoilState } from 'recoil';
 import { useMediaQuery } from 'react-responsive';
 import isMobile from 'src/core/recoil/isMobile';
 import Footer from '../Footer';
+import { SerializedStyles } from '@emotion/react';
 
-interface ILayout {
+interface LayoutProps {
   children: ReactNode;
+  useHeader?: boolean;
+  layoutCss?: SerializedStyles;
 }
 
 const Wrapper = styled.div`
   position: relative;
-  width: 768px;
+  max-width: 768px;
+  min-width: 360px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 10px;
-  padding-top: 100px;
-  background: linear-gradient(rgba(255, 187, 187, 0.7), #fff);
-
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    padding-top: 50px;
-  }
+  padding: 20px;
+  padding-bottom: 40px;
 `;
 
 const Body = styled.main`
-  width: 80%;
-  height: calc(100% - 80px);
-  margin: 0 auto;
-
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    height: calc(100% - 75px);
-  }
+  width: 100%;
+  height: 100%;
 `;
 
-export default function Layout({ children }: ILayout) {
-  const isMobileSize = useMediaQuery({ minWidth: 768 });
-  const setIsMobile = useSetRecoilState(isMobile);
+export default function Layout({ children, useHeader = true, layoutCss }: LayoutProps) {
+  // const isMobileSize = useMediaQuery({ minWidth: 768 });
+  // const setIsMobile = useSetRecoilState(isMobile);
 
-  useEffect(() => {
-    setIsMobile(isMobileSize);
-  }, [isMobileSize]);
+  // useEffect(() => {
+  //   setIsMobile(isMobileSize);
+  // }, [isMobileSize]);
   return (
-    <Wrapper>
-      <Header />
+    <Wrapper css={layoutCss}>
+      {useHeader && <Header />}
       <Body>{children}</Body>
-      <Footer />
+      {/* <Footer /> */}
     </Wrapper>
   );
 }
