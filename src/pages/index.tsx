@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
 import { css } from '@emotion/react';
-import Main from './main';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
+import { ButtonSection } from 'src/common/styles/common';
+import { useRouter } from 'next/router';
 
 const layoutCss = css`
   display: flex;
@@ -26,13 +27,14 @@ const ImageSection = styled.section`
   }
 `;
 
-const ButtonSection = styled.section`
-  width: 100%;
-  height: 60px;
-`;
-
 export default function Home() {
-  const handleClick = useCallback((event: React.SyntheticEvent<HTMLButtonElement>) => {}, []);
+  const route = useRouter();
+  const handleClick = useCallback(
+    (event: React.SyntheticEvent<HTMLButtonElement>) => {
+      route.push('login');
+    },
+    [route],
+  );
   return (
     <Layout useHeader={false} layoutCss={layoutCss}>
       <ImageSection>
