@@ -5,6 +5,8 @@ import { globalStyle } from 'src/common/styles/global';
 import Layout from 'src/components/common/Layout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 /**
  * 각각의 페이지가 초기화 될 때 로딩이 되는 파일
@@ -22,10 +24,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
-        <Global styles={globalStyle} />
-        <Component {...pageProps} />
-        {/* <Layout>
-        </Layout> */}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Global styles={globalStyle} />
+          <Component {...pageProps} />
+        </LocalizationProvider>
       </RecoilRoot>
     </QueryClientProvider>
   );

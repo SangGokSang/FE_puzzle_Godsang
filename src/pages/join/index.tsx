@@ -3,17 +3,13 @@ import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/common/styles/common';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Step } from 'src/common/const/enum';
 import JoinFirstStep from 'src/components/wizard/join/step1';
 import JoinSecondStep from 'src/components/wizard/join/step2';
-
-type UserInfo = {
-  birth: string;
-  nickname: string;
-};
+import { UserInfo } from 'src/module/join';
 
 const step = [Step.first, Step.second];
 
@@ -64,7 +60,7 @@ const buttonSectionCss = css`
 `;
 
 function Join() {
-  const [step, setStep] = useState(Step.second);
+  const [step, setStep] = useState(Step.first);
   const form = useForm<UserInfo>({
     defaultValues: {
       birth: '',
@@ -80,7 +76,7 @@ function Join() {
       </StepSection>
       <WizardSection>
         <Breadcrumb>STEP {step === Step.first ? 1 : 2}/2</Breadcrumb>
-        {step === Step.first ? <JoinFirstStep /> : <JoinSecondStep />}
+        <FormProvider {...form}>{step === Step.first ? <JoinFirstStep /> : <JoinSecondStep />}</FormProvider>
       </WizardSection>
       <ButtonSection css={buttonSectionCss}>
         <Button buttonType={ButtonType.Basic} onClick={() => {}}>

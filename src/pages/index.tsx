@@ -35,6 +35,7 @@ export default function Home() {
     },
     [route],
   );
+
   return (
     <Layout useHeader={false} layoutCss={layoutCss}>
       <ImageSection>
