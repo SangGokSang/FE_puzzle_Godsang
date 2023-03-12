@@ -4,6 +4,7 @@ import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/common/styles/common';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
 
 const login_icon = ['kakao', 'naver', 'google'];
 
@@ -53,8 +54,14 @@ const IconSection = styled.div`
   }
 `;
 
+// 서버에서 oAuth 로그인 성공 후 우리 회원이 아니라면 회원정보를 받는 wizard > 서버에 post 하고 200ok 시 회원가입
+// 성공 후 우리 회원이면 퍼즐 존재 시 퍼즐 리스트화면, 없으면 퍼즐 생성하는 wizard로 리다이렉션
 function Login() {
-  const handleClickHowToUse = () => {};
+  const router = useRouter();
+  const handleClickHowToUse = () => {
+    // 임시 작업
+    router.push('join');
+  };
   //서버로 리디렉션 보내야함
   const handleClickIcon = (icon: string) => () => {
     console.log(icon);
