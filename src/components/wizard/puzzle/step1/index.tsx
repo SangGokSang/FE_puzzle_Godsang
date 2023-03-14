@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { Controller, useFormContext } from 'react-hook-form';
 import { UserInfo } from 'src/module/join';
 import dayjs from 'dayjs';
-import { DatePicker as MUIDatePikcer } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
 import { convertToObject } from 'typescript';
 import { FormType } from 'src/pages/create';
@@ -33,16 +33,6 @@ const Field = styled.div`
   }
 `;
 
-const DatePicker = styled(MUIDatePikcer)`
-  background: #f3f3f3;
-  border-radius: 6px;
-  width: 320px;
-  height: 60px;
-  & .MuiInputBase-root {
-    height: 100%;
-  }
-`;
-
 function FirstStep() {
   const { control, watch } = useFormContext<FormType>();
   const { nickname, birth } = watch();
@@ -63,16 +53,22 @@ D-day 3948일 남았어요.”`,
       `}>
       <Description>{val}</Description>
       <Field>
+        <div className="label">별명</div>
+        <Controller
+          control={control}
+          name="nickname"
+          render={({ field: { value, onChange } }) => (
+            <TextField value={value} onChange={onChange} placeholder="별명을 입력해주세요!" />
+          )}
+        />
+      </Field>
+      <Field>
         <div className="label">생년월일</div>
         <Controller
           control={control}
           name="birth"
           render={({ field: { value, onChange } }) => <DatePicker value={value} onChange={onChange} />}
         />
-      </Field>
-      <Field>
-        <div className="label">별명</div>
-        <Controller control={control} name="birth" render={({ field: { value, onChange } }) => <TextField />} />
       </Field>
     </div>
   );
