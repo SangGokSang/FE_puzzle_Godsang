@@ -28,7 +28,7 @@ const TitleSection = styled.div`
     line-height: 34px;
     font-size: 32px;
     color: #9148da;
-    /* font-family: 'establish Retrosans'; */
+    font-family: 'EstablishRetrosans';
     letter-spacing: -0.002em;
   }
   p {
@@ -60,7 +60,7 @@ function Login() {
   const router = useRouter();
   const handleClickHowToUse = () => {
     // 임시 작업
-    router.push('join');
+    router.push('create');
   };
   //서버로 리디렉션 보내야함
   const handleClickIcon = (icon: string) => () => {
