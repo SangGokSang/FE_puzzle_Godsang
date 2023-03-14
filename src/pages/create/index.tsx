@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/common/styles/common';
 import Button from 'src/components/button';
@@ -7,13 +7,20 @@ import { FormProvider, useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Step } from 'src/common/const/enum';
-import JoinFirstStep from 'src/components/wizard/join/step1';
-import JoinSecondStep from 'src/components/wizard/join/step2';
+import FirstStep from 'src/components/wizard/puzzle/step1';
+import SecondStep from 'src/components/wizard/puzzle/step2';
 import { UserInfo } from 'src/module/join';
+import ThirdStep from 'src/components/wizard/puzzle/step3';
+import { Dayjs } from 'dayjs';
 
-const step = [Step.first, Step.second];
+const step = [Step.first, Step.second, Step.third];
 
-const StepSection = styled.section<{ step: Step }>`
+export type FormType = {
+  nickname: string;
+  birth: Dayjs;
+};
+
+const StepSection = styled.section<{ step: number }>`
   width: 100%;
   height: 60px;
   display: flex;
@@ -28,13 +35,12 @@ const StepSection = styled.section<{ step: Step }>`
     position: relative;
 
     .step {
-      width: 45px;
+      width: 30px;
       height: 6px;
       border-radius: 50px;
-      background-color: #9148da;
       position: absolute;
-      left: ${(props) => (props.step === Step.first ? 0 : 'unset')};
-      right: ${(props) => (props.step === Step.second ? 0 : 'unset')};
+      left: ${({ step }) => (step === 1 ? 0 : step === 2 ? '30px' : '60px')};
+      background-color: #9148da;
     }
   }
 `;
@@ -60,13 +66,20 @@ const buttonSectionCss = css`
 `;
 
 function Join() {
-  const [step, setStep] = useState(Step.first);
-  const form = useForm<UserInfo>({
+  const [step, setStep] = useState(1);
+  const form = useForm<FormType>({
     defaultValues: {
-      birth: '',
+      birth: {},
       nickname: '',
     },
   });
+
+  const stepMap: { [idx: number]: ReactElement } = {
+    1: <FirstStep />,
+    2: <SecondStep />,
+    3: <ThirdStep />,
+  };
+
   return (
     <Layout useHeader={false}>
       <StepSection step={step}>
@@ -75,8 +88,8 @@ function Join() {
         </div>
       </StepSection>
       <WizardSection>
-        <Breadcrumb>STEP {step === Step.first ? 1 : 2}/2</Breadcrumb>
-        <FormProvider {...form}>{step === Step.first ? <JoinFirstStep /> : <JoinSecondStep />}</FormProvider>
+        <Breadcrumb>STEP {step}/3</Breadcrumb>
+        <FormProvider {...form}>{stepMap[step]}</FormProvider>
       </WizardSection>
       <ButtonSection css={buttonSectionCss}>
         <Button buttonType={ButtonType.Basic} onClick={() => {}}>
