@@ -60,7 +60,7 @@ function Login() {
   const router = useRouter();
   const handleClickHowToUse = () => {
     // 임시 작업
-    router.push('join');
+    router.push('create');
   };
   //서버로 리디렉션 보내야함
   const handleClickIcon = (icon: string) => () => {

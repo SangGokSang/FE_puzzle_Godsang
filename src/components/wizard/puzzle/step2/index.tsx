@@ -1,7 +1,7 @@
 import React from 'react';
 
 function SecondStep() {
-  return <div></div>;
+  return <div>this is join second</div>;
 }
 
 export default SecondStep;
