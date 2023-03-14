@@ -19,7 +19,7 @@ function index() {
 
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
-      <div></div>
+      <div> </div>
     </Layout>
   );
 }

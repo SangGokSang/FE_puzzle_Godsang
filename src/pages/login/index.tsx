@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/common/styles/common';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
+import Letter from 'src/components/Popup/Letter/Letter';
 
 const login_icon = ['kakao', 'naver', 'google'];
 
@@ -66,8 +67,13 @@ function Login() {
   const handleClickIcon = (icon: string) => () => {
     console.log(icon);
   };
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
   return (
     <Layout layoutCss={layoutCss} useHeader={false}>
+      <Letter isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="wrapper">
         <TitleSection>
           <h3>디어,마이 2023</h3>
@@ -89,6 +95,9 @@ function Login() {
         <ButtonSection>
           <Button buttonType={ButtonType.Text} onClick={handleClickHowToUse}>
             이용방법
+          </Button>
+          <Button buttonType={ButtonType.Text} onClick={handleOpenModal}>
+            모달열기
           </Button>
         </ButtonSection>
       </div>
