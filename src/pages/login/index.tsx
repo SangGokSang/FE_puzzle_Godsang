@@ -28,7 +28,7 @@ const TitleSection = styled.div`
     line-height: 34px;
     font-size: 32px;
     color: #9148da;
-    /* font-family: 'establish Retrosans'; */
+    font-family: 'EstablishRetrosans';
     letter-spacing: -0.002em;
   }
   p {
