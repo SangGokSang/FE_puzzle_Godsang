@@ -11,7 +11,7 @@ import FirstStep from 'src/components/wizard/puzzle/step1';
 import SecondStep from 'src/components/wizard/puzzle/step2';
 import { UserInfo } from 'src/module/join';
 import ThirdStep from 'src/components/wizard/puzzle/step3';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 const step = [Step.first, Step.second, Step.third];
 
@@ -69,7 +69,7 @@ function Join() {
   const [step, setStep] = useState(1);
   const form = useForm<FormType>({
     defaultValues: {
-      birth: {},
+      birth: dayjs(),
       nickname: '',
     },
   });
