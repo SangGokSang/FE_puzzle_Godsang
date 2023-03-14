@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 
 export const globalStyle = css`
-  @import url('https://webfontworld.github.io/gmarket/GmarketSans.css');
   html,
   body,
   div,

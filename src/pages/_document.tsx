@@ -6,7 +6,10 @@ import { Html, Head, Main, NextScript } from 'next/document';
 export default function Document() {
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <link href="https://webfontworld.github.io/ssro/EstablishRetrosans.css" rel="stylesheet" />
+        <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet" />
+      </Head>
       <body>
         <Main />
         <NextScript />
