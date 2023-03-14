@@ -37,7 +37,7 @@ const theme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
-          width: '320px',
+          width: '100%',
           height: '60px',
           background: '#f3f3f3',
         },

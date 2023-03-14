@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -6,6 +6,8 @@ import { UserInfo } from 'src/module/join';
 import dayjs from 'dayjs';
 import { DatePicker as MUIDatePikcer } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
+import { convertToObject } from 'typescript';
+import { FormType } from 'src/pages/create';
 
 type StepProps = {
   isDisableButton: () => boolean;
@@ -23,6 +25,7 @@ const Description = styled.pre`
 
 const Field = styled.div`
   width: 100%;
+  margin-top: 12px;
   & .label {
     font-weight: 500;
     font-size: 13px;
@@ -40,13 +43,18 @@ const DatePicker = styled(MUIDatePikcer)`
   }
 `;
 
-const val = `“저는,
-1994년, 10월, 25일 생이고
-만 나이로 돌아가기
-D-day 3948일 남았어요.”`;
-
 function FirstStep() {
-  const { control } = useFormContext<UserInfo>();
+  const { control, watch } = useFormContext<FormType>();
+  const { nickname, birth } = watch();
+  // console.log(birth.diff(dayjs(), 'day'));
+
+  const val = useMemo(
+    () => `“저는, 
+${birth.format('YYYY년 MM월 DD일')} 생이고
+만 나이로 돌아가기
+D-day 3948일 남았어요.”`,
+    [],
+  );
   return (
     <div
       css={css`

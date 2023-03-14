@@ -11,8 +11,14 @@ import FirstStep from 'src/components/wizard/puzzle/step1';
 import SecondStep from 'src/components/wizard/puzzle/step2';
 import { UserInfo } from 'src/module/join';
 import ThirdStep from 'src/components/wizard/puzzle/step3';
+import { Dayjs } from 'dayjs';
 
 const step = [Step.first, Step.second, Step.third];
+
+export type FormType = {
+  nickname: string;
+  birth: Dayjs;
+};
 
 const StepSection = styled.section<{ step: number }>`
   width: 100%;
@@ -61,9 +67,9 @@ const buttonSectionCss = css`
 
 function Join() {
   const [step, setStep] = useState(1);
-  const form = useForm<UserInfo>({
+  const form = useForm<FormType>({
     defaultValues: {
-      birth: '',
+      birth: {},
       nickname: '',
     },
   });
@@ -83,10 +89,7 @@ function Join() {
       </StepSection>
       <WizardSection>
         <Breadcrumb>STEP {step}/3</Breadcrumb>
-        <FormProvider {...form}>
-          {/* {step === 1 ? <FirstStep /> : step === Step.second ? <SecondStep /> : <ThirdStep />} */}
-          {stepMap[step]}
-        </FormProvider>
+        <FormProvider {...form}>{stepMap[step]}</FormProvider>
       </WizardSection>
       <ButtonSection css={buttonSectionCss}>
         <Button buttonType={ButtonType.Basic} onClick={() => {}}>
