@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useMemo, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/common/styles/common';
 import Button from 'src/components/button';
@@ -6,18 +6,20 @@ import { ButtonType } from 'src/components/button/Button';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { Step } from 'src/common/const/enum';
-import FirstStep from 'src/components/wizard/puzzle/step1';
-import SecondStep from 'src/components/wizard/puzzle/step2';
 import { UserInfo } from 'src/module/join';
-import ThirdStep from 'src/components/wizard/puzzle/step3';
 import dayjs, { Dayjs } from 'dayjs';
+import FirstStep from 'src/components/wizard/puzzle/step1/FirstStep';
+import SecondStep from 'src/components/wizard/puzzle/step2/SecondStep';
+import ThirdStep from 'src/components/wizard/puzzle/step3/ThirdStep';
 
-const step = [Step.first, Step.second, Step.third];
+// const step = [Step.first, Step.second, Step.third];
+export type Category = 'EXERCISE' | 'TRAVEL' | 'CAREER' | 'MONEY_MANAGEMENT' | 'ETC';
 
-export type FormType = {
+export type CreateFormType = {
   nickname: string;
   birth: Dayjs;
+  category: Category;
+  goal: string;
 };
 
 const StepSection = styled.section<{ step: number }>`
@@ -26,6 +28,7 @@ const StepSection = styled.section<{ step: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 
   .progress {
     width: 90px;
@@ -42,6 +45,12 @@ const StepSection = styled.section<{ step: number }>`
       left: ${({ step }) => (step === 1 ? 0 : step === 2 ? '30px' : '60px')};
       background-color: #9148da;
     }
+  }
+
+  .back-button {
+    position: absolute;
+    cursor: pointer;
+    left: 0;
   }
 `;
 
@@ -73,16 +82,17 @@ const stepMap: Record<number, ReactElement> = {
 
 function Join() {
   const [step, setStep] = useState(1);
-  const step1Form = useForm<FormType>({
+  const step1Form = useForm<CreateFormType>({
     defaultValues: {
       birth: dayjs(),
       nickname: '',
+      category: 'EXERCISE',
     },
   });
 
   const disabledButton = useMemo(() => {
-    let flag = true;
     const { formState } = step1Form;
+    let flag = true;
 
     switch (step) {
       case 1:
@@ -102,9 +112,22 @@ function Join() {
     setStep((prev) => (prev < 3 ? prev + 1 : prev));
   }, []);
 
+  const handleBackClick = useCallback(() => {
+    if (step !== 1) setStep((prev) => prev - 1);
+  }, [step]);
+
+  useEffect(() => {
+    step1Form.trigger(['nickname', 'birth']);
+  }, []);
+
   return (
     <Layout useHeader={false}>
       <StepSection step={step}>
+        {step !== 1 && (
+          <span className="back-button">
+            <img src="/assets/icons/icon-back-button.png" alt="뒤로가기버튼" onClick={handleBackClick} />
+          </span>
+        )}
         <div className="progress">
           <span className="step" />
         </div>
