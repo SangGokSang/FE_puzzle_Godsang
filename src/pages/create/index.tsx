@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useMemo, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/common/styles/common';
 import Button from 'src/components/button';
@@ -6,19 +6,34 @@ import { ButtonType } from 'src/components/button/Button';
 import { FormProvider, useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { Step } from 'src/common/const/enum';
-import FirstStep from 'src/components/wizard/puzzle/step1';
-import SecondStep from 'src/components/wizard/puzzle/step2';
 import { UserInfo } from 'src/module/join';
-import ThirdStep from 'src/components/wizard/puzzle/step3';
 import dayjs, { Dayjs } from 'dayjs';
+import FirstStep from 'src/components/wizard/puzzle/step1/FirstStep';
+import SecondStep from 'src/components/wizard/puzzle/step2/SecondStep';
+import ThirdStep from 'src/components/wizard/puzzle/step3/ThirdStep';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Category } from 'src/common/const/enum';
 
-const step = [Step.first, Step.second, Step.third];
+// const step = [Step.first, Step.second, Step.third];
+// export type Category = 'EXERCISE' | 'TRAVEL' | 'CAREER' | 'MONEY_MANAGEMENT' | 'ETC';
 
-export type FormType = {
+export type CreateFormType = {
   nickname: string;
-  birth: Dayjs;
+  birth: number; //timestamp
+  category: Category;
+  goal: string;
 };
+
+const schema = yup.object().shape({
+  nickname: yup
+    .string()
+    .required('반드시 입력해주세요!!.')
+    .min(2, '두 글자 이상 입력해주세요.')
+    .max(10, '열 자 이하만 입력 가능합니다.'),
+  birth: yup.number().required('반드시 입력해주세요.'),
+  category: yup.string().required(),
+});
 
 const StepSection = styled.section<{ step: number }>`
   width: 100%;
@@ -26,6 +41,7 @@ const StepSection = styled.section<{ step: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 
   .progress {
     width: 90px;
@@ -42,6 +58,12 @@ const StepSection = styled.section<{ step: number }>`
       left: ${({ step }) => (step === 1 ? 0 : step === 2 ? '30px' : '60px')};
       background-color: #9148da;
     }
+  }
+
+  .back-button {
+    position: absolute;
+    cursor: pointer;
+    left: 0;
   }
 `;
 
@@ -73,20 +95,25 @@ const stepMap: Record<number, ReactElement> = {
 
 function Join() {
   const [step, setStep] = useState(1);
-  const step1Form = useForm<FormType>({
+  const createForm = useForm<CreateFormType>({
+    mode: 'all',
     defaultValues: {
-      birth: dayjs(),
+      birth: Date.now(),
       nickname: '',
+      category: Category.exercise,
     },
+    resolver: yupResolver(schema),
   });
 
   const disabledButton = useMemo(() => {
+    const { formState, getFieldState } = createForm;
     let flag = true;
-    const { formState } = step1Form;
 
     switch (step) {
       case 1:
-        flag = !formState.isValid;
+        const { error: nicknameError } = getFieldState('nickname', formState);
+        const { error: birthError } = getFieldState('birth', formState);
+        flag = !!nicknameError || !!birthError;
         break;
       case 2:
         flag = false;
@@ -96,22 +123,31 @@ function Join() {
         break;
     }
     return flag;
-  }, [step1Form.formState]);
+  }, [createForm.formState]);
 
   const handleClick = useCallback(() => {
-    setStep((prev) => (prev < 3 ? prev + 1 : prev));
+    setStep((prev) => (prev < 3 ? ++prev : prev));
   }, []);
+
+  const handleBackClick = useCallback(() => {
+    if (step !== 1) setStep((prev) => --prev);
+  }, [step]);
 
   return (
     <Layout useHeader={false}>
       <StepSection step={step}>
+        {step !== 1 && (
+          <span className="back-button">
+            <img src="/assets/icons/icon-back-button.png" alt="뒤로가기버튼" onClick={handleBackClick} />
+          </span>
+        )}
         <div className="progress">
           <span className="step" />
         </div>
       </StepSection>
       <WizardSection>
         <Breadcrumb>STEP {step}/3</Breadcrumb>
-        <FormProvider {...step1Form}>{stepMap[step]}</FormProvider>
+        <FormProvider {...createForm}>{stepMap[step]}</FormProvider>
       </WizardSection>
       <ButtonSection css={buttonSectionCss}>
         <Button
