@@ -70,10 +70,20 @@ D-${d_day} 일 남았어요”`;
       <Field>
         <div className="label">별명</div>
         <Controller
-          control={control}
           name="nickname"
+          control={control}
+          rules={{
+            required: true,
+            minLength: { value: 2, message: '2글자 이상 입력해주세요' },
+            maxLength: { value: 10, message: '10글자 이하만 입력 가능합니다' },
+          }}
           render={({ field: { value, onChange } }) => (
-            <TextField value={value} onChange={onChange} placeholder="별명을 입력해주세요!" />
+            <TextField
+              value={value}
+              onChange={onChange}
+              inputProps={{ maxLength: 10 }}
+              placeholder="별명을 입력해주세요!"
+            />
           )}
         />
       </Field>
@@ -84,21 +94,6 @@ D-${d_day} 일 남았어요”`;
           name="birth"
           render={({ field: { value, onChange } }) => (
             <DatePicker value={value} onChange={onChange} minDate={dayjs().subtract(100, 'year')} />
-          )}
-        />
-      </Field>
-      <Field>
-        <div className="label">별명</div>
-        <Controller
-          name="nickname"
-          control={control}
-          rules={{
-            required: true,
-            minLength: { value: 2, message: '2글자 이상 입력해주세요' },
-            maxLength: { value: 10, message: '10글자 이하만 입력 가능합니다' },
-          }}
-          render={({ field: { value, onChange } }) => (
-            <TextField value={value} onChange={onChange} inputProps={{ maxLength: 10 }} />
           )}
         />
       </Field>
