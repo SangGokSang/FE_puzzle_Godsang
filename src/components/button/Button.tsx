@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactNode, SyntheticEvent } from 'react';
+import React, { PropsWithChildren, SyntheticEvent } from 'react';
 import styled from '@emotion/styled';
 
 export enum ButtonType {
@@ -10,6 +10,7 @@ export enum ButtonType {
 type ButtonProps = {
   buttonType: ButtonType;
   onClick: (event: SyntheticEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
 };
 
 const Btn = styled.button`
@@ -38,9 +39,9 @@ const Btn = styled.button`
   }
 `;
 
-function Button({ children, buttonType, onClick }: PropsWithChildren<ButtonProps>) {
+function Button({ children, buttonType, onClick, disabled = false }: PropsWithChildren<ButtonProps>) {
   return (
-    <Btn className={buttonType} onClick={onClick}>
+    <Btn className={buttonType} onClick={onClick} disabled={disabled}>
       {children}
     </Btn>
   );

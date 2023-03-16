@@ -3,10 +3,9 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Controller, useFormContext } from 'react-hook-form';
 import { UserInfo } from 'src/module/join';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { DatePicker as MUIDatePikcer } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
-import { convertToObject } from 'typescript';
 import { FormType } from 'src/pages/create';
 
 type StepProps = {
@@ -43,18 +42,24 @@ const DatePicker = styled(MUIDatePikcer)`
   }
 `;
 
+function getDDay(birth: Dayjs): number {
+  const diff = dayjs().year() - birth.year();
+  const d_day = birth.add(diff + 1, 'year');
+  return d_day.diff(dayjs(), 'day');
+}
+
 function FirstStep() {
   const { control, watch } = useFormContext<FormType>();
   const { nickname, birth } = watch();
-  // console.log(birth.diff(dayjs(), 'day'));
 
-  const val = useMemo(
-    () => `“저는, 
+  const val = useMemo(() => {
+    const d_day = getDDay(birth);
+    return `“저의 별명은 ${nickname} 이며, 
 ${birth.format('YYYY년 MM월 DD일')} 생이고
-만 나이로 돌아가기
-D-day 3948일 남았어요.”`,
-    [],
-  );
+현재 나이로 돌아가기
+D-${d_day} 일 남았어요”`;
+  }, [nickname, birth]);
+
   return (
     <div
       css={css`
@@ -63,16 +68,34 @@ D-day 3948일 남았어요.”`,
       `}>
       <Description>{val}</Description>
       <Field>
+        <div className="label">별명</div>
+        <Controller
+          name="nickname"
+          control={control}
+          rules={{
+            required: true,
+            minLength: { value: 2, message: '2글자 이상 입력해주세요' },
+            maxLength: { value: 10, message: '10글자 이하만 입력 가능합니다' },
+          }}
+          render={({ field: { value, onChange } }) => (
+            <TextField
+              value={value}
+              onChange={onChange}
+              inputProps={{ maxLength: 10 }}
+              placeholder="별명을 입력해주세요!"
+            />
+          )}
+        />
+      </Field>
+      <Field>
         <div className="label">생년월일</div>
         <Controller
           control={control}
           name="birth"
-          render={({ field: { value, onChange } }) => <DatePicker value={value} onChange={onChange} />}
+          render={({ field: { value, onChange } }) => (
+            <DatePicker value={value} onChange={onChange} minDate={dayjs().subtract(100, 'year')} />
+          )}
         />
-      </Field>
-      <Field>
-        <div className="label">별명</div>
-        <Controller control={control} name="birth" render={({ field: { value, onChange } }) => <TextField />} />
       </Field>
     </div>
   );
