@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useCallback, useMemo, useState } from 'react';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/common/styles/common';
 import Button from 'src/components/button';
@@ -65,20 +65,42 @@ const buttonSectionCss = css`
   bottom: 0;
 `;
 
+const stepMap: Record<number, ReactElement> = {
+  1: <FirstStep />,
+  2: <SecondStep />,
+  3: <ThirdStep />,
+};
+
 function Join() {
   const [step, setStep] = useState(1);
-  const form = useForm<FormType>({
+  const step1Form = useForm<FormType>({
     defaultValues: {
       birth: dayjs(),
       nickname: '',
     },
   });
 
-  const stepMap: { [idx: number]: ReactElement } = {
-    1: <FirstStep />,
-    2: <SecondStep />,
-    3: <ThirdStep />,
-  };
+  const disabledButton = useMemo(() => {
+    let flag = true;
+    const { formState } = step1Form;
+
+    switch (step) {
+      case 1:
+        flag = !formState.isValid;
+        break;
+      case 2:
+        flag = false;
+        break;
+      case 3:
+        flag = false;
+        break;
+    }
+    return flag;
+  }, [step1Form.formState]);
+
+  const handleClick = useCallback(() => {
+    setStep((prev) => (prev < 3 ? prev + 1 : prev));
+  }, []);
 
   return (
     <Layout useHeader={false}>
@@ -89,11 +111,14 @@ function Join() {
       </StepSection>
       <WizardSection>
         <Breadcrumb>STEP {step}/3</Breadcrumb>
-        <FormProvider {...form}>{stepMap[step]}</FormProvider>
+        <FormProvider {...step1Form}>{stepMap[step]}</FormProvider>
       </WizardSection>
       <ButtonSection css={buttonSectionCss}>
-        <Button buttonType={ButtonType.Basic} onClick={() => {}}>
-          다음
+        <Button
+          buttonType={disabledButton ? ButtonType.Disabled : ButtonType.Basic}
+          onClick={handleClick}
+          disabled={disabledButton}>
+          {step === 3 ? '완성하기' : '다음'}
         </Button>
       </ButtonSection>
     </Layout>
