@@ -68,6 +68,16 @@ D-${d_day} 일 남았어요”`;
       `}>
       <Description>{val}</Description>
       <Field>
+        <div className="label">별명</div>
+        <Controller
+          control={control}
+          name="nickname"
+          render={({ field: { value, onChange } }) => (
+            <TextField value={value} onChange={onChange} placeholder="별명을 입력해주세요!" />
+          )}
+        />
+      </Field>
+      <Field>
         <div className="label">생년월일</div>
         <Controller
           control={control}

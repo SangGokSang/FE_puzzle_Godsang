@@ -40,6 +40,7 @@ const theme = createTheme({
           width: '100%',
           height: '60px',
           background: '#f3f3f3',
+          borderRadius: '6px',
         },
       },
     },
