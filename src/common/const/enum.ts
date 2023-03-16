@@ -1,5 +1,7 @@
-export enum Step {
-  first = 'step1',
-  second = 'step2',
-  third = 'step3',
+export enum Category {
+  exercise = 'EXERCISE',
+  travel = 'TRAVEL',
+  career = 'CAREER',
+  moneyManagement = 'MONEY_MANAGEMENT',
+  etc = 'ETC',
 }
