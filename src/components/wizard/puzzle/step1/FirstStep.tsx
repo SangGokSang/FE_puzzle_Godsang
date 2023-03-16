@@ -1,34 +1,14 @@
-import React, { useMemo } from 'react';
-import styled from '@emotion/styled';
+import React, { useEffect, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { UserInfo } from 'src/module/join';
 import dayjs, { Dayjs } from 'dayjs';
-import { DatePicker as MUIDatePikcer } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
 import { CreateFormType } from 'src/pages/create';
 import { getDDay } from 'src/common/util/util';
-import { Container, Description } from '../style';
-
-const Field = styled.div`
-  width: 100%;
-  margin-top: 12px;
-  & .label {
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 20px;
-  }
-`;
-
-const DatePicker = styled(MUIDatePikcer)`
-  background: #f3f3f3;
-  border-radius: 6px;
-  & .MuiInputBase-root {
-    height: 100%;
-  }
-`;
+import { Container, Description, Field } from '../style';
+import { DatePicker } from './style';
 
 function FirstStep() {
-  const { control, watch } = useFormContext<CreateFormType>();
+  const { control, watch, trigger } = useFormContext<CreateFormType>();
   const { nickname, birth } = watch();
 
   const description = useMemo(() => {
@@ -38,6 +18,10 @@ ${dayjs(birth).format('YYYY년 MM월 DD일')} 생이고
 지금의 나이로 돌아가기
 D-${d_day} 일 남았어요”`;
   }, [nickname, birth]);
+
+  useEffect(() => {
+    trigger('nickname');
+  }, []);
 
   return (
     <Container>
