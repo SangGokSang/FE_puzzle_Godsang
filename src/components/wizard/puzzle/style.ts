@@ -22,6 +22,16 @@ export const Container = styled.section`
   }
 `;
 
+export const Field = styled.div`
+  width: 100%;
+  margin-top: 12px;
+  & .label {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 20px;
+  }
+`;
+
 export const annotateCss = css`
   margin-top: 6px;
   margin-bottom: 30px;
