@@ -16,7 +16,7 @@ const categoryMap: Record<string, string> = {
   [Category.etc]: '기타',
 };
 
-export const preCss = css`
+const preCss = css`
   white-space: pre-wrap;
 `;
 
