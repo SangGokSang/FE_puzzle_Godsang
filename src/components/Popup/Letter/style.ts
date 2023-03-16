@@ -1,18 +1,16 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-export const ModalBox = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
 export const MessageCard = styled.div`
   width: 280px;
   height: 280px;
   background-color: #f0edf2;
   border: 1px solid #000000;
   border-radius: 6px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 export const RecipientField = styled.div`
@@ -30,7 +28,6 @@ export const TextBodyField = styled.div`
   margin: 18px;
   width: 100%;
   display: flex;
-  /* justify-content: center; */
 `;
 
 export const SenderField = styled.div`
