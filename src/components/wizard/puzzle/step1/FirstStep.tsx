@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import styled from '@emotion/styled';
 import { Controller, useFormContext } from 'react-hook-form';
 import { UserInfo } from 'src/module/join';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { DatePicker as MUIDatePikcer } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
 import { CreateFormType } from 'src/pages/create';
@@ -32,9 +32,9 @@ function FirstStep() {
   const { nickname, birth } = watch();
 
   const description = useMemo(() => {
-    const d_day = getDDay(birth);
+    const d_day = getDDay(dayjs(birth));
     return `“저의 별명은 ${nickname} 이며, 
-${birth.format('YYYY년 MM월 DD일')} 생이고
+${dayjs(birth).format('YYYY년 MM월 DD일')} 생이고
 지금의 나이로 돌아가기
 D-${d_day} 일 남았어요”`;
   }, [nickname, birth]);
@@ -47,11 +47,6 @@ D-${d_day} 일 남았어요”`;
         <Controller
           name="nickname"
           control={control}
-          rules={{
-            // minLength: { value: 2, message: '2글자 이상 입력해주세요' },
-            // maxLength: { value: 10, message: '10글자 이하만 입력 가능합니다' },
-            required: { value: true, message: '별명을 입력해주세요' },
-          }}
           render={({ field: { value, onChange } }) => (
             <TextField
               value={value}
@@ -67,9 +62,12 @@ D-${d_day} 일 남았어요”`;
         <Controller
           control={control}
           name="birth"
-          render={({ field: { value, onChange } }) => (
-            <DatePicker value={value} onChange={onChange} minDate={dayjs().subtract(100, 'year')} />
-          )}
+          render={({ field: { value, onChange } }) => {
+            const handleChange = (value: unknown) => {
+              onChange((value as Dayjs).valueOf());
+            };
+            return <DatePicker value={dayjs(value)} onChange={handleChange} minDate={dayjs().subtract(100, 'year')} />;
+          }}
         />
       </Field>
     </Container>

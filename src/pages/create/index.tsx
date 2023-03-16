@@ -11,16 +11,29 @@ import dayjs, { Dayjs } from 'dayjs';
 import FirstStep from 'src/components/wizard/puzzle/step1/FirstStep';
 import SecondStep from 'src/components/wizard/puzzle/step2/SecondStep';
 import ThirdStep from 'src/components/wizard/puzzle/step3/ThirdStep';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Category } from 'src/common/const/enum';
 
 // const step = [Step.first, Step.second, Step.third];
-export type Category = 'EXERCISE' | 'TRAVEL' | 'CAREER' | 'MONEY_MANAGEMENT' | 'ETC';
+// export type Category = 'EXERCISE' | 'TRAVEL' | 'CAREER' | 'MONEY_MANAGEMENT' | 'ETC';
 
 export type CreateFormType = {
   nickname: string;
-  birth: Dayjs;
+  birth: number; //timestamp
   category: Category;
   goal: string;
 };
+
+const schema = yup.object().shape({
+  nickname: yup
+    .string()
+    .required('반드시 입력해주세요!!.')
+    .min(2, '두 글자 이상 입력해주세요.')
+    .max(10, '열 자 이하만 입력 가능합니다.'),
+  birth: yup.number().required('반드시 입력해주세요.'),
+  category: yup.string().required(),
+});
 
 const StepSection = styled.section<{ step: number }>`
   width: 100%;
@@ -82,21 +95,25 @@ const stepMap: Record<number, ReactElement> = {
 
 function Join() {
   const [step, setStep] = useState(1);
-  const step1Form = useForm<CreateFormType>({
+  const createForm = useForm<CreateFormType>({
+    mode: 'all',
     defaultValues: {
-      birth: dayjs(),
+      birth: Date.now(),
       nickname: '',
-      category: 'EXERCISE',
+      category: Category.exercise,
     },
+    resolver: yupResolver(schema),
   });
 
   const disabledButton = useMemo(() => {
-    const { formState } = step1Form;
+    const { formState, getFieldState } = createForm;
     let flag = true;
 
     switch (step) {
       case 1:
-        flag = !formState.isValid;
+        const { error: nicknameError } = getFieldState('nickname', formState);
+        const { error: birthError } = getFieldState('birth', formState);
+        flag = !!nicknameError || !!birthError;
         break;
       case 2:
         flag = false;
@@ -106,19 +123,15 @@ function Join() {
         break;
     }
     return flag;
-  }, [step1Form.formState]);
+  }, [createForm.formState]);
 
   const handleClick = useCallback(() => {
-    setStep((prev) => (prev < 3 ? prev + 1 : prev));
+    setStep((prev) => (prev < 3 ? ++prev : prev));
   }, []);
 
   const handleBackClick = useCallback(() => {
-    if (step !== 1) setStep((prev) => prev - 1);
+    if (step !== 1) setStep((prev) => --prev);
   }, [step]);
-
-  useEffect(() => {
-    step1Form.trigger(['nickname', 'birth']);
-  }, []);
 
   return (
     <Layout useHeader={false}>
@@ -134,7 +147,7 @@ function Join() {
       </StepSection>
       <WizardSection>
         <Breadcrumb>STEP {step}/3</Breadcrumb>
-        <FormProvider {...step1Form}>{stepMap[step]}</FormProvider>
+        <FormProvider {...createForm}>{stepMap[step]}</FormProvider>
       </WizardSection>
       <ButtonSection css={buttonSectionCss}>
         <Button

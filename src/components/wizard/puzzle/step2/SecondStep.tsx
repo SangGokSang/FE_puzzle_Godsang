@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Category, CreateFormType } from 'src/pages/create';
+import { Category } from 'src/common/const/enum';
+import { CreateFormType } from 'src/pages/create';
 import { annotateCss, Container, Description } from '../style';
 import { Badge, CategorySection } from './style';
 
@@ -10,11 +11,11 @@ type BadgeType = {
 };
 
 const categories: BadgeType[] = [
-  { label: '운동', key: 'EXERCISE' },
-  { label: '여행', key: 'TRAVEL' },
-  { label: '커리어', key: 'CAREER' },
-  { label: '재태크', key: 'MONEY_MANAGEMENT' },
-  { label: '기타', key: 'ETC' },
+  { label: '운동', key: Category.exercise },
+  { label: '여행', key: Category.travel },
+  { label: '커리어', key: Category.career },
+  { label: '재태크', key: Category.moneyManagement },
+  { label: '기타', key: Category.etc },
 ];
 
 function SecondStep() {
