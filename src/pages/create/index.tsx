@@ -11,6 +11,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Category } from 'src/common/const/enum';
 import { Breadcrumb, buttonSectionCss, StepSection, WizardSection } from './style';
+import { useRouter } from 'next/router';
 
 export type CreateFormType = {
   nickname: string;
@@ -42,6 +43,7 @@ const stepMap: Record<number, ReactElement> = {
 
 function Join() {
   const [step, setStep] = useState(1);
+  const router = useRouter();
   const createForm = useForm<CreateFormType>({
     mode: 'all',
     defaultValues: {
@@ -82,6 +84,7 @@ function Join() {
       // mutate
       const { getValues } = createForm;
       console.log(getValues());
+      router.push('list');
     }
   }, [step, createForm]);
 
