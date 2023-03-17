@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import dayjs, { Dayjs } from 'dayjs';
 import { TextField } from '@mui/material';
@@ -9,6 +9,7 @@ import { DateField } from '@mui/x-date-pickers';
 
 function FirstStep() {
   const { control, watch, trigger } = useFormContext<CreateFormType>();
+  const ref = useRef<HTMLDivElement | null>(null);
   const { nickname, birth } = watch();
 
   const description = useMemo(() => {
@@ -22,6 +23,12 @@ D-${d_day} 일 남았어요”`;
   useEffect(() => {
     trigger('nickname');
   }, []);
+
+  useEffect(() => {
+    if (ref && ref.current) {
+      ref.current.blur();
+    }
+  }, [birth, ref]);
 
   return (
     <Container>
@@ -50,7 +57,14 @@ D-${d_day} 일 남았어요”`;
             const handleChange = (value: unknown) => {
               onChange((value as Dayjs).valueOf());
             };
-            return <DateField value={dayjs(value)} onChange={handleChange} minDate={dayjs().subtract(100, 'year')} />;
+            return (
+              <DateField
+                ref={ref}
+                value={dayjs(value)}
+                onChange={handleChange}
+                minDate={dayjs().subtract(100, 'year')}
+              />
+            );
           }}
         />
       </Field>
