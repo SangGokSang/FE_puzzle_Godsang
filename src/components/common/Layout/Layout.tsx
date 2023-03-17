@@ -1,10 +1,6 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import Header from '../Header';
-import { useSetRecoilState } from 'recoil';
-import { useMediaQuery } from 'react-responsive';
-import isMobile from 'src/core/recoil/isMobile';
-import Footer from '../Footer';
 import { SerializedStyles } from '@emotion/react';
 
 interface LayoutProps {
@@ -31,17 +27,10 @@ const Body = styled.main`
 `;
 
 export default function Layout({ children, useHeader = true, layoutCss }: LayoutProps) {
-  // const isMobileSize = useMediaQuery({ minWidth: 768 });
-  // const setIsMobile = useSetRecoilState(isMobile);
-
-  // useEffect(() => {
-  //   setIsMobile(isMobileSize);
-  // }, [isMobileSize]);
   return (
     <Wrapper css={layoutCss}>
       {useHeader && <Header />}
       <Body>{children}</Body>
-      {/* <Footer /> */}
     </Wrapper>
   );
 }

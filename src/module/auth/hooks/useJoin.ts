@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { ApiError } from 'src/common/type/ApiError';
-import { MutationOptions } from 'src/common/type/react-query-types';
+import { ApiError } from 'src/core/type/ApiError';
+import { MutationOptions } from 'src/core/type/react-query-types';
 import { login } from '../api';
 import { Token, Provider } from '../types';
 

@@ -3,9 +3,9 @@ import { Controller, useFormContext } from 'react-hook-form';
 import dayjs, { Dayjs } from 'dayjs';
 import { TextField } from '@mui/material';
 import { CreateFormType } from 'src/pages/create';
-import { getDDay } from 'src/common/util/util';
+import { getDDay } from 'src/core/util/util';
 import { Container, Description, Field } from '../style';
-import { DatePicker } from './style';
+import { DateField } from '@mui/x-date-pickers';
 
 function FirstStep() {
   const { control, watch, trigger } = useFormContext<CreateFormType>();
@@ -13,7 +13,7 @@ function FirstStep() {
 
   const description = useMemo(() => {
     const d_day = getDDay(dayjs(birth));
-    return `“저의 별명은 ${nickname} 이며, 
+    return `저의 별명은 ${nickname} 이며, 
 ${dayjs(birth).format('YYYY년 MM월 DD일')} 생이고
 지금의 나이로 돌아가기까지
 D-${d_day} 일 남았어요”`;
@@ -50,7 +50,7 @@ D-${d_day} 일 남았어요”`;
             const handleChange = (value: unknown) => {
               onChange((value as Dayjs).valueOf());
             };
-            return <DatePicker value={dayjs(value)} onChange={handleChange} minDate={dayjs().subtract(100, 'year')} />;
+            return <DateField value={dayjs(value)} onChange={handleChange} minDate={dayjs().subtract(100, 'year')} />;
           }}
         />
       </Field>
