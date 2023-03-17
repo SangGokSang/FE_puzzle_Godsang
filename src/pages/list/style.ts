@@ -8,6 +8,7 @@ export const PuzzleListWrap = styled.div`
 export const Content = styled.div`
   width: 100%;
   height: calc(100% - 60px);
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;

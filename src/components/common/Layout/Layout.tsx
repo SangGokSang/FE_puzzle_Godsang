@@ -20,14 +20,13 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 20px 40px;
   display: flex;
   flex-direction: column;
 `;
 
 const Body = styled.main`
   position: relative;
-  padding: 20px;
   flex: 1;
 `;
 
