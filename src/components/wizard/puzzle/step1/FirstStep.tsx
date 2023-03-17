@@ -13,9 +13,9 @@ function FirstStep() {
 
   const description = useMemo(() => {
     const d_day = getDDay(dayjs(birth));
-    return `“저의 별명은 ${nickname} 이며, 
+    return `저의 별명은 ${nickname} 이며, 
 ${dayjs(birth).format('YYYY년 MM월 DD일')} 생이고
-지금의 나이로 돌아가기
+지금의 나이로 돌아가기까지
 D-${d_day} 일 남았어요”`;
   }, [nickname, birth]);
 

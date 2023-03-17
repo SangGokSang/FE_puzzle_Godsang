@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useMemo, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
@@ -9,9 +9,10 @@ import SecondStep from 'src/components/wizard/puzzle/step2/SecondStep';
 import ThirdStep from 'src/components/wizard/puzzle/step3/ThirdStep';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Breadcrumb, buttonSectionCss, StepSection, WizardSection } from './style';
 import { useRouter } from 'next/router';
+import styled from '@emotion/styled';
 import { Category } from 'src/core/const/enum';
+import { BackIcon } from 'src/core/icons';
 
 export type CreateFormType = {
   nickname: string;
@@ -19,6 +20,53 @@ export type CreateFormType = {
   category: Category;
   goal: string;
 };
+
+const StepSection = styled.section<{ step: number }>`
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .progress {
+    width: 90px;
+    height: 6px;
+    border-radius: 50px;
+    background-color: #f3f3f3;
+    position: relative;
+
+    .step {
+      width: 30px;
+      height: 6px;
+      border-radius: 50px;
+      position: absolute;
+      left: ${({ step }) => (step === 1 ? 0 : step === 2 ? '30px' : '60px')};
+      background-color: #9148da;
+    }
+  }
+
+  .back-button {
+    position: absolute;
+    cursor: pointer;
+    left: 0;
+  }
+`;
+
+const WizardSection = styled.section`
+  width: 100%;
+  height: calc(100% - 120px);
+  padding-top: 30px;
+`;
+
+const Breadcrumb = styled.p`
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  color: #9148da;
+  font-weight: 500;
+  font-size: 13px;
+`;
 
 const schema = yup.object().shape({
   nickname: yup
@@ -45,21 +93,20 @@ function Join() {
   const [step, setStep] = useState(1);
   const router = useRouter();
   const createForm = useForm<CreateFormType>({
-    mode: 'all',
+    resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       nickname: '',
       birth: Date.now(),
       category: Category.exercise,
       goal: '',
     },
-    resolver: yupResolver(schema),
   });
 
   const disabledButton = useMemo(() => {
     const { formState, getFieldState } = createForm;
     let flag = true;
 
-    if (!!createForm) return true;
     switch (step) {
       case 1:
         const { error: nicknameError } = getFieldState('nickname', formState);
@@ -94,11 +141,11 @@ function Join() {
   }, [step]);
 
   return (
-    <Layout useHeader={false} useBodyPadding={false}>
+    <Layout useHeader={false}>
       <StepSection step={step}>
         {step !== 1 && (
           <span className="back-button">
-            <img src="/assets/icons/icon-back-button.png" alt="뒤로가기버튼" onClick={handleBackClick} />
+            <BackIcon onClick={handleBackClick} />
           </span>
         )}
         <div className="progress">
@@ -109,7 +156,7 @@ function Join() {
         <Breadcrumb>STEP {step}/3</Breadcrumb>
         <FormProvider {...createForm}>{stepMap[step]}</FormProvider>
       </WizardSection>
-      <ButtonSection css={buttonSectionCss}>
+      <ButtonSection>
         <Button
           buttonType={disabledButton ? ButtonType.Disabled : ButtonType.Basic}
           onClick={handleClick}

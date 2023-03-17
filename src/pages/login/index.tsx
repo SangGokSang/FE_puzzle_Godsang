@@ -66,7 +66,7 @@ function Login() {
     console.log(icon);
   };
   return (
-    <Layout layoutCss={layoutCss} useHeader={false} useBodyPadding={false}>
+    <Layout layoutCss={layoutCss} useHeader={false}>
       <div className="wrapper">
         <TitleSection>
           <h3>디어,마이 2023</h3>
