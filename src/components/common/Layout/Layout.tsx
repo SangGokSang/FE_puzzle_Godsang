@@ -3,13 +3,14 @@ import styled from '@emotion/styled';
 import Header from '../Header';
 import { useSetRecoilState } from 'recoil';
 import { useMediaQuery } from 'react-responsive';
-import isMobile from 'src/core/recoil/isMobile';
+import isMobile from 'src/recoil/isMobile';
 import Footer from '../Footer';
 import { SerializedStyles } from '@emotion/react';
 
 interface LayoutProps {
   children: ReactNode;
   useHeader?: boolean;
+  useBodyPadding?: boolean;
   layoutCss?: SerializedStyles;
 }
 
@@ -23,13 +24,13 @@ const Wrapper = styled.div`
   padding-bottom: 40px;
 `;
 
-const Body = styled.main`
-  width: 100%;
-  height: 100%;
+const Body = styled.main<{ useBodyPadding: boolean }>`
   position: relative;
+  padding: ${({ useBodyPadding }) => useBodyPadding && '20px'};
+  flex: 1;
 `;
 
-export default function Layout({ children, useHeader = true, layoutCss }: LayoutProps) {
+export default function Layout({ children, useHeader = true, useBodyPadding = true, layoutCss }: LayoutProps) {
   // const isMobileSize = useMediaQuery({ minWidth: 768 });
   // const setIsMobile = useSetRecoilState(isMobile);
 
@@ -39,8 +40,7 @@ export default function Layout({ children, useHeader = true, layoutCss }: Layout
   return (
     <Wrapper css={layoutCss}>
       {useHeader && <Header />}
-      <Body>{children}</Body>
-      {/* <Footer /> */}
+      <Body useBodyPadding={useBodyPadding}>{children}</Body>
     </Wrapper>
   );
 }

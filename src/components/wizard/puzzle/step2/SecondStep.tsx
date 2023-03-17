@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Category } from 'src/common/const/enum';
+import { Category } from 'src/core/const/enum';
 import { CreateFormType } from 'src/pages/create';
 import { annotateCss, Container, Description } from '../style';
 import { Badge, CategorySection } from './style';
