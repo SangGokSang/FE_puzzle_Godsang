@@ -17,16 +17,19 @@ const Wrapper = styled.div`
   position: relative;
   max-width: 768px;
   min-width: 360px;
+  width: 100%;
   height: 100%;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Body = styled.main`
-  width: 100%;
-  height: 100%;
   position: relative;
+  padding: 20px;
+  flex: 1;
 `;
 
 export default function Layout({ children, useHeader = true, layoutCss }: LayoutProps) {
