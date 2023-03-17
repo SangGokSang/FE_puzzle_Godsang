@@ -68,11 +68,6 @@ const Breadcrumb = styled.p`
   font-size: 13px;
 `;
 
-const buttonSectionCss = css`
-  position: absolute;
-  bottom: 0;
-`;
-
 const schema = yup.object().shape({
   nickname: yup
     .string()
@@ -161,7 +156,7 @@ function Join() {
         <Breadcrumb>STEP {step}/3</Breadcrumb>
         <FormProvider {...createForm}>{stepMap[step]}</FormProvider>
       </WizardSection>
-      <ButtonSection css={buttonSectionCss}>
+      <ButtonSection>
         <Button
           buttonType={disabledButton ? ButtonType.Disabled : ButtonType.Basic}
           onClick={handleClick}
