@@ -1,6 +1,6 @@
-import React, { ReactElement, useCallback, useMemo, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import Layout from 'src/components/common/Layout';
-import { ButtonSection } from 'src/common/styles/common';
+import { ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -9,10 +9,10 @@ import SecondStep from 'src/components/wizard/puzzle/step2/SecondStep';
 import ThirdStep from 'src/components/wizard/puzzle/step3/ThirdStep';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Category } from 'src/common/const/enum';
 import { useRouter } from 'next/router';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { Category } from 'src/core/const/enum';
+import { BackIcon } from 'src/core/icons';
 
 export type CreateFormType = {
   nickname: string;
@@ -68,11 +68,6 @@ const Breadcrumb = styled.p`
   font-size: 13px;
 `;
 
-const buttonSectionCss = css`
-  position: absolute;
-  bottom: 0;
-`;
-
 const schema = yup.object().shape({
   nickname: yup
     .string()
@@ -98,14 +93,14 @@ function Join() {
   const [step, setStep] = useState(1);
   const router = useRouter();
   const createForm = useForm<CreateFormType>({
-    mode: 'all',
+    resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: {
-      birth: Date.now(),
       nickname: '',
+      birth: Date.now(),
       category: Category.exercise,
       goal: '',
     },
-    resolver: yupResolver(schema),
   });
 
   const disabledButton = useMemo(() => {
@@ -150,7 +145,7 @@ function Join() {
       <StepSection step={step}>
         {step !== 1 && (
           <span className="back-button">
-            <img src="/assets/icons/icon-back-button.png" alt="뒤로가기버튼" onClick={handleBackClick} />
+            <BackIcon onClick={handleBackClick} />
           </span>
         )}
         <div className="progress">
@@ -161,7 +156,7 @@ function Join() {
         <Breadcrumb>STEP {step}/3</Breadcrumb>
         <FormProvider {...createForm}>{stepMap[step]}</FormProvider>
       </WizardSection>
-      <ButtonSection css={buttonSectionCss}>
+      <ButtonSection>
         <Button
           buttonType={disabledButton ? ButtonType.Disabled : ButtonType.Basic}
           onClick={handleClick}

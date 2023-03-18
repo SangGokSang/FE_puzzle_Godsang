@@ -4,7 +4,7 @@ import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
-import { ButtonSection } from 'src/common/styles/common';
+import { ButtonSection } from 'src/core/styles/common';
 import { useRouter } from 'next/router';
 
 const layoutCss = css`

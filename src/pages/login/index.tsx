@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
-import { ButtonSection } from 'src/common/styles/common';
+import { ButtonSection } from 'src/core/styles/common';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import Letter from 'src/components/Popup/Letter/Letter';
-
-const login_icon = ['kakao', 'naver', 'google'];
+import { GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
 
 const layoutCss = css`
   .wrapper {
@@ -82,14 +80,9 @@ function Login() {
         <IconSection>
           <p>소셜 계정으로 간편하게 로그인하기</p>
           <div className="icon-wrapper">
-            {login_icon.map((icon) => (
-              <img
-                key={icon}
-                src={`/assets/icons/login/${icon}.png`}
-                alt="소셜 로그인 아이콘 버튼입니다."
-                onClick={handleClickIcon(icon)}
-              />
-            ))}
+            <GoogleIcon onClick={handleClickIcon('google')} />
+            <NaverIcon onClick={handleClickIcon('naver')} />
+            <KakaoIcon onClick={handleClickIcon('kakao')} />
           </div>
         </IconSection>
         <ButtonSection>

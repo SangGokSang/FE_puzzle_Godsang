@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Global } from '@emotion/react';
 import type { AppProps } from 'next/app';
-import { globalStyle } from 'src/common/styles/global';
+import { globalStyle } from 'src/core/styles/global';
 import Layout from 'src/components/common/Layout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
