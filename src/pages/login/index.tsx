@@ -96,9 +96,6 @@ function Login() {
           <Button buttonType={ButtonType.Text} onClick={handleClickHowToUse}>
             이용방법
           </Button>
-          <Button buttonType={ButtonType.Text} onClick={handleOpenModal}>
-            모달열기
-          </Button>
         </ButtonSection>
       </div>
     </Layout>
