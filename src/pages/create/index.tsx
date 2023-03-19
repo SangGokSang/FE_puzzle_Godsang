@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
@@ -91,10 +91,11 @@ const stepMap: Record<number, ReactElement> = {
 
 function Join() {
   const [step, setStep] = useState(1);
+  const [disabledButton, setDisabledButton] = useState(true);
   const router = useRouter();
   const createForm = useForm<CreateFormType>({
     resolver: yupResolver(schema),
-    mode: 'onChange',
+    mode: 'all',
     defaultValues: {
       nickname: '',
       birth: Date.now(),
@@ -103,29 +104,7 @@ function Join() {
     },
   });
 
-  const disabledButton = useMemo(() => {
-    const { formState, getFieldState } = createForm;
-    let flag = true;
-
-    switch (step) {
-      case 1:
-        const { error: nicknameError } = getFieldState('nickname', formState);
-        const { error: birthError } = getFieldState('birth', formState);
-        flag = !!nicknameError || !!birthError;
-        break;
-      case 2:
-        const { error: categoryError } = getFieldState('category', formState);
-        flag = !!categoryError;
-        break;
-      case 3:
-        const { error: goalError } = getFieldState('goal', formState);
-        flag = !!goalError;
-        break;
-    }
-    return flag;
-  }, [createForm.formState]);
-
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     if (step < 3) {
       setStep((prev) => ++prev);
     } else {
@@ -134,11 +113,33 @@ function Join() {
       console.log(getValues());
       router.push('list');
     }
-  }, [step, createForm]);
+  };
 
-  const handleBackClick = useCallback(() => {
+  const handleBackClick = () => {
     if (step !== 1) setStep((prev) => --prev);
-  }, [step]);
+  };
+
+  useEffect(() => {
+    const { formState, getFieldState } = createForm;
+    let flag = true;
+
+    switch (step) {
+      case 1:
+        const { isDirty: isNicknameDirty, error: nicknameError } = getFieldState('nickname', formState);
+        const { error: birthError } = getFieldState('birth', formState);
+        flag = !isNicknameDirty || !!nicknameError || !!birthError;
+        break;
+      case 2:
+        const { error: categoryError } = getFieldState('category', formState);
+        flag = !!categoryError;
+        break;
+      case 3:
+        const { isDirty: isGoalDirty, error: goalError } = getFieldState('goal', formState);
+        flag = !isGoalDirty || !!goalError;
+        break;
+    }
+    setDisabledButton(flag);
+  }, [createForm.formState, createForm.getFieldState]);
 
   return (
     <Layout useHeader={false}>

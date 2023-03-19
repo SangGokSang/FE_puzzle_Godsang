@@ -33,10 +33,6 @@ function ThirdStep() {
 `;
   }, [nickname, category, birth]);
 
-  useEffect(() => {
-    trigger('goal');
-  }, []);
-
   return (
     <Container>
       <Description>목표</Description>
