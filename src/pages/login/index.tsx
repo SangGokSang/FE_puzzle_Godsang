@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
@@ -65,13 +65,9 @@ function Login() {
   const handleClickIcon = (icon: string) => () => {
     console.log(icon);
   };
-  const [isOpen, setIsOpen] = useState(false);
-  const handleOpenModal = () => {
-    setIsOpen(true);
-  };
+
   return (
     <Layout layoutCss={layoutCss} useHeader={false}>
-      <Letter isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="wrapper">
         <TitleSection>
           <h3>디어,마이 2023</h3>

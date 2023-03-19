@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import styled from '@emotion/styled';
+import Letter from 'src/components/Popup/Letter';
 
 const PuzzleListWrap = styled.div`
   height: 100%;
@@ -100,6 +101,12 @@ export const Message = styled.div`
 
 function PuzzleList() {
   const handleClickBtn = useCallback(() => console.log('click'), []);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
   return (
     <Layout>
       <PuzzleListWrap>
@@ -122,6 +129,10 @@ function PuzzleList() {
         </Content>
         <Button buttonType={ButtonType.Basic} onClick={handleClickBtn}>
           공유하기
+        </Button>
+        <Letter isOpen={isOpen} setIsOpen={setIsOpen} />
+        <Button buttonType={ButtonType.Text} onClick={handleOpenModal}>
+          모달 열기
         </Button>
       </PuzzleListWrap>
     </Layout>
