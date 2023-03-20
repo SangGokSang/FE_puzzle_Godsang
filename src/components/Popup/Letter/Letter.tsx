@@ -27,7 +27,7 @@ const buttonSectionCss = css`
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps) {
   const { isOpen, setIsOpen } = props;
-  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [massageData, setMessageData] = useState<MessageData>({
     from: '',
     to: '',
