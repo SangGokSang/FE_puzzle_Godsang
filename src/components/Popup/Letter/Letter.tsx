@@ -26,6 +26,7 @@ const buttonSectionCss = css`
 
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps) {
+  const { watch, control } = useFormContext<MessageData>();
   const { isOpen, setIsOpen } = props;
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [massageData, setMessageData] = useState<MessageData>({
@@ -52,19 +53,43 @@ function Letter(props: LetterProps) {
         <MessageCard>
           <RecipientField>
             To.
-            {isEdit ? <TextField inputProps={{ maxLength: 10 }} className="to" placeholder="누구" /> : ' 누구'}
+            {isEdit ? (
+              <Controller
+                name="to"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    onChange={onChange}
+                    inputProps={{ maxLength: 10 }}
+                    className="to"
+                    placeholder="누구"
+                  />
+                )}
+              />
+            ) : (
+              ' 누구'
+            )}
           </RecipientField>
           <TextBodyField>
             {isEdit ? (
-              <TextField
-                sx={{
-                  width: '240px',
-                  maxHeight: '240px',
-                }}
-                multiline
-                className="content"
-                inputProps={{ maxLength: 102 }}
-                placeholder="응원의 메시지를 보내세요!"
+              <Controller
+                name="content"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    onChange={onChange}
+                    sx={{
+                      width: '240px',
+                      maxHeight: '240px',
+                    }}
+                    multiline
+                    className="content"
+                    inputProps={{ maxLength: 102 }}
+                    placeholder="응원의 메시지를 보내세요!"
+                  />
+                )}
               />
             ) : (
               'Text...'
@@ -73,13 +98,21 @@ function Letter(props: LetterProps) {
           <SenderField>
             From.
             {isEdit ? (
-              <TextField
-                sx={{
-                  width: '80px',
-                }}
-                inputProps={{ maxLength: 10 }}
-                className="from"
-                placeholder="누구"
+              <Controller
+                name="from"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    onChange={onChange}
+                    sx={{
+                      width: '80px',
+                    }}
+                    inputProps={{ maxLength: 10 }}
+                    className="from"
+                    placeholder="누구"
+                  />
+                )}
               />
             ) : (
               ' 누구'
