@@ -1,17 +1,22 @@
 import { css } from '@emotion/react';
 import Button, { ButtonType } from 'src/components/button/Button';
-import { Input, Modal } from '@mui/material';
+import { Modal, TextField } from '@mui/material';
 import React, { useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper';
 import Layout from 'src/components/common/Layout';
-import { MessageCard, RecipientField, SenderField, SwiperContainer, TextBodyField } from './style';
+import { MessageCard, RecipientField, SenderField, TextBodyField } from './style';
 import { ButtonSection } from 'src/core/styles/common';
 import { BackIcon } from 'src/core/icons';
+import { Controller, useFormContext } from 'react-hook-form';
 
 type LetterProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export type MessageData = {
+  from: string;
+  to: string;
+  content: string;
 };
 
 const buttonSectionCss = css`
@@ -22,13 +27,20 @@ const buttonSectionCss = css`
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps) {
   const { isOpen, setIsOpen } = props;
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [massageData, setMessageData] = useState<MessageData>({
+    from: '',
+    to: '',
+    content: '',
+  });
 
   const handleCloseModal = () => {
     setIsOpen(false);
   };
 
-  const handleSendMessage = () => {};
+  const onSubmit = () => {
+    console.log('submit');
+  };
 
   return (
     <Modal open={isOpen} onClose={handleCloseModal}>
@@ -36,86 +48,49 @@ function Letter(props: LetterProps) {
         <span className="back-button">
           <BackIcon onClick={handleCloseModal} />
         </span>
-        <SwiperContainer>
-          <Swiper pagination={true} modules={[Pagination]}>
-            <SwiperSlide>
-              <MessageCard>
-                <RecipientField>
-                  To. 누구
-                  {isEdit && <Input disableUnderline={true} inputProps={{ maxLength: 10 }} placeholder="받는 사람" />}
-                </RecipientField>
-                <TextBodyField>
-                  Text...
-                  {isEdit && (
-                    <Input
-                      sx={{
-                        width: '240px',
-                        maxHeight: '240px',
-                      }}
-                      multiline
-                      disableUnderline={true}
-                      inputProps={{ maxLength: 102 }}
-                      placeholder="내용을 입력하세요."
-                    />
-                  )}
-                </TextBodyField>
-                <div className="sender">
-                  From. 누구
-                  {isEdit && (
-                    <Input
-                      sx={{
-                        width: '80px',
-                      }}
-                      disableUnderline={true}
-                      inputProps={{ maxLength: 10 }}
-                      placeholder="보내는 사람"
-                    />
-                  )}
-                </div>
-              </MessageCard>
-            </SwiperSlide>
-            <SwiperSlide>
-              <MessageCard>
-                <RecipientField>
-                  To. 누구
-                  {isEdit && <Input disableUnderline={true} inputProps={{ maxLength: 10 }} placeholder="받는 사람" />}
-                </RecipientField>
-                <TextBodyField>
-                  Text...
-                  {isEdit && (
-                    <Input
-                      sx={{
-                        width: '240px',
-                        maxHeight: '240px',
-                      }}
-                      multiline
-                      disableUnderline={true}
-                      inputProps={{ maxLength: 102 }}
-                      placeholder="내용을 입력하세요."
-                    />
-                  )}
-                </TextBodyField>
-                <div className="sender">
-                  From. 누구
-                  {isEdit && (
-                    <Input
-                      sx={{
-                        width: '80px',
-                      }}
-                      disableUnderline={true}
-                      inputProps={{ maxLength: 10 }}
-                      placeholder="보내는 사람"
-                    />
-                  )}
-                </div>
-              </MessageCard>
-            </SwiperSlide>
-          </Swiper>
-        </SwiperContainer>
+
+        <MessageCard>
+          <RecipientField>
+            To.
+            {isEdit ? <TextField inputProps={{ maxLength: 10 }} className="to" placeholder="누구" /> : ' 누구'}
+          </RecipientField>
+          <TextBodyField>
+            {isEdit ? (
+              <TextField
+                sx={{
+                  width: '240px',
+                  maxHeight: '240px',
+                }}
+                multiline
+                className="content"
+                inputProps={{ maxLength: 102 }}
+                placeholder="응원의 메시지를 보내세요!"
+              />
+            ) : (
+              'Text...'
+            )}
+          </TextBodyField>
+          <SenderField>
+            From.
+            {isEdit ? (
+              <TextField
+                sx={{
+                  width: '80px',
+                }}
+                inputProps={{ maxLength: 10 }}
+                className="from"
+                placeholder="누구"
+              />
+            ) : (
+              ' 누구'
+            )}
+          </SenderField>
+        </MessageCard>
+
         {isEdit && (
           <ButtonSection css={buttonSectionCss}>
-            <Button buttonType={ButtonType.Text} onClick={handleSendMessage}>
-              'DM 보내기'
+            <Button buttonType={ButtonType.Text} onClick={onSubmit}>
+              DM 보내기
             </Button>
           </ButtonSection>
         )}
