@@ -65,7 +65,6 @@ function Login() {
   const handleClickIcon = (icon: string) => () => {
     console.log(icon);
   };
-
   return (
     <Layout layoutCss={layoutCss} useHeader={false}>
       <div className="wrapper">

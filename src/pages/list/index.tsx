@@ -100,7 +100,6 @@ export const Message = styled.div`
 
 function PuzzleList() {
   const handleClickBtn = useCallback(() => console.log('click'), []);
-
   return (
     <Layout>
       <PuzzleListWrap>
