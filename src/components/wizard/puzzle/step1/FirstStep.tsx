@@ -8,7 +8,7 @@ import { Container, Description, Field } from '../style';
 import { DateField } from '@mui/x-date-pickers';
 
 function FirstStep() {
-  const { control, watch, trigger } = useFormContext<CreateFormType>();
+  const { control, watch, setError, formState } = useFormContext<CreateFormType>();
   const ref = useRef<HTMLDivElement | null>(null);
   const { nickname, birth } = watch();
 
@@ -19,16 +19,6 @@ ${dayjs(birth).format('YYYY년 MM월 DD일')} 생이고
 지금의 나이로 돌아가기까지
 D-${d_day} 일 남았어요”`;
   }, [nickname, birth]);
-
-  useEffect(() => {
-    trigger('nickname');
-  }, []);
-
-  useEffect(() => {
-    if (ref && ref.current) {
-      ref.current.blur();
-    }
-  }, [birth, ref]);
 
   return (
     <Container>
@@ -63,6 +53,7 @@ D-${d_day} 일 남았어요”`;
                 value={dayjs(value)}
                 onChange={handleChange}
                 minDate={dayjs().subtract(100, 'year')}
+                disableFuture={true}
               />
             );
           }}
