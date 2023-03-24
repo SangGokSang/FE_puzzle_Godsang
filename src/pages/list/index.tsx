@@ -146,7 +146,6 @@ function PuzzleList() {
     const puzzleY = originY ? (originY < topPuzzlePosition ? originY : originY - PUZZLE_ROUND_SIZE) : 0;
 
     index && puzzlePosition.push({ left: puzzleX, top: puzzleY });
-    console.log(letterData);
     return [puzzleX, puzzleY];
   }, []);
 
