@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { ApiError } from 'next/dist/server/api-utils';
-import { MutationOptions } from 'src/common/type/react-query-types';
+import { MutationOptions } from 'src/core/type/react-query-types';
 import { postDM } from '../api';
 import { SendMessage } from '../types';
 
