@@ -10,7 +10,8 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 type LetterProps = {
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
+  data: MessageData | null;
 };
 
 export type MessageData = {
@@ -26,8 +27,8 @@ const buttonSectionCss = css`
 
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps) {
+  const { isOpen, onClose } = props;
   const { watch, control } = useFormContext<MessageData>();
-  const { isOpen, setIsOpen } = props;
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [massageData, setMessageData] = useState<MessageData>({
     from: '',
@@ -36,7 +37,9 @@ function Letter(props: LetterProps) {
   });
 
   const handleCloseModal = () => {
-    setIsOpen(false);
+    if (onClose instanceof Function) {
+      onClose();
+    }
   };
 
   const onSubmit = () => {

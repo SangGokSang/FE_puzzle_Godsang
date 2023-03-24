@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
@@ -17,6 +17,8 @@ import puzzle6 from 'public/assets/images/puzzle-6.png';
 import puzzle7 from 'public/assets/images/puzzle-7.png';
 import puzzle8 from 'public/assets/images/puzzle-8.png';
 import puzzle9 from 'public/assets/images/puzzle-9.png';
+import { PuzzleMSG, usePuzzles } from 'src/module/puzzles';
+import Letter from 'src/components/Popup/Letter';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -121,7 +123,13 @@ const Message = styled.div`
 
 function PuzzleList() {
   const puzzlePosition = [{ left: 0, top: 0 }];
-  const handleClickBtn = useCallback(() => console.log('click'), []);
+  // const { data } = usePuzzles();
+  const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
+
+  const handleClickPiece = (data: any) => setLetterData(data);
+  const handleClose = () => setLetterData(null);
+
+  const handleClickShare = useCallback(() => console.log('click'), []);
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
     const row = Math.floor(index / 3);
@@ -154,7 +162,12 @@ function PuzzleList() {
               <SwiperSlide>
                 <PuzzleWrap>
                   {PUZZLE_LIST.map((data, index) => (
-                    <PuzzlePiece src={data} position={getPuzzlePosition(index)} alt="puzzle-piece" />
+                    <PuzzlePiece
+                      src={data}
+                      position={getPuzzlePosition(index)}
+                      alt="puzzle-piece"
+                      onClick={() => handleClickPiece(data)}
+                    />
                   ))}
                 </PuzzleWrap>
               </SwiperSlide>
@@ -165,10 +178,11 @@ function PuzzleList() {
           </SwiperContainer>
           <Message>친구에게 공유해서 퍼즐조각을 완성해보세요!</Message>
         </Content>
-        <Button buttonType={ButtonType.Basic} onClick={handleClickBtn}>
+        <Button buttonType={ButtonType.Basic} onClick={handleClickShare}>
           공유하기
         </Button>
       </PuzzleListWrap>
+      {/* <Letter isOpen={!!letterData} onClose={handleClose} data={letterData} /> */}
     </Layout>
   );
 }
