@@ -123,7 +123,7 @@ const Message = styled.div`
 
 function PuzzleList() {
   const puzzlePosition = [{ left: 0, top: 0 }];
-  const { data } = usePuzzles();
+  // const { data } = usePuzzles();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
 
   const handleClickPiece = (data: any) => setLetterData(data);
