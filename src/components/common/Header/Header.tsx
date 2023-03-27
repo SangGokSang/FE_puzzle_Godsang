@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 import styled from '@emotion/styled';
 import { cx } from '@emotion/css';
@@ -19,9 +20,31 @@ const Wrapper = styled.header`
 `;
 
 export default function Header() {
+  const router = useRouter();
+
+  // const handleMainClick = () => {
+  //   if(로그인 && 퍼즐리스트 있으면){
+  //     router.push('/list');
+  //   }else{
+  //     router.push('');
+  //   }
+  // };
+
+  const handleProfileClick = () => {
+    router.push('myPage');
+  };
+
+  const handleKeyClick = () => {
+    router.push('key');
+  };
+
   return (
     <Wrapper>
-      <img src="/assets/images/header.png" alt="title" />
+      <Logo />
+      <ButtonGroup>
+        <KeyIcon onClick={handleKeyClick} />
+        <ProfileIcon onClick={handleProfileClick} />
+      </ButtonGroup>
     </Wrapper>
   );
 }
