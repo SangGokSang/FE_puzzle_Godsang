@@ -14,7 +14,7 @@ const layoutCss = css`
     padding-top: 25%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 20%;
   }
 `;
 
