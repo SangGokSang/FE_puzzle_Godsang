@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { ChangeEventHandler, useEffect, useMemo, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import dayjs, { Dayjs } from 'dayjs';
 import { TextField } from '@mui/material';
@@ -8,8 +8,8 @@ import { Container, Description, Field } from '../style';
 import { DateField } from '@mui/x-date-pickers';
 
 function FirstStep() {
-  const { control, watch, setError, formState } = useFormContext<CreateFormType>();
-  const ref = useRef<HTMLDivElement | null>(null);
+  const { control, watch } = useFormContext<CreateFormType>();
+  // const ref = useRef<HTMLDivElement | null>(null);
   const { nickname, birth } = watch();
 
   const description = useMemo(() => {
@@ -44,18 +44,11 @@ D-${d_day} 일 남았어요”`;
           control={control}
           name="birth"
           render={({ field: { value, onChange } }) => {
-            const handleChange = (value: unknown) => {
-              onChange((value as Dayjs).valueOf());
+            const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+              onChange(dayjs(event.currentTarget.value).valueOf());
             };
-            return (
-              <DateField
-                ref={ref}
-                value={dayjs(value)}
-                onChange={handleChange}
-                minDate={dayjs().subtract(100, 'year')}
-                disableFuture={true}
-              />
-            );
+            const val = dayjs(value).format('YYYY-MM-DD');
+            return <TextField type="date" value={val} onChange={handleChange} />;
           }}
         />
       </Field>
