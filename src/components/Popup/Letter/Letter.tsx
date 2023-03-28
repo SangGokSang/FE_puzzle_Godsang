@@ -64,7 +64,7 @@ function Letter(props: LetterProps) {
                   <TextField
                     value={value}
                     onChange={onChange}
-                    inputProps={{ maxLength: 10 }}
+                    inputProps={{ minLength: 1, maxLength: 7 }}
                     className="to"
                     placeholder="누구"
                   />
@@ -111,7 +111,7 @@ function Letter(props: LetterProps) {
                     sx={{
                       width: '80px',
                     }}
-                    inputProps={{ maxLength: 10 }}
+                    inputProps={{ minLength: 1, maxLength: 7 }}
                     className="from"
                     placeholder="누구"
                   />
