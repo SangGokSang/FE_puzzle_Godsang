@@ -22,7 +22,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          jq -r 'to_entries | map(select(.key != "AWS_ACCESS_KEY_ID" and .key != "AWS_SECRET_ACCESS_KEY")| "\(.key)=\(.value|tostring)") | .[]' <<< "$SECRETS_CONTEXT" > .env
+          jq -r 'to_entries | map(select(.key != "ACCESS_KEY_ID" and .key != "SECRET_ACCESS_KEY" and .key != "github_token")| "\(.key)=\(.value|tostring)") | .[]' <<< "$SECRETS_CONTEXT" > .env
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
