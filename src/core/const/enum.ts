@@ -11,4 +11,5 @@ export enum Pathname {
   key = '/key',
   list = '/list',
   create = '/create',
+  login = '/login',
 }

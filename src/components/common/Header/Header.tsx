@@ -10,10 +10,10 @@ export default function Header() {
   const router = useRouter();
 
   // const handleLogoClick = () => {
-  //   if(로그인 && 퍼즐리스트 있으면){
+  //   if(로그인 && 퍼즐리스트){
   //     router.push(Pathname.list);
   //   }else{
-  //     router.push(Pathname.create);
+  //     router.push(Pathname.login);
   //   }
   // };
 
