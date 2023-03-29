@@ -1,15 +1,49 @@
 import React from 'react';
+import { useRouter } from 'next/router';
+import { css } from '@emotion/react';
 import { useRecoilValue } from 'recoil';
-import { KeyIcon, Logo, ProfileIcon } from 'src/core/icons';
+import { Pathname } from 'src/core/const/enum';
+import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
 import { ButtonGroup, Wrapper } from './style';
 
 export default function Header() {
+  const router = useRouter();
+
+  // const handleLogoClick = () => {
+  //   if(로그인 && 퍼즐리스트){
+  //     router.push(Pathname.list);
+  //   }else{
+  //     router.push(Pathname.login);
+  //   }
+  // };
+
+  const handleBackClick = () => {
+    router.back();
+  };
+
+  const handleKeyClick = () => {
+    router.push(Pathname.key);
+  };
+
+  const handleUserClick = () => {
+    router.push(Pathname.myPage);
+  };
+
   return (
     <Wrapper>
-      <Logo />
+      {router.pathname === Pathname.myPage ? <BackIcon onClick={handleBackClick} /> : <Logo />}
+
       <ButtonGroup>
-        <KeyIcon />
-        <ProfileIcon />
+        {router.pathname === Pathname.key ? (
+          <KeyIconActive onClick={handleKeyClick} />
+        ) : (
+          <KeyIcon onClick={handleKeyClick} />
+        )}
+        {router.pathname === Pathname.myPage ? (
+          <ProfileIconActive onClick={handleUserClick} />
+        ) : (
+          <ProfileIcon onClick={handleUserClick} />
+        )}
       </ButtonGroup>
     </Wrapper>
   );
