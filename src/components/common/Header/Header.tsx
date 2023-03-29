@@ -1,34 +1,40 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { KeyIcon, Logo, ProfileIcon } from 'src/core/icons';
+import { Pathname } from 'src/core/const/enum';
+import { BackIcon, KeyIcon, Logo, ProfileIcon } from 'src/core/icons';
 import { ButtonGroup, Wrapper } from './style';
 
 export default function Header() {
   const router = useRouter();
 
-  // const handleMainClick = () => {
+  // const handleLogoClick = () => {
   //   if(로그인 && 퍼즐리스트 있으면){
-  //     router.push('/list');
+  //     router.push(Pathname.list);
   //   }else{
-  //     router.push('');
+  //     router.push(Pathname.create);
   //   }
   // };
 
-  const handleProfileClick = () => {
-    router.push('myPage');
+  const handleBackClick = () => {
+    router.back();
   };
 
   const handleKeyClick = () => {
-    router.push('key');
+    router.push(Pathname.key);
+  };
+
+  const handleUserClick = () => {
+    router.push(Pathname.myPage);
   };
 
   return (
     <Wrapper>
-      <Logo />
+      {router.pathname === Pathname.myPage ? <BackIcon onClick={handleBackClick} /> : <Logo />}
+
       <ButtonGroup>
         <KeyIcon onClick={handleKeyClick} />
-        <ProfileIcon onClick={handleProfileClick} />
+        <ProfileIcon onClick={handleUserClick} />
       </ButtonGroup>
     </Wrapper>
   );

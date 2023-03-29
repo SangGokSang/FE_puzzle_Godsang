@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { TextField } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -42,11 +42,26 @@ const StoryLine = styled.div`
   font-weight: 400;
   font-size: 22px;
   line-height: 33px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 const NameBirthDay = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const Text = styled.span`
+  position: relative;
+  top: 15px;
+`;
+
+const Story = styled.div`
+  margin-left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 const schema = yup.object().shape({
@@ -59,7 +74,7 @@ const schema = yup.object().shape({
 });
 
 function index() {
-  // const { control, watch } = useFormContext();
+  const { control, watch } = useFormContext();
   const router = useRouter();
   const createForm = useForm<userType>({
     resolver: yupResolver(schema),
@@ -74,21 +89,19 @@ function index() {
 
   const handleClick = () => {
     if (isEdit) {
-      // Edit 모드 일 경우
       const { getValues } = createForm;
       console.log(getValues());
       // if(submit response 200 ok){
       //   setIsEdit(false);
-      //   router.back();
       // }
+      setIsEdit(false);
     } else {
       // 아닐경우
       setIsEdit(true);
-      router.back();
     }
   };
 
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(true);
 
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
@@ -96,87 +109,89 @@ function index() {
         <StoryLine>
           <NameBirthDay>
             <div>
-              {/* <Controller
-            name="nickname"
-            control={control}
-            render={({ field: { value, onChange } }) => ( */}
-              <TextField
-                value={'강동희'}
-                // onChange={onChange}
-                disabled={!isEdit}
-                sx={{
-                  width: '100px',
-                  height: '50px',
-                  background: 'none',
-                  fontFamily: 'GmarketSans',
-                  fontSize: '22px',
-                  color: '#000000',
-                  '& .MuiInputBase-input.Mui-disabled': {
-                    WebkitTextFillColor: '#000000',
-                    fontFamily: 'GmarketSans',
-                    fontSize: '22px',
-                  },
-                }}
-                inputProps={{ minLength: 1, maxLength: 7 }}
-                placeholder="별명을 입력해주세요!"
+              <Controller
+                name="nickname"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    onChange={onChange}
+                    disabled={!isEdit}
+                    sx={{
+                      width: '90px',
+                      height: '50px',
+                      background: `${isEdit ? '#f3f3f3' : 'none'}`,
+                      position: 'relative',
+                      '& .MuiInputBase-input.Mui-disabled': {
+                        WebkitTextFillColor: '#000000',
+                        fontFamily: 'GmarketSans',
+                        fontSize: '22px',
+                        textAlign: 'center',
+                      },
+                    }}
+                    inputProps={{
+                      minLength: 1,
+                      maxLength: 7,
+                    }}
+                    placeholder="별명을 입력해주세요!"
+                  />
+                )}
               />
-              {/* )}
-          /> */}
-              <span>님은</span>
-              {/* <Controller
-            control={control}
-            name="birth"
-            render={({ field: { value, onChange } }) => {
-              const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-                onChange(dayjs(event.currentTarget.value).valueOf());
-              };
-              const val = dayjs(value).format('YYYY-MM-DD'); return */}
-              <TextField
-                type="date"
-                value={'1994-10-28'}
-                sx={{
-                  width: '190px',
-                  height: '50px',
-                  background: 'none',
-                  fontFamily: 'GmarketSans',
-                  fontSize: '22px',
-                  color: '#000000',
-                  '& .MuiInputBase-input.Mui-disabled': {
-                    WebkitTextFillColor: '#000000',
-                    fontFamily: 'GmarketSans',
-                    fontSize: '22px',
-                  },
+              <Text>님은</Text>
+              <Controller
+                control={control}
+                name="birth"
+                render={({ field: { value, onChange } }) => {
+                  const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+                    onChange(dayjs(event.currentTarget.value).valueOf());
+                  };
+                  const val = dayjs(value).format('YYYY-MM-DD');
+                  return (
+                    <TextField
+                      type="date"
+                      value={val}
+                      sx={{
+                        width: '190px',
+                        height: '50px',
+                        background: `${isEdit ? '#f3f3f3' : 'none'}`,
+                        '& .MuiInputBase-input.Mui-disabled': {
+                          WebkitTextFillColor: '#000000',
+                          fontFamily: 'GmarketSans',
+                          fontSize: '22px',
+                          textAlign: 'center',
+                        },
+                      }}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                    />
+                  );
                 }}
-                // onChange={handleChange}
-                disabled={!isEdit}
               />
-              {/* }}
-          /> */}
-              <span>이고,</span>
+              <Text>이고,</Text>
             </div>
           </NameBirthDay>
-          <br />
-          2023년 6월 부터 만 30살까지,
-          <br />
-          576일이라는 시간이 남았습니다.
-          <br />
-          <br />
-          이 시점에서 우리가 할 수 있는 것은?
-          <br />
-          <br />
-          식사 300번
-          <br />
-          바프 3번 찍기
-          <br /> 독서 75권
-          <br /> 롤 골드 티어
-          <br /> 개발자 부트캠프
-          <br /> 워킹홀리데이
-          <br />
+          <Story>
+            <div>
+              <div>2023년 6월 부터 만 30살까지,</div>
+              <div> 576일이라는 시간이 남았습니다.</div>
+            </div>
+
+            <div>이 시점에서 우리가 할 수 있는 것은?</div>
+
+            <div>
+              <div>식사 300번</div>
+              <div>바프 3번 찍기</div>
+              <div>독서 75권</div>
+              <div>롤 골드 티어</div>
+              <div>제주도 1년 살이</div>
+              <div>워킹홀리데이</div>
+            </div>
+          </Story>
         </StoryLine>
       </MyPageSection>
       <ButtonSection>
         <Button buttonType={ButtonType.Basic} onClick={handleClick}>
-          {isEdit ? '저장하기' : '수정하기'}
+          {isEdit ? '저장' : '수정'}
         </Button>
       </ButtonSection>
     </Layout>
