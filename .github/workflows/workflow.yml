@@ -21,7 +21,8 @@ jobs:
           cache: 'npm'
 
       - name: Create .env file
-        run: jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env
+        run: |
+          jq -r 'to_entries | map(select(.key != "AWS_ACCESS_KEY_ID" and .key != "AWS_SECRET_ACCESS_KEY")| "\(.key)=\(.value|tostring)") | .[]' <<< "$SECRETS_CONTEXT" > .env
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
