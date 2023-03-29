@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
-import { useRouter } from 'next/router';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { TextField } from '@mui/material';
@@ -91,14 +90,13 @@ const schema = yup.object().shape({
   nickname: yup
     .string()
     .required('반드시 입력해주세요.')
-    .min(2, '한 글자 이상 입력해주세요.')
-    .max(10, '일곱 자 이하만 입력 가능합니다.'),
+    .min(1, '한 글자 이상 입력해주세요.')
+    .max(7, '일곱 자 이하만 입력 가능합니다.'),
   birth: yup.number().required('반드시 입력해주세요.'),
 });
 
 function index() {
   const { control, watch } = useFormContext();
-  const router = useRouter();
   const [isEdit, setIsEdit] = useState<boolean>(true);
 
   const createForm = useForm<userType>({
