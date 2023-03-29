@@ -162,6 +162,7 @@ function PuzzleList() {
                 <PuzzleWrap>
                   {PUZZLE_LIST.map((data, index) => (
                     <PuzzlePiece
+                      key={index}
                       src={data}
                       position={getPuzzlePosition(index)}
                       alt="puzzle-piece"

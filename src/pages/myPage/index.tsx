@@ -95,7 +95,7 @@ const schema = yup.object().shape({
   birth: yup.number().required('반드시 입력해주세요.'),
 });
 
-function index() {
+function MyPage() {
   // const { control, watch } = useFormContext();
   const [isEdit, setIsEdit] = useState<boolean>(true);
 
@@ -198,4 +198,4 @@ function index() {
   );
 }
 
-export default index;
+export default MyPage;
