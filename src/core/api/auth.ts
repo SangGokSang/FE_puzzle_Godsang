@@ -1,6 +1,6 @@
 import cookieStorage from '../lib/cookie-storage';
 
-export const AUTH_KEY = 'auth';
+export const AUTH_KEY = 'dm2023-auth';
 export const DEFAULT_AUTH = {
   token: '',
   refreshToken: '',
@@ -71,6 +71,7 @@ export function setTokens(token: string, refreshToken: string) {
 }
 
 export function clearTokens(): void {
+  // cookieStorage.
   cookieStorage.setItem(AUTH_KEY, '');
 }
 
