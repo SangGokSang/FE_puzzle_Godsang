@@ -1,9 +1,6 @@
 # Base image
 FROM node:16
 
-# yarn 설치
-RUN npm install -g yarn
-
 # Working directory
 WORKDIR /usr/src/app
 
