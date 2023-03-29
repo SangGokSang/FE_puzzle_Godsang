@@ -39,8 +39,8 @@ const StoryLine = styled.div`
   width: 500px;
   height: 400px;
   font-weight: 400;
-  font-size: 22px;
-  line-height: 33px;
+  font-size: 20px;
+  line-height: 26px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -53,7 +53,7 @@ const NicknameTextField = styled(TextField)`
   .MuiInputBase-input.Mui-disabled {
     -webkit-text-fill-color: #000000;
     font-family: 'GmarketSans';
-    font-size: 22px;
+    font-size: 18px;
     text-align: center;
   }
 `;
@@ -64,12 +64,13 @@ const BirthDayTextField = styled(TextField)`
   .MuiInputBase-input.Mui-disabled {
     -webkit-text-fill-color: #000000;
     font-family: 'GmarketSans';
-    font-size: 22px;
+    font-size: 18px;
     text-align: center;
   }
 `;
 
 const NameBirthDay = styled.div`
+  margin-left: 25px;
   display: flex;
   align-items: center;
 `;
@@ -80,7 +81,7 @@ const Text = styled.span`
 `;
 
 const Story = styled.div`
-  margin-left: 14px;
+  margin-left: 26px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -141,7 +142,7 @@ function MyPage() {
                       minLength: 1,
                       maxLength: 7,
                     }}
-                    placeholder="별명을 입력해주세요!"
+                    placeholder="별명"
                   />
                 )}
               />
