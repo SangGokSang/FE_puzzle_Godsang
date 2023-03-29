@@ -27,9 +27,9 @@
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "react/display-name": "off",
-    "no-unused-vars": "off",
+    "no-case-declarations": "off",
     "@typescript-eslint/no-var-requires": 0,
-    "@typescript-eslint/no-empty-function": "warning",
+    "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

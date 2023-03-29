@@ -11,9 +11,9 @@ import dayjs from 'dayjs';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-export type userType = {
+export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
-  birthdate: number; // milliseconds
+  birth: number; // milliseconds
 };
 
 const layoutCss = css`
@@ -95,20 +95,20 @@ const schema = yup.object().shape({
   birth: yup.number().required('반드시 입력해주세요.'),
 });
 
-function index() {
-  const { control, watch } = useFormContext();
+function MyPage() {
+  // const { control, watch } = useFormContext();
   const [isEdit, setIsEdit] = useState<boolean>(true);
 
-  const createForm = useForm<userType>({
+  const createForm = useForm<User>({
     resolver: yupResolver(schema),
     mode: 'all',
     defaultValues: {
       nickname: '',
-      birthdate: Date.now(),
+      birth: Date.now(),
     },
   });
 
-  const { formState, getFieldState } = createForm;
+  const { formState, getFieldState, control } = createForm;
 
   const handleClick = () => {
     if (isEdit) {
@@ -198,4 +198,4 @@ function index() {
   );
 }
 
-export default index;
+export default MyPage;

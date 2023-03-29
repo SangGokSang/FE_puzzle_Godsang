@@ -4,6 +4,6 @@ import { MutationOptions } from 'src/core/type/react-query-types';
 import { login } from '../api';
 import { Token, Provider } from '../types';
 
-export const useJoin = (provider: Provider, options: MutationOptions<unknown, ApiError, Token> = {}) => {
-  return useMutation<unknown, ApiError, Token>(() => login(provider), options);
+export const useLogin = (options: MutationOptions<Token, ApiError, Provider> = {}) => {
+  return useMutation<Token, ApiError, Provider>((provider: Provider) => login(provider), options);
 };

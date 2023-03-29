@@ -9,7 +9,6 @@ import { DateField } from '@mui/x-date-pickers';
 
 function FirstStep() {
   const { control, watch } = useFormContext<CreateFormType>();
-  // const ref = useRef<HTMLDivElement | null>(null);
   const { nickname, birth } = watch();
 
   const description = useMemo(() => {
