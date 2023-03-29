@@ -1,8 +1,9 @@
-import { useRouter } from 'next/router';
 import React from 'react';
+import { useRouter } from 'next/router';
+import { css } from '@emotion/react';
 import { useRecoilValue } from 'recoil';
 import { Pathname } from 'src/core/const/enum';
-import { BackIcon, KeyIcon, Logo, ProfileIcon } from 'src/core/icons';
+import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
 import { ButtonGroup, Wrapper } from './style';
 
 export default function Header() {
@@ -33,8 +34,16 @@ export default function Header() {
       {router.pathname === Pathname.myPage ? <BackIcon onClick={handleBackClick} /> : <Logo />}
 
       <ButtonGroup>
-        <KeyIcon onClick={handleKeyClick} />
-        <ProfileIcon onClick={handleUserClick} />
+        {router.pathname === Pathname.key ? (
+          <KeyIconActive onClick={handleKeyClick} />
+        ) : (
+          <KeyIcon onClick={handleKeyClick} />
+        )}
+        {router.pathname === Pathname.myPage ? (
+          <ProfileIconActive onClick={handleUserClick} />
+        ) : (
+          <ProfileIcon onClick={handleUserClick} />
+        )}
       </ButtonGroup>
     </Wrapper>
   );

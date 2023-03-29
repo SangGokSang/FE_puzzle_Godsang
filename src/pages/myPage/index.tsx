@@ -47,6 +47,29 @@ const StoryLine = styled.div`
   gap: 20px;
 `;
 
+const NicknameTextField = styled(TextField)`
+  width: 100px;
+  height: 50px;
+  position: relative;
+  .MuiInputBase-input.Mui-disabled {
+    -webkit-text-fill-color: #000000;
+    font-family: 'GmarketSans';
+    font-size: 22px;
+    text-align: center;
+  }
+`;
+
+const BirthDayTextField = styled(TextField)`
+  width: 200px;
+  height: 50px;
+  .MuiInputBase-input.Mui-disabled {
+    -webkit-text-fill-color: #000000;
+    font-family: 'GmarketSans';
+    font-size: 22px;
+    text-align: center;
+  }
+`;
+
 const NameBirthDay = styled.div`
   display: flex;
   align-items: center;
@@ -76,6 +99,8 @@ const schema = yup.object().shape({
 function index() {
   const { control, watch } = useFormContext();
   const router = useRouter();
+  const [isEdit, setIsEdit] = useState<boolean>(true);
+
   const createForm = useForm<userType>({
     resolver: yupResolver(schema),
     mode: 'all',
@@ -91,17 +116,11 @@ function index() {
     if (isEdit) {
       const { getValues } = createForm;
       console.log(getValues());
-      // if(submit response 200 ok){
-      //   setIsEdit(false);
-      // }
       setIsEdit(false);
     } else {
-      // 아닐경우
       setIsEdit(true);
     }
   };
-
-  const [isEdit, setIsEdit] = useState<boolean>(true);
 
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
@@ -113,21 +132,12 @@ function index() {
                 name="nickname"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <TextField
+                  <NicknameTextField
                     value={value}
                     onChange={onChange}
                     disabled={!isEdit}
                     sx={{
-                      width: '90px',
-                      height: '50px',
                       background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                      position: 'relative',
-                      '& .MuiInputBase-input.Mui-disabled': {
-                        WebkitTextFillColor: '#000000',
-                        fontFamily: 'GmarketSans',
-                        fontSize: '22px',
-                        textAlign: 'center',
-                      },
                     }}
                     inputProps={{
                       minLength: 1,
@@ -147,19 +157,11 @@ function index() {
                   };
                   const val = dayjs(value).format('YYYY-MM-DD');
                   return (
-                    <TextField
+                    <BirthDayTextField
                       type="date"
                       value={val}
                       sx={{
-                        width: '190px',
-                        height: '50px',
                         background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                        '& .MuiInputBase-input.Mui-disabled': {
-                          WebkitTextFillColor: '#000000',
-                          fontFamily: 'GmarketSans',
-                          fontSize: '22px',
-                          textAlign: 'center',
-                        },
                       }}
                       onChange={handleChange}
                       disabled={!isEdit}
