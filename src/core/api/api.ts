@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import qs from 'qs';
 import { getAccessToken, getRefreshToken, logout, setTokens } from './auth';
 
-const API_BASE_URL = process.env.REACT_APP_CUSTOM_NODE_ENV;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 function paramsSerializer(params: unknown): string {
   return qs.stringify(params);
@@ -21,7 +21,6 @@ export const api = createApiInstance(getAccessToken({ bearer: true }));
 api.interceptors.response.use(
   (result) => result,
   async (error) => {
-    // Server does not response
     if (error === undefined) throw error;
 
     if (error.response?.status === 401 && !getAccessToken()) {
@@ -30,9 +29,7 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401 && !error.request?.responseURL?.endsWith('/api/auth/login')) {
-      // 401 Unauthorized
       try {
-        // Get next access token
         const { token } = await useRefresh();
 
         // Retry failed request

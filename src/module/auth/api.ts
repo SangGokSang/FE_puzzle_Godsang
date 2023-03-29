@@ -3,7 +3,7 @@ import { Provider, Token } from './types';
 
 export async function login(provider: Provider): Promise<Token> {
   const { data } = await api({
-    url: `/api/auth/login/${provider}`,
+    url: `/auth/login/${provider}`,
     method: 'get',
   });
   return data;

@@ -1,0 +1,62 @@
+name: Deploy NextJS Application
+
+on:
+  push:
+    branches: [ release ]
+  pull_request:
+    branches: [ release ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js 18.12.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.12.1
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create .env file
+        run: |
+       	  echo "$SECRETS_CONTEXT" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .env
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
+      - name: Build a Next Application
+        run: npm run build
+        shell: bash
+
+      - name: Make a zip file
+        run: zip -r ./${{ env.PROJECT_NAME }}.zip . -x "node_modules/*" "coverage/*" "src/*" "test/*" "README.md" "*.git*"
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Upload to S3
+        run: aws s3 cp --region ${{ env.REGION }} ./${{ env.PROJECT_NAME }}.zip s3://${{ env.S3_BUCKET_NAME }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.zip
+
+      - name: Request Deployment
+        run: aws deploy create-deployment --application-name ${{ env.AWS_CODEDEPLOY_APPLICATION_NAME }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME }} --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.zip
+
+    env:
+      REGION: ap-northeast-2
+      # S3 버킷 이름
+      S3_BUCKET_NAME: dm2023-bucket
+      # S3 버킷 내 디렉토리 이름
+      PROJECT_NAME: DM2023_FE
+      # CodeDeploy 애플리케이션 이름
+      AWS_CODEDEPLOY_APPLICATION_NAME: Next-app-code-deploy
+      # CodeDeploy 배포 그룹 이름
+      AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: Next-app-DG
