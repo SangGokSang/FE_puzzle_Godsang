@@ -182,7 +182,7 @@ function PuzzleList() {
           공유하기
         </Button>
       </PuzzleListWrap>
-      {/* <Letter isOpen={!!letterData} onClose={handleClose} data={letterData} /> */}
+      <Letter isOpen={!!letterData} onClose={handleClose} data={letterData} />
     </Layout>
   );
 }

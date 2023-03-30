@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { css } from '@emotion/react';
 import { TextField } from '@mui/material';
 import dayjs from 'dayjs';
@@ -6,7 +6,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { Category } from 'src/core/const/enum';
 import { getDDay } from 'src/core/util/util';
 import { CreateFormType } from 'src/pages/create';
-import { annotateCss, Container, Description, Field } from '../style';
+import { annotateCss, Container, Description, errorCss, Field } from '../style';
 
 const categoryMap: Record<string, string> = {
   [Category.exercise]: '운동',
@@ -21,7 +21,11 @@ const preCss = css`
 `;
 
 function ThirdStep() {
-  const { watch, control, trigger } = useFormContext<CreateFormType>();
+  const {
+    watch,
+    control,
+    formState: { errors },
+  } = useFormContext<CreateFormType>();
   const { nickname, category, birth } = watch();
   const anno = useMemo(() => {
     const d_day = getDDay(dayjs(birth));
@@ -35,7 +39,7 @@ function ThirdStep() {
 
   return (
     <Container>
-      <Description>목표</Description>
+      <Description>목표 {!!errors?.goal && <span css={errorCss}>{errors?.goal?.message}</span>}</Description>
       <pre css={[annotateCss, preCss]}>{anno}</pre>
       <Field>
         <Controller

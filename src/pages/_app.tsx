@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { Global } from '@emotion/react';
 import type { AppProps } from 'next/app';
 import { globalStyle } from 'src/core/styles/global';
-import Layout from 'src/components/common/Layout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
 
@@ -25,7 +22,9 @@ const theme = createTheme({
   components: {
     MuiInputBase: {
       styleOverrides: {
-        root: {},
+        input: {
+          textAlign: 'left',
+        },
       },
     },
     MuiOutlinedInput: {
@@ -58,10 +57,8 @@ export default function App({ Component, pageProps }: AppProps) {
       <SessionProvider session={pageProps.session}>
         <RecoilRoot>
           <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Global styles={globalStyle} />
-              <Component {...pageProps} />
-            </LocalizationProvider>
+            <Global styles={globalStyle} />
+            <Component {...pageProps} />
           </ThemeProvider>
         </RecoilRoot>
       </SessionProvider>
