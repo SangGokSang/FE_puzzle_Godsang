@@ -19,10 +19,7 @@ const initialConfig: AxiosRequestConfig = Object.freeze({
 export const api = createApiInstance(getAccessToken({ bearer: true }));
 
 api.interceptors.response.use(
-  (result) => {
-    console.log(result.headers);
-    return result;
-  },
+  (result) => result,
   async (error) => {
     console.log(error);
     if (error === undefined) throw error;
@@ -82,7 +79,7 @@ function createApiInstance(bearerJwt = '', options: AxiosRequestConfig = {}) {
   return api;
 }
 
-/** The API instance for refreshing; Refresh token fetched from cookies. */
+// 로직 처리해야함
 async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
   const refreshApi = createApiInstance(getRefreshToken({ bearer: true }));
   try {
@@ -95,7 +92,6 @@ async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
     return result.data;
   } catch (error) {
     logout();
-    console.log(error); // 임시 처리
     throw error;
   }
 }

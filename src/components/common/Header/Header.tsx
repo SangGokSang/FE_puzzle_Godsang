@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { Pathname } from 'src/core/const/enum';
 import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
 import { ButtonGroup, Wrapper } from './style';
+import { signOut } from 'next-auth/react';
 
 export default function Header() {
   const router = useRouter();
@@ -22,7 +23,9 @@ export default function Header() {
   };
 
   const handleKeyClick = () => {
-    router.push(Pathname.key);
+    // 임시처리
+    signOut({ redirect: false });
+    router.push(Pathname.login);
   };
 
   const handleUserClick = () => {
