@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
 import { Category } from 'src/core/const/enum';
 import { BackIcon } from 'src/core/icons';
+import dayjs from 'dayjs';
 
 export type CreateFormType = {
   nickname: string;
@@ -68,33 +69,30 @@ const Breadcrumb = styled.p`
   font-size: 13px;
 `;
 
-const schema = yup.object().shape({
-  nickname: yup
-    .string()
-    .required('반드시 입력해주세요.')
-    .min(2, '두 글자 이상 입력해주세요.')
-    .max(10, '열 자 이하만 입력 가능합니다.'),
-  birth: yup.number().required('반드시 입력해주세요.'),
-  category: yup.string().required('반드시 입력해주세요'),
-  goal: yup
-    .string()
-    .required('반드시 입력해주세요')
-    .min(2, '두 글자 이상 입력해주세요.')
-    .max(30, '삼십 자 이하만 입력 가능합니다.'),
-});
-
-const stepMap: Record<number, ReactElement> = {
-  1: <FirstStep />,
-  2: <SecondStep />,
-  3: <ThirdStep />,
-};
-
 function Join() {
   const [step, setStep] = useState(1);
   const [disabledButton, setDisabledButton] = useState(true);
   const router = useRouter();
   const createForm = useForm<CreateFormType>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(
+      yup.object().shape({
+        nickname: yup
+          .string()
+          .required('별명을 입력해주세요.')
+          .min(1, '한 글자 이상 입력해주세요.')
+          .max(7, '일곱 자 이하만 입력 가능합니다.'),
+        birth: yup
+          .number()
+          .required('생일을 반드시 입력해주세요.')
+          .max(dayjs().valueOf(), '지금보다 미래의 날짜를 입력하실 수 없습니다.'),
+        category: yup.string().required('카테고리를 반드시 입력해주세요'),
+        goal: yup
+          .string()
+          .required('목표를 입력해주세요')
+          .min(2, '목표를 두 글자 이상 입력해주세요.')
+          .max(30, '목표는 삼십 자 이하만 입력 가능합니다.'),
+      }),
+    ),
     mode: 'all',
     defaultValues: {
       nickname: '',
@@ -113,6 +111,12 @@ function Join() {
       console.log(getValues());
       router.push('list');
     }
+  };
+
+  const stepMap: Record<number, ReactElement> = {
+    1: <FirstStep />,
+    2: <SecondStep />,
+    3: <ThirdStep />,
   };
 
   const handleBackClick = () => {
