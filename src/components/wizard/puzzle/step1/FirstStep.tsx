@@ -5,7 +5,6 @@ import { TextField } from '@mui/material';
 import { CreateFormType } from 'src/pages/create';
 import { getDDay } from 'src/core/util/util';
 import { Container, Description, Field } from '../style';
-import { DateField } from '@mui/x-date-pickers';
 
 function FirstStep() {
   const { control, watch } = useFormContext<CreateFormType>();
