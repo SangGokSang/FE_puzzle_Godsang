@@ -147,6 +147,7 @@ function MyPage() {
                 )}
               />
               <Text>님은</Text>
+              <br />
               <Controller
                 control={control}
                 name="birth"
