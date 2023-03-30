@@ -39,8 +39,8 @@ const StoryLine = styled.div`
   width: 500px;
   height: 400px;
   font-weight: 400;
-  font-size: 22px;
-  line-height: 33px;
+  font-size: 20px;
+  line-height: 26px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -53,7 +53,7 @@ const NicknameTextField = styled(TextField)`
   .MuiInputBase-input.Mui-disabled {
     -webkit-text-fill-color: #000000;
     font-family: 'GmarketSans';
-    font-size: 22px;
+    font-size: 18px;
     text-align: center;
   }
 `;
@@ -64,12 +64,13 @@ const BirthDayTextField = styled(TextField)`
   .MuiInputBase-input.Mui-disabled {
     -webkit-text-fill-color: #000000;
     font-family: 'GmarketSans';
-    font-size: 22px;
+    font-size: 18px;
     text-align: center;
   }
 `;
 
-const NameBirthDay = styled.div`
+const NameBirthDay = styled.div<{ isEdit: boolean }>`
+  margin-left: ${({ isEdit }) => (isEdit ? '25px' : null)};
   display: flex;
   align-items: center;
 `;
@@ -80,7 +81,7 @@ const Text = styled.span`
 `;
 
 const Story = styled.div`
-  margin-left: 14px;
+  margin-left: 26px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -97,7 +98,7 @@ const schema = yup.object().shape({
 
 function MyPage() {
   // const { control, watch } = useFormContext();
-  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const createForm = useForm<User>({
     resolver: yupResolver(schema),
@@ -124,7 +125,7 @@ function MyPage() {
     <Layout layoutCss={layoutCss} useHeader={true}>
       <MyPageSection>
         <StoryLine>
-          <NameBirthDay>
+          <NameBirthDay isEdit={isEdit}>
             <div>
               <Controller
                 name="nickname"
@@ -141,7 +142,7 @@ function MyPage() {
                       minLength: 1,
                       maxLength: 7,
                     }}
-                    placeholder="별명을 입력해주세요!"
+                    placeholder="별명"
                   />
                 )}
               />
@@ -167,7 +168,7 @@ function MyPage() {
                   );
                 }}
               />
-              <Text>이고,</Text>
+              <Text>생 이고,</Text>
             </div>
           </NameBirthDay>
           <Story>
@@ -176,7 +177,7 @@ function MyPage() {
               <div> 576일이라는 시간이 남았습니다.</div>
             </div>
 
-            <div>이 시점에서 우리가 할 수 있는 것은?</div>
+            <div>이 시점 우리가 할 수 있는 것은?</div>
 
             <div>
               <div>식사 300번</div>
@@ -185,6 +186,7 @@ function MyPage() {
               <div>롤 골드 티어</div>
               <div>제주도 1년 살이</div>
               <div>워킹홀리데이</div>
+              <div>⋮</div>
             </div>
           </Story>
         </StoryLine>
