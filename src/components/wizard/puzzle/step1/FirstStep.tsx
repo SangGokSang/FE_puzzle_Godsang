@@ -1,13 +1,17 @@
-import React, { ChangeEventHandler, useEffect, useMemo, useRef } from 'react';
+import React, { ChangeEventHandler, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { TextField } from '@mui/material';
 import { CreateFormType } from 'src/pages/create';
 import { getDDay } from 'src/core/util/util';
-import { Container, Description, Field } from '../style';
+import { Container, Description, errorCss, Field } from '../style';
 
 function FirstStep() {
-  const { control, watch } = useFormContext<CreateFormType>();
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext<CreateFormType>();
   const { nickname, birth } = watch();
 
   const description = useMemo(() => {
@@ -22,7 +26,7 @@ D-${d_day} 일 남았어요”`;
     <Container>
       <Description>{description}</Description>
       <Field>
-        <div className="label">별명</div>
+        <div className="label">별명 {!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}</div>
         <Controller
           name="nickname"
           control={control}
@@ -30,14 +34,14 @@ D-${d_day} 일 남았어요”`;
             <TextField
               value={value}
               onChange={onChange}
-              inputProps={{ maxLength: 10 }}
+              inputProps={{ maxLength: 7 }}
               placeholder="별명을 입력해주세요!"
             />
           )}
         />
       </Field>
       <Field>
-        <div className="label">생년월일</div>
+        <div className="label">생년월일 {!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
         <Controller
           control={control}
           name="birth"
@@ -46,14 +50,7 @@ D-${d_day} 일 남았어요”`;
               onChange(dayjs(event.currentTarget.value).valueOf());
             };
             const val = dayjs(value).format('YYYY-MM-DD');
-            return (
-              <TextField
-                type="date"
-                value={val}
-                onChange={handleChange}
-                inputProps={{ style: { textAlign: 'left' } }}
-              />
-            );
+            return <TextField type="date" value={val} onChange={handleChange} />;
           }}
         />
       </Field>
