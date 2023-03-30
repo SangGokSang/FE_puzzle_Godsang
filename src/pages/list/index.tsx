@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
@@ -100,14 +100,21 @@ const SwiperContainer = styled.div`
   }
 `;
 
-export const PuzzleWrap = styled.div`
-  width: 280px;
-  height: 280px;
+const PuzzleWrap = styled.div`
+  width: 270px;
+  height: 270px;
   border-radius: 6px;
   background-color: #f3f3f3;
+  position: relative;
 `;
 
-export const Message = styled.div`
+const PuzzlePiece = styled(Image)<{ position: [number, number] }>`
+  position: absolute;
+  left: ${({ position }) => position[0]}px;
+  top: ${({ position }) => position[1]}px;
+`;
+
+const Message = styled.div`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
@@ -154,7 +161,16 @@ function PuzzleList() {
           <SwiperContainer>
             <Swiper pagination={true} modules={[Pagination]}>
               <SwiperSlide>
-                <PuzzleWrap>puzzle</PuzzleWrap>
+                <PuzzleWrap>
+                  {PUZZLE_LIST.map((data, index) => (
+                    <PuzzlePiece
+                      src={data}
+                      position={getPuzzlePosition(index)}
+                      alt="puzzle-piece"
+                      onClick={() => handleClickPiece(data)}
+                    />
+                  ))}
+                </PuzzleWrap>
               </SwiperSlide>
               <SwiperSlide>
                 <PuzzleWrap>puzzle</PuzzleWrap>
@@ -163,7 +179,7 @@ function PuzzleList() {
           </SwiperContainer>
           <Message>친구에게 공유해서 퍼즐조각을 완성해보세요!</Message>
         </Content>
-        <Button buttonType={ButtonType.Basic} onClick={handleClickBtn}>
+        <Button buttonType={ButtonType.Basic} onClick={handleClickShare}>
           공유하기
         </Button>
       </PuzzleListWrap>
