@@ -149,7 +149,7 @@ function PuzzleList() {
     index && puzzlePosition.push({ left: puzzleX, top: puzzleY });
     return [puzzleX, puzzleY];
   }, []);
-
+  console.log(letterData);
   return (
     <Layout>
       <PuzzleListWrap>
