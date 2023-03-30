@@ -18,6 +18,7 @@ import puzzle7 from 'public/assets/images/puzzle-7.png';
 import puzzle8 from 'public/assets/images/puzzle-8.png';
 import puzzle9 from 'public/assets/images/puzzle-9.png';
 import { PuzzleMSG, usePuzzles } from 'src/module/puzzles';
+import Letter from 'src/components/popup/Letter';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;

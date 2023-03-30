@@ -5,6 +5,7 @@ import { globalStyle } from 'src/core/styles/global';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { SessionProvider } from 'next-auth/react';
 
 /**
  * 각각의 페이지가 초기화 될 때 로딩이 되는 파일
@@ -53,12 +54,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <ThemeProvider theme={theme}>
-          <Global styles={globalStyle} />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </RecoilRoot>
+      <SessionProvider session={pageProps.session}>
+        <RecoilRoot>
+          <ThemeProvider theme={theme}>
+            <Global styles={globalStyle} />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </RecoilRoot>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }
