@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { css } from '@emotion/react';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
@@ -14,7 +14,7 @@ const layoutCss = css`
 
 const ImageSection = styled.section`
   width: 100%;
-  height: calc(100% - 60px);
+  height: calc(100% - 140px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,20 +29,30 @@ const ImageSection = styled.section`
 
 export default function Home() {
   const route = useRouter();
-  const handleClick = useCallback(
-    (event: React.SyntheticEvent<HTMLButtonElement>) => {
-      route.push('login');
-    },
-    [route],
-  );
+  const handleLoginClick = () => {
+    route.push('login');
+  };
+
+  const handleUseWayClick = () => {
+    // 이용방법 페이지 없으면 외부 라우팅
+  };
 
   return (
     <Layout useHeader={false} layoutCss={layoutCss}>
       <ImageSection>
         <div className="img" />
       </ImageSection>
-      <ButtonSection>
-        <Button buttonType={ButtonType.Text} onClick={handleClick}>
+      <ButtonSection
+        css={css`
+          height: 120px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        `}>
+        <Button buttonType={ButtonType.Basic} onClick={handleLoginClick}>
+          로그인
+        </Button>
+        <Button buttonType={ButtonType.Text} onClick={handleUseWayClick}>
           이용방법
         </Button>
       </ButtonSection>
