@@ -127,7 +127,6 @@ function PuzzleList() {
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
 
   const handleClickPiece = (data: any) => setLetterData(data);
-
   const handleClose = () => setLetterData(null);
 
   const handleClickShare = useCallback(() => console.log('click'), []);
