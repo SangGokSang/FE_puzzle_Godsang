@@ -18,6 +18,7 @@ import puzzle7 from 'public/assets/images/puzzle-7.png';
 import puzzle8 from 'public/assets/images/puzzle-8.png';
 import puzzle9 from 'public/assets/images/puzzle-9.png';
 import { PuzzleMSG } from 'src/module/puzzles';
+import { signOut } from 'next-auth/react';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -128,7 +129,7 @@ function PuzzleList() {
   const handleClickPiece = (data: any) => setLetterData(data);
   const handleClose = () => setLetterData(null);
 
-  const handleClickShare = useCallback(() => console.log('click'), []);
+  const handleClickShare = useCallback(() => signOut(), []);
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
     const row = Math.floor(index / 3);
