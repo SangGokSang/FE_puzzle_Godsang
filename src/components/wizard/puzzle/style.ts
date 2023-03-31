@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const Description = styled.pre`
+  min-height: 35px;
   margin: 0;
   margin-top: 26px;
   color: #000000;
@@ -26,10 +27,19 @@ export const Field = styled.div`
   width: 100%;
   margin-top: 12px;
   & .label {
+    height: 22px;
+    display: flex;
+    align-items: center;
     font-weight: 500;
     font-size: 13px;
     line-height: 20px;
   }
+`;
+
+export const errorCss = css`
+  margin-left: 12px;
+  font-size: 11.5px;
+  color: red;
 `;
 
 export const annotateCss = css`

@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import Header from '../Header';
 import { SerializedStyles } from '@emotion/react';
+import Head from 'next/head';
 
 interface LayoutProps {
   children: ReactNode;
@@ -28,9 +29,14 @@ const Body = styled.main`
 
 export default function Layout({ children, useHeader = true, layoutCss }: LayoutProps) {
   return (
-    <Wrapper css={layoutCss}>
-      {useHeader && <Header />}
-      <Body>{children}</Body>
-    </Wrapper>
+    <>
+      <Head>
+        <title>DearMy2023</title>
+      </Head>
+      <Wrapper css={layoutCss}>
+        {useHeader && <Header />}
+        <Body>{children}</Body>
+      </Wrapper>
+    </>
   );
 }

@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import { GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
-import { Provider, useLogin } from 'src/module/auth';
+import { FacebookIcon, GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
+import { Provider } from 'src/module/auth';
+import { signIn, useSession, signOut } from 'next-auth/react';
+import { usePuzzles } from 'src/module/puzzles';
+import { Pathname } from 'src/core/const/enum';
+import { setApiJwt } from 'src/core/api/api';
 
 const layoutCss = css`
   .wrapper {
@@ -57,19 +61,30 @@ const IconSection = styled.div`
   }
 `;
 
-// 서버에서 oAuth 로그인 성공 후 우리 회원이 아니라면 회원정보를 받는 wizard > 서버에 post 하고 200ok 시 회원가입
 // 성공 후 우리 회원이면 퍼즐 존재 시 퍼즐 리스트화면, 없으면 퍼즐 생성하는 wizard로 리다이렉션
 function Login() {
   const router = useRouter();
-  const login = useLogin();
+  const session = useSession();
   const handleClickHowToUse = () => {
-    // 임시 작업
-    router.push('create');
+    // 임시처리
+    signOut();
   };
-  //서버로 리디렉션 보내야함
+
   const handleClickIcon = (provider: Provider) => () => {
-    login.mutate(provider);
+    signIn(provider, { redirect: false });
   };
+
+  usePuzzles({
+    enabled: session.status === 'authenticated',
+    onSuccess: (data) => (data.length === 0 ? router.push(Pathname.create) : router.push(Pathname.list)),
+  });
+
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      setApiJwt(session.data.user.accessToken);
+    }
+  }, [session]);
+
   return (
     <Layout layoutCss={layoutCss} useHeader={false}>
       <div className="wrapper">
@@ -83,6 +98,7 @@ function Login() {
             <GoogleIcon onClick={handleClickIcon('google')} />
             <NaverIcon onClick={handleClickIcon('naver')} />
             <KakaoIcon onClick={handleClickIcon('kakao')} />
+            <FacebookIcon onClick={handleClickIcon('facebook')} />
           </div>
         </IconSection>
         <ButtonSection>
