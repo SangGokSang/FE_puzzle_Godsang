@@ -15,9 +15,10 @@ function FirstStep() {
   const { nickname, birth } = watch();
 
   const description = useMemo(() => {
-    const d_day = getDDay(dayjs(birth));
+    const d_day = isNaN(birth) ? '0' : getDDay(dayjs(birth));
+    const birthday = isNaN(birth) ? 'YYYY-MM-DD' : dayjs(birth).format('YYYY년 MM월 DD일');
     return `저의 별명은 ${nickname} 이며, 
-${dayjs(birth).format('YYYY년 MM월 DD일')} 생이고
+${birthday} 생이고
 지금의 나이로 돌아가기까지
 D-${d_day} 일 남았어요”`;
   }, [nickname, birth]);

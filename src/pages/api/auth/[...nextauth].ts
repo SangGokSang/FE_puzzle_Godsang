@@ -25,10 +25,11 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async session({ token }) {
+    async session({ token, session }) {
       return {
         user: {
           accessToken: token?.accessToken,
+          nickname: session?.user?.name,
         },
       } as unknown as Awaitable<Session>;
     },

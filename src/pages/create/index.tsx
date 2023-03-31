@@ -11,9 +11,12 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import { Category } from 'src/core/const/enum';
+import { Category, Pathname } from 'src/core/const/enum';
 import { BackIcon } from 'src/core/icons';
 import dayjs from 'dayjs';
+import { useJoin } from 'src/module/join';
+import { isEmpty } from 'lodash';
+import { useAddPuzzle } from 'src/module/puzzles/hooks/useAddPuzzle';
 
 export type CreateFormType = {
   nickname: string;
@@ -69,6 +72,7 @@ const Breadcrumb = styled.p`
   font-size: 13px;
 `;
 
+// 공백 검증 구현해야함
 function Join() {
   const [step, setStep] = useState(1);
   const [disabledButton, setDisabledButton] = useState(true);
@@ -83,6 +87,7 @@ function Join() {
           .max(7, '일곱 자 이하만 입력 가능합니다.'),
         birth: yup
           .number()
+          .typeError('숫자를 입력해주세요.')
           .required('생일을 반드시 입력해주세요.')
           .max(dayjs().valueOf(), '지금보다 미래의 날짜를 입력하실 수 없습니다.'),
         category: yup.string().required('카테고리를 반드시 입력해주세요'),
@@ -95,21 +100,38 @@ function Join() {
     ),
     mode: 'all',
     defaultValues: {
-      nickname: '',
+      nickname: (router?.query?.nickname as string)?.slice(0, 7) ?? '',
       birth: Date.now(),
       category: Category.exercise,
       goal: '',
     },
   });
 
+  const addPuzzle = useAddPuzzle({
+    onSuccess: () => router.push(Pathname.list),
+    onError: (err) => console.log(err),
+  });
+
+  const join = useJoin({
+    onSuccess: () => {
+      const { category, goal } = createForm.getValues();
+      addPuzzle.mutate({ title: goal, category });
+    },
+    onError: (err) => console.log(err),
+  });
+
   const handleClick = () => {
     if (step < 3) {
       setStep((prev) => ++prev);
     } else {
-      // mutate
-      const { getValues } = createForm;
-      console.log(getValues());
-      router.push('list');
+      const {
+        getValues,
+        formState: { errors },
+      } = createForm;
+      if (isEmpty(errors)) {
+        const { nickname, birth } = getValues();
+        join.mutate({ nickname, birthdate: birth });
+      }
     }
   };
 
@@ -124,14 +146,15 @@ function Join() {
   };
 
   useEffect(() => {
-    const { formState, getFieldState } = createForm;
+    const { formState, getFieldState, watch } = createForm;
     let flag = true;
 
     switch (step) {
       case 1:
-        const { isDirty: isNicknameDirty, error: nicknameError } = getFieldState('nickname', formState);
+        const nickname = watch('nickname');
+        const { error: nicknameError, isDirty } = getFieldState('nickname', formState);
         const { error: birthError } = getFieldState('birth', formState);
-        flag = !isNicknameDirty || !!nicknameError || !!birthError;
+        flag = (nickname.length === 0 && !isDirty) || !!nicknameError || !!birthError;
         break;
       case 2:
         const { error: categoryError } = getFieldState('category', formState);
@@ -143,7 +166,7 @@ function Join() {
         break;
     }
     setDisabledButton(flag);
-  }, [createForm.formState, createForm.getFieldState]);
+  }, [createForm.formState, createForm.getFieldState, createForm.watch]);
 
   return (
     <Layout useHeader={false}>

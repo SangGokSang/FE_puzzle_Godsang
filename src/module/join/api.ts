@@ -1,11 +1,10 @@
 import api from 'src/core/api/api';
-import { UserInfo } from './types';
+import { UserReq } from './types';
 
-export async function postJoin(param: UserInfo): Promise<UserInfo> {
-  const { data } = await api({
-    url: `/api/join`,
-    method: 'post',
+export async function postJoin(param: UserReq) {
+  await api({
+    url: '/user',
+    method: 'patch',
     data: param,
   });
-  return data;
 }

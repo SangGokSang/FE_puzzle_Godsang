@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
 import { MutationOptions } from 'src/core/type/react-query-types';
 import { postJoin } from '../api';
-import { UserInfo } from '../types';
+import { UserReq } from '../types';
 
-export const useJoin = (options: MutationOptions<unknown, ApiError, UserInfo> = {}) => {
-  return useMutation<unknown, ApiError, UserInfo>((param: UserInfo) => postJoin(param), options);
+export const useJoin = (options: MutationOptions<unknown, ApiError, UserReq> = {}) => {
+  return useMutation<unknown, ApiError, UserReq>((param: UserReq) => postJoin(param), options);
 };
