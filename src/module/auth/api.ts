@@ -1,6 +1,7 @@
 import api from 'src/core/api/api';
 import { LoginRequest, Token } from './types';
 
+// deprecated
 export async function login(provider: LoginRequest): Promise<Token> {
   const { data } = await api({
     url: `/auth/login/${provider}`,

@@ -34,7 +34,7 @@ export default NextAuth({
     },
     async jwt({ token, user, account }) {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-      const res = await fetch(`${baseUrl}/auth/login`, {
+      const res = await fetch(`${baseUrl}/user/login`, {
         method: 'post',
         body: JSON.stringify({
           id: account?.provider,
