@@ -8,9 +8,13 @@ WORKDIR /usr/src/app
 COPY package.json ./
 COPY yarn.lock ./
 
+# Install dependencies
+RUN yarn install --frozen-lockfile
+
 # Copy source code
 COPY . .
 
+RUN  yarn build
 # Expose the port
 EXPOSE 3000
 

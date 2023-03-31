@@ -26,11 +26,6 @@ jobs:
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
-      - name: Build Next
-        run: |
-          npm install -g yarn
-          yarn install --frozen-lockfile
-          yarn build
 
       - name: Make a zip file
         run: zip -r ./${{ env.PROJECT_NAME }}.zip . -x "node_modules/*" "coverage/*" "src/*" "test/*" "README.md" "*.git*"
