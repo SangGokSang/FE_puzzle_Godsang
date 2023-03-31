@@ -9,6 +9,7 @@ export async function getKeyInfo(): Promise<KeyInfo> {
   return data;
 }
 
+// 메세지 읽기 위한 키 사용시
 export async function patchKey(puzzleId: number, messageId: number): Promise<KeyInfo> {
   const { data } = await api({
     url: `/puzzle/${puzzleId}/message/${messageId}`,

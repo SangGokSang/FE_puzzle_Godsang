@@ -6,16 +6,17 @@ import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { InfoKeyIcon, XIcon } from 'src/core/icons';
+import { useGetKeyInfo } from 'src/module/keyInfo';
 
 export type KeyInfo = {
   keyCount: number;
 };
 
 const layoutCss = css`
-  .wrapper {
+  background: #f9f9f9;
+  .Wrapper {
     width: 100%;
     height: 100%;
-    background: #f9f9f9;
     padding-top: 25%;
     display: flex;
     flex-direction: column;
@@ -74,8 +75,10 @@ const Attention = styled.div`
 `;
 
 function KeyInfo() {
+  // const { data } = useGetKeyInfo();
+
   const handleClick = () => {
-    console.log('click');
+    console.log('광고보기');
   };
 
   return (
