@@ -56,6 +56,6 @@ jobs:
       # S3 버킷 내 디렉토리 이름
       PROJECT_NAME: DM2023_FE
       # CodeDeploy 애플리케이션 이름
-      AWS_CODEDEPLOY_APPLICATION_NAME: Next-app-code-deploy
+      AWS_CODEDEPLOY_APPLICATION_NAME: Frontend-App
       # CodeDeploy 배포 그룹 이름
       AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: Frontend-DG
