@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
+import Head from 'next/head';
 
 /**
  * 각각의 페이지가 초기화 될 때 로딩이 되는 파일

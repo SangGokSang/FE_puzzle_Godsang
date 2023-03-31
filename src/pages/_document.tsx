@@ -9,6 +9,7 @@ export default function Document() {
       <Head>
         <link href="https://webfontworld.github.io/ssro/EstablishRetrosans.css" rel="stylesheet" />
         <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet" />
+        <meta name="description" content="도큐먼트 페이지입니다." />
       </Head>
       <body>
         <Main />
