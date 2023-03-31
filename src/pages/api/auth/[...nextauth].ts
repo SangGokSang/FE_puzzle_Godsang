@@ -33,8 +33,7 @@ export default NextAuth({
       } as unknown as Awaitable<Session>;
     },
     async jwt({ token, user, account }) {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-      const res = await fetch(`${baseUrl}/user/login`, {
+      const res = await fetch(`https://dearmy2023.click/api/user/login`, {
         method: 'post',
         body: JSON.stringify({
           id: account?.provider,
