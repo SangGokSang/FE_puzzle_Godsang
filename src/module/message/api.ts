@@ -3,7 +3,7 @@ import { SendMessage } from './types';
 
 export async function postDM(puzzleId: number, param: SendMessage): Promise<SendMessage> {
   const { data } = await api({
-    url: `/api/puzzle/${puzzleId}`,
+    url: `/puzzle/${puzzleId}`,
     method: 'post',
     data: param,
   });

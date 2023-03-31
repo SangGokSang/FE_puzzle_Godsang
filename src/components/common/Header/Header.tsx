@@ -25,7 +25,7 @@ export default function Header() {
   const handleKeyClick = () => {
     // 임시처리
     signOut({ redirect: false });
-    router.push(Pathname.login);
+    router.push(Pathname.key);
   };
 
   const handleUserClick = () => {
