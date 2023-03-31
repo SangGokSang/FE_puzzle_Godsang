@@ -9,12 +9,11 @@ COPY package.json ./
 COPY yarn.lock ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN yarn
 
 # Copy source code
 COPY . .
 
-RUN  yarn build
 # Expose the port
 EXPOSE 3000
 
