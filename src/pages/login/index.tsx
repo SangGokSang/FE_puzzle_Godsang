@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
