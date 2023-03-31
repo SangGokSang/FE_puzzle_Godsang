@@ -11,8 +11,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
 
-  dm2023-nest:
-    build: scripts
+  dm2023-next:
+    build: .
     container_name: dm2023-next
     restart: always
     ports:
