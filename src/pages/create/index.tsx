@@ -17,6 +17,8 @@ import dayjs from 'dayjs';
 import { useJoin } from 'src/module/join';
 import { isEmpty } from 'lodash';
 import { useAddPuzzle } from 'src/module/puzzles/hooks/useAddPuzzle';
+import { useRecoilValue } from 'recoil';
+import auth from 'src/recoil/auth/atom';
 
 export type CreateFormType = {
   nickname: string;
@@ -77,6 +79,7 @@ function Join() {
   const [step, setStep] = useState(1);
   const [disabledButton, setDisabledButton] = useState(true);
   const router = useRouter();
+  const { nickname } = useRecoilValue(auth);
   const createForm = useForm<CreateFormType>({
     resolver: yupResolver(
       yup.object().shape({
@@ -100,7 +103,7 @@ function Join() {
     ),
     mode: 'all',
     defaultValues: {
-      nickname: (router?.query?.nickname as string)?.slice(0, 7) ?? '',
+      nickname: nickname.slice(0, 7),
       birth: Date.now(),
       category: Category.exercise,
       goal: '',

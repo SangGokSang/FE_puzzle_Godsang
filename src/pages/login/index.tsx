@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useRouter } from 'next/router';
 import { FacebookIcon, GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
-import { Provider } from 'src/module/auth';
-import { signIn, useSession, signOut } from 'next-auth/react';
-import { usePuzzles } from 'src/module/puzzles';
-import { Pathname } from 'src/core/const/enum';
-import { setApiJwt } from 'src/core/api/api';
-import Loading from 'src/components/loading/Loading';
+import useLogin from 'src/core/hooks/useLogin';
+import { Provider } from 'src/core/type/provider';
 
 const layoutCss = css`
   .wrapper {
@@ -62,48 +57,16 @@ const IconSection = styled.div`
   }
 `;
 
-// 성공 후 우리 회원이면 퍼즐 존재 시 퍼즐 리스트화면, 없으면 퍼즐 생성하는 wizard로 리다이렉션
+// 성공하면 퍼즐 리스트 화면으로 redirect
 function Login() {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const session = useSession();
+  const login = useLogin();
   const handleClickHowToUse = () => {
-    // 임시처리
-    signOut();
+    // 처리필요
   };
 
   const handleClickIcon = (provider: Provider) => () => {
-    signIn(provider, { redirect: false });
-    // setIsLoading((prev) => !prev);
-    // setTimeout(() => {
-    //   router.push('create');
-    // }, 3000);
+    login(provider);
   };
-
-  usePuzzles({
-    enabled: session.status === 'authenticated',
-    onSuccess: (data) =>
-      data.length === 0
-        ? router.push({
-            pathname: Pathname.create,
-            query: {
-              nickname: session.data?.user.nickname,
-            },
-          })
-        : router.push(Pathname.list),
-  });
-
-  useEffect(() => {
-    if (session.status === 'authenticated') {
-      const {
-        data: {
-          user: { accessToken },
-        },
-      } = session;
-      setIsLoading(true);
-      setApiJwt(accessToken);
-    }
-  }, [session]);
 
   return (
     <Layout layoutCss={layoutCss} useHeader={false}>
@@ -127,7 +90,7 @@ function Login() {
           </Button>
         </ButtonSection>
       </div>
-      <Loading isLoading={isLoading} />
+      {/* <Loading isLoading={isLoading} /> */}
     </Layout>
   );
 }
