@@ -3,15 +3,10 @@ import cookieStorage from '../lib/cookie-storage';
 export const AUTH_KEY = 'auth';
 export const DEFAULT_AUTH = {
   token: '',
-  refreshToken: '',
-  user: {
-    username: '',
-  },
 };
 
 enum TKey {
   token = 'token',
-  refreshToken = 'refreshToken',
 }
 
 function getToken(key: TKey, bearer: boolean) {
@@ -20,7 +15,6 @@ function getToken(key: TKey, bearer: boolean) {
   try {
     const cookie = JSON.parse(cookieStorage.getItem(AUTH_KEY) as string) || {
       token: '',
-      refreshToken: '',
     };
     cookieToken = cookie[AUTH_KEY][key];
   } catch {
@@ -32,14 +26,11 @@ function getToken(key: TKey, bearer: boolean) {
 
 function setToken(key: TKey, token: string) {
   try {
-    const auth = JSON.parse(cookieStorage.getItem(AUTH_KEY) as string);
-
     clearTokens();
     cookieStorage.setItem(
       AUTH_KEY,
       JSON.stringify({
         [AUTH_KEY]: {
-          ...auth[AUTH_KEY],
           [key]: token,
         },
       }),
@@ -57,27 +48,22 @@ export function setAccessToken(token: string): void {
   setToken(TKey.token, token);
 }
 
-export function getRefreshToken({ bearer } = { bearer: false }): string | undefined {
-  return getToken(TKey.refreshToken, bearer);
-}
-
-export function setRefreshToken(refreshToken: string): void {
-  setToken(TKey.refreshToken, refreshToken);
-}
-
-export function setTokens(token: string, refreshToken: string) {
+export function setTokens(token: string) {
+  console.log(token);
   setToken(TKey.token, token);
-  setToken(TKey.refreshToken, refreshToken);
 }
 
 export function clearTokens(): void {
-  // cookieStorage.
   cookieStorage.setItem(AUTH_KEY, '');
 }
 
 // api level에서 로그아웃 처리
 export function logout() {
   clearTokens();
-  // eslint-disable-next-line max-len
-  location.href = `${process.env.REACT_APP_AUTH_API_BASE_URL}${process.env.REACT_APP_AUTH_CONTEXT_PATH}/console/login`;
+  location.href =
+    process.env.NODE_ENV === 'production'
+      ? 'https://dearmy2023.click/login'
+      : process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/login'
+      : '';
 }
