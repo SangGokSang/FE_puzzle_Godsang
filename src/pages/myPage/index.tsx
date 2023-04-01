@@ -104,9 +104,8 @@ const schema = yup.object().shape({
 });
 
 function MyPage() {
-  // const { control, watch } = useFormContext();
+  const { watch } = useFormContext();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const { watch } = useFormContext<User>();
 
   const createForm = useForm<User>({
     resolver: yupResolver(schema),
