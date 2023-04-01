@@ -49,7 +49,6 @@ export function setAccessToken(token: string): void {
 }
 
 export function setTokens(token: string) {
-  console.log(token);
   setToken(TKey.token, token);
 }
 
