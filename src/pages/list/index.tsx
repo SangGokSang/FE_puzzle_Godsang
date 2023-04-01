@@ -18,8 +18,7 @@ import puzzle7 from 'public/assets/images/puzzle-7.png';
 import puzzle8 from 'public/assets/images/puzzle-8.png';
 import puzzle9 from 'public/assets/images/puzzle-9.png';
 import { PuzzleMSG, usePuzzles } from 'src/module/puzzles';
-import Letter from 'src/components/popup/Letter';
-import { signOut } from 'next-auth/react';
+import Letter from 'src/components/popup/Letter/Letter';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -127,7 +126,7 @@ function PuzzleList() {
   usePuzzles();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
 
-  const handleClickPiece = (data: any) => setLetterData(data);
+  const handleClickPiece = (data: any) => setLetterData(null);
   const handleClose = () => setLetterData(null);
 
   const handleClickShare = useCallback(() => {
