@@ -1,6 +1,6 @@
 import cookieStorage from '../lib/cookie-storage';
 
-export const AUTH_KEY = 'auth';
+export const AUTH_KEY = 'client-auth';
 export const DEFAULT_AUTH = {
   token: '',
 };

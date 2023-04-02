@@ -1,31 +1,35 @@
-import jwtDecode from 'jwt-decode';
 import { signIn, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
-import auth from 'src/recoil/auth/atom';
-import { User } from 'src/recoil/auth/type';
-import { setApiJwt } from '../api/api';
 import { Provider } from '../type/provider';
-import { useRouter } from 'next/router';
-import { Pathname } from '../const/enum';
+import { isEmpty } from 'lodash';
+import { LoginPayload, usePostLogin } from 'src/module/auth';
 
 export default function useLogin() {
   const session = useSession();
-  const router = useRouter();
-  const setAuth = useSetRecoilState(auth);
+  const postLogin = usePostLogin();
 
   useEffect(() => {
     if (session.status === 'authenticated') {
       const {
         data: {
-          user: { accessToken },
+          user: { providerId, email, name },
         },
       } = session;
-      const { nickname, birthdate, isDeleted }: User = jwtDecode(accessToken);
-      setAuth({ nickname, birthdate, isDeleted });
-      setApiJwt(accessToken);
-      router.push(Pathname.list);
+      if (!isEmpty(session.data.user)) {
+        const localStorageProvider = localStorage.getItem('provider');
+        const payload: LoginPayload = {
+          provider: localStorageProvider as Provider,
+          providerId,
+          email,
+          nickname: name?.slice(0, 7),
+        };
+        postLogin.mutate(payload);
+      }
     }
-  }, [session, router, setAuth]);
-  return (provider: Provider) => signIn(provider);
+  }, [session]);
+
+  return (param: Provider) => {
+    localStorage.setItem('provider', param);
+    signIn(param);
+  };
 }
