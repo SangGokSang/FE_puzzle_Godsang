@@ -6,7 +6,7 @@ import Layout from 'src/components/common/Layout';
 import { MessageCard, RecipientField, SenderField, TextBodyField } from './style';
 import { ButtonSection } from 'src/core/styles/common';
 import { BackIcon } from 'src/core/icons';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 type LetterProps = {
   isOpen: boolean;
@@ -34,7 +34,7 @@ const Bar = React.forwardRef((props: any, ref: any) => (
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps) {
   const { isOpen, onClose } = props;
-  const { control, watch } = useForm<MessageData>();
+  const { control, watch } = useFormContext<MessageData>();
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [massageData, setMessageData] = useState<MessageData>({
     from: '',

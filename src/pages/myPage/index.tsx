@@ -6,7 +6,7 @@ import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { TextField } from '@mui/material';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -104,7 +104,7 @@ const schema = yup.object().shape({
 });
 
 function MyPage() {
-  const { watch } = useFormContext();
+  const { watch } = useForm();
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const createForm = useForm<User>({
