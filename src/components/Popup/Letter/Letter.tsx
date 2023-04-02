@@ -6,7 +6,7 @@ import Layout from 'src/components/common/Layout';
 import { MessageCard, RecipientField, SenderField, TextBodyField } from './style';
 import { ButtonSection } from 'src/core/styles/common';
 import { BackIcon } from 'src/core/icons';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 
 type LetterProps = {
   isOpen: boolean;
@@ -132,7 +132,6 @@ function Letter(props: LetterProps) {
           )}
         </Layout>
       </Bar>
-
     </Modal>
   );
 }
