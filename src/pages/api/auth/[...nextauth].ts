@@ -4,7 +4,6 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default NextAuth({
   providers: [
     GoogleProvider({

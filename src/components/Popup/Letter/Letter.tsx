@@ -34,13 +34,8 @@ const Bar = React.forwardRef((props: any, ref: any) => (
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps) {
   const { isOpen, onClose } = props;
-  const { control, watch } = useFormContext<MessageData>();
+  const { control, watch } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [massageData, setMessageData] = useState<MessageData>({
-    from: '',
-    to: '',
-    content: '',
-  });
 
   const handleCloseModal = () => {
     if (onClose instanceof Function) {
@@ -59,7 +54,6 @@ function Letter(props: LetterProps) {
           <span className="back-button">
             <BackIcon onClick={handleCloseModal} />
           </span>
-
           <MessageCard>
             <RecipientField>
               To.
@@ -129,7 +123,6 @@ function Letter(props: LetterProps) {
               )}
             </SenderField>
           </MessageCard>
-
           {isEdit && (
             <ButtonSection css={buttonSectionCss}>
               <Button buttonType={ButtonType.Text} onClick={onSubmit}>
@@ -139,6 +132,7 @@ function Letter(props: LetterProps) {
           )}
         </Layout>
       </Bar>
+
     </Modal>
   );
 }

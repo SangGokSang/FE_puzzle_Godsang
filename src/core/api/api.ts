@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig } from 'axios';
 import qs from 'qs';
-import { getAccessToken, getRefreshToken, logout, setTokens } from './auth';
+import axios, { AxiosRequestConfig } from 'axios';
+import { getAccessToken, logout, setAccessToken, setTokens } from './auth';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -54,11 +54,9 @@ api.interceptors.response.use(
 
 export const apiReturnsResponse = createApiInstance(getAccessToken({ bearer: true }));
 
-// Cloned error interceptor.
 apiReturnsResponse.interceptors.response.use(
   (result) => result,
   async (error) => {
-    // Server does not response
     if (error === undefined) throw error;
 
     if (error.response?.status === 401) {
@@ -81,14 +79,14 @@ function createApiInstance(bearerJwt = '', options: AxiosRequestConfig = {}) {
 
 // 로직 처리해야함
 async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
-  const refreshApi = createApiInstance(getRefreshToken({ bearer: true }));
+  const refreshApi = createApiInstance();
   try {
     const result = await refreshApi({
-      url: '/api/auth/refresh-token',
-      method: 'get',
+      url: '/user/refresh-token',
+      method: 'post',
     });
-    const { token, refreshToken } = result.data;
-    setTokens(token, refreshToken);
+    const { token } = result.data;
+    setTokens(token);
     return result.data;
   } catch (error) {
     logout();
@@ -102,6 +100,7 @@ async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
  */
 function setApiJwt(token: string): void {
   const bearerToken = `Bearer ${token}`;
+  setAccessToken(token);
   api.defaults.headers.common.Authorization = bearerToken;
   apiReturnsResponse.defaults.headers.common.Authorization = bearerToken;
 }

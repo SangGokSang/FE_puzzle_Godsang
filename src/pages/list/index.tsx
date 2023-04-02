@@ -123,13 +123,15 @@ const Message = styled.div`
 
 function PuzzleList() {
   const puzzlePosition = [{ left: 0, top: 0 }];
-  // const { data } = usePuzzles();
+  usePuzzles();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
 
-  const handleClickPiece = (data: any) => setLetterData(data);
+  const handleClickPiece = (data: any) => setLetterData(null);
   const handleClose = () => setLetterData(null);
 
-  const handleClickShare = useCallback(() => console.log('click'), []);
+  const handleClickShare = useCallback(() => {
+    //
+  }, []);
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
     const row = Math.floor(index / 3);
