@@ -27,24 +27,10 @@ export default NextAuth({
     async session({ token, session }) {
       return {
         user: {
-          accessToken: token?.accessToken,
-          nickname: session?.user?.name,
+          ...session.user,
+          providerId: token.sub,
         },
       } as unknown as Awaitable<Session>;
-    },
-    async jwt({ token, user, account }) {
-      const res = await fetch(`https://dearmy2023.click/api/user/login`, {
-        method: 'post',
-        body: JSON.stringify({
-          id: account?.provider,
-          providerId: account?.providerAccountId,
-          nickname: user?.name?.slice(0, 7),
-          email: user?.email,
-        }),
-      })
-        .then((response) => response.json())
-        .catch((err) => console.log('err', err));
-      return { ...token, accessToken: res };
     },
   },
 });

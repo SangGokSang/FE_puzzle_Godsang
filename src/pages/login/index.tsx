@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 import { FacebookIcon, GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
 import useLogin from 'src/core/hooks/useLogin';
 import { Provider } from 'src/core/type/provider';
+import { signOut } from 'next-auth/react';
 
 const layoutCss = css`
   .wrapper {
@@ -62,6 +63,7 @@ function Login() {
   const login = useLogin();
   const handleClickHowToUse = () => {
     // 처리필요
+    signOut();
   };
 
   const handleClickIcon = (provider: Provider) => () => {
