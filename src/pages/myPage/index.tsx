@@ -141,9 +141,9 @@ function MyPage() {
     const countBodyProfile = Math.floor(+dDay / 90);
     return (
       <div>
-        <div>식사 `${countMeals}`번</div>
-        <div>바프 `${countBodyProfile}`번 찍기</div>
-        <div>독서 `${countBooks}`권</div>
+        <div>식사 {countMeals}번</div>
+        <div>바프 {countBodyProfile}번 찍기</div>
+        <div>독서 {countBooks}권</div>
         <div>롤 골드 티어</div>
         <div>제주도 1년 살이</div>
         <div>워킹홀리데이</div>
