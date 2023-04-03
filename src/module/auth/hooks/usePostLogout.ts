@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
 import { MutationOptions } from 'src/core/type/react-query-types';
-import { logout } from '../api';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth/atom';
 import { Pathname } from 'src/core/const/enum';
 import { clearTokens } from 'src/core/api/auth';
 import { signOut } from 'next-auth/react';
+import { logout } from '../api';
 
 export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {}) => {
   const router = useRouter();
