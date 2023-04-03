@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useState } from 'react';
+import React, { ChangeEventHandler, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { getDDay } from 'src/core/util/util';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -25,6 +26,12 @@ const layoutCss = css`
     flex-direction: column;
     justify-content: space-between;
   }
+`;
+
+export const errorCss = css`
+  margin-left: 12px;
+  font-size: 11.5px;
+  color: red;
 `;
 
 const MyPageSection = styled.section`
@@ -97,7 +104,7 @@ const schema = yup.object().shape({
 });
 
 function MyPage() {
-  // const { control, watch } = useFormContext();
+  const { watch } = useForm();
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const createForm = useForm<User>({
@@ -109,7 +116,13 @@ function MyPage() {
     },
   });
 
-  const { formState, getFieldState, control } = createForm;
+  const {
+    formState: { errors },
+    getFieldState,
+    control,
+  } = createForm;
+
+  const { birth } = watch();
 
   const handleClick = () => {
     if (isEdit) {
@@ -121,11 +134,30 @@ function MyPage() {
     }
   };
 
+  const description = useMemo(() => {
+    const dDay = isNaN(birth) ? '0' : getDDay(dayjs(birth));
+    const countMeals = +dDay * 3;
+    const countBooks = Math.floor(+dDay / 7);
+    const countBodyProfile = Math.floor(+dDay / 90);
+    return (
+      <div>
+        <div>식사 {countMeals}번</div>
+        <div>바프 {countBodyProfile}번 찍기</div>
+        <div>독서 {countBooks}권</div>
+        <div>롤 골드 티어</div>
+        <div>제주도 1년 살이</div>
+        <div>워킹홀리데이</div>
+        <div>⋮</div>
+      </div>
+    );
+  }, [birth]);
+
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
       <MyPageSection>
         <StoryLine>
           <NameBirthDay isEdit={isEdit}>
+            <div className="label">{!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}</div>
             <div>
               <Controller
                 name="nickname"
@@ -148,6 +180,7 @@ function MyPage() {
               />
               <Text>님은</Text>
               <br />
+              <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
               <Controller
                 control={control}
                 name="birth"
@@ -179,16 +212,7 @@ function MyPage() {
             </div>
 
             <div>이 시점 우리가 할 수 있는 것은?</div>
-
-            <div>
-              <div>식사 300번</div>
-              <div>바프 3번 찍기</div>
-              <div>독서 75권</div>
-              <div>롤 골드 티어</div>
-              <div>제주도 1년 살이</div>
-              <div>워킹홀리데이</div>
-              <div>⋮</div>
-            </div>
+            {description}
           </Story>
         </StoryLine>
       </MyPageSection>
