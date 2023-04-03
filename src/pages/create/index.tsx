@@ -75,7 +75,7 @@ const Breadcrumb = styled.p`
 `;
 
 // 공백 검증 구현해야함
-function Join() {
+function Create() {
   const [step, setStep] = useState(1);
   const [disabledButton, setDisabledButton] = useState(true);
   const router = useRouter();
@@ -200,4 +200,4 @@ function Join() {
   );
 }
 
-export default Join;
+export default Create;
