@@ -9,3 +9,10 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
   });
   return data;
 }
+
+export async function logout() {
+  await api({
+    url: '/user/logout',
+    method: 'post',
+  });
+}

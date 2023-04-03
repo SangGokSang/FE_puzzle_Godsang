@@ -29,16 +29,16 @@ api.interceptors.response.use(
       return;
     }
 
-    if (error.response?.status === 401 && !error.request?.responseURL?.endsWith('/api/auth/login')) {
+    if (error.response?.status === 401 && !error.request?.responseURL?.endsWith('/api/user/login')) {
       try {
-        const { token } = await useRefresh();
+        const token = await useRefresh();
 
         // Retry failed request
         const retryConfig = {
           ...error.config,
           headers: { ...error.config.headers, Authorization: `Bearer ${token}` },
         };
-        return apiReturnsResponse(retryConfig);
+        return api(retryConfig);
       } catch (error) {
         logout();
         return;
@@ -46,22 +46,6 @@ api.interceptors.response.use(
     } else if (error) {
       const e = { ...error.response?.data, status: error.response?.status };
       throw e;
-    }
-
-    throw error;
-  },
-);
-
-export const apiReturnsResponse = createApiInstance(getAccessToken({ bearer: true }));
-
-apiReturnsResponse.interceptors.response.use(
-  (result) => result,
-  async (error) => {
-    if (error === undefined) throw error;
-
-    if (error.response?.status === 401) {
-      logout();
-      return;
     }
 
     throw error;
@@ -81,13 +65,12 @@ function createApiInstance(bearerJwt = '', options: AxiosRequestConfig = {}) {
 async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
   const refreshApi = createApiInstance();
   try {
-    const result = await refreshApi({
+    const { data: token } = await refreshApi({
       url: '/user/refresh-token',
       method: 'post',
     });
-    const { token } = result.data;
     setTokens(token);
-    return result.data;
+    return token;
   } catch (error) {
     logout();
     throw error;
@@ -102,7 +85,6 @@ function setApiJwt(token: string): void {
   const bearerToken = `Bearer ${token}`;
   setAccessToken(token);
   api.defaults.headers.common.Authorization = bearerToken;
-  apiReturnsResponse.defaults.headers.common.Authorization = bearerToken;
 }
 
 export { API_BASE_URL, setApiJwt };

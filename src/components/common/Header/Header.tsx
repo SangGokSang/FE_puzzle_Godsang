@@ -3,21 +3,22 @@ import { useRouter } from 'next/router';
 import { Pathname } from 'src/core/const/enum';
 import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
 import { ButtonGroup, Wrapper } from './style';
-import { signOut } from 'next-auth/react';
-import { logout } from 'src/core/api/auth';
+import { usePostLogout } from 'src/module/auth/hooks/usePostLogout';
+// import { signOut } from 'next-auth/react';
 
 export default function Header() {
   const router = useRouter();
-
+  const logout = usePostLogout();
   const handleLogoClick = () => {
     // if(로그인 && 퍼즐리스트){
     //   router.push(Pathname.list);
     // }else{
     //   router.push(Pathname.login);
     // }
-    // 임시처리
-    signOut({ redirect: false });
-    logout();
+    // 임시처리;
+    logout.mutate();
+    // signOut();
+    // router.push('login');
   };
 
   const handleBackClick = () => {
