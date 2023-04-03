@@ -16,9 +16,9 @@ export default function Header() {
     //   router.push(Pathname.login);
     // }
     // 임시처리;
-    logout.mutate();
+    // logout.mutate();
     // signOut();
-    // router.push('login');
+    router.push('list');
   };
 
   const handleBackClick = () => {

@@ -87,7 +87,8 @@ function Join() {
           .string()
           .required('별명을 입력해주세요.')
           .min(1, '한 글자 이상 입력해주세요.')
-          .max(7, '일곱 자 이하만 입력 가능합니다.'),
+          .max(7, '일곱 자 이하만 입력 가능합니다.')
+          .test('include_space', '별명에 공백을 포함시킬 수 없습니다.', (value) => !/[\s]/g.test(value)),
         birth: yup
           .number()
           .typeError('숫자를 입력해주세요.')
