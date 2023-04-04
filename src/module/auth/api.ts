@@ -2,7 +2,7 @@ import api from 'src/core/api/api';
 import { LoginPayload, LoginResponse } from './types';
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
-  const { data, headers } = await api({
+  const { data } = await api({
     url: '/user/login',
     method: 'post',
     data: payload,
@@ -14,5 +14,20 @@ export async function logout() {
   await api({
     url: '/user/logout',
     method: 'post',
+  });
+}
+
+export async function restore(): Promise<LoginResponse> {
+  const { data } = await api({
+    url: '/user/restore',
+    method: 'patch',
+  });
+  return data;
+}
+
+export async function withdraw(): Promise<void> {
+  await api({
+    url: '/user/withdraw',
+    method: 'patch',
   });
 }

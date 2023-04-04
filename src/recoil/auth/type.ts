@@ -1,5 +1,6 @@
 export type User = {
   birthdate: number;
   nickname: string;
-  isDeleted: boolean;
+  isWithdrawUser: boolean;
+  userId: number | null;
 };

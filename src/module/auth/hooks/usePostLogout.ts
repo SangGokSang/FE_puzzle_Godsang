@@ -3,7 +3,7 @@ import { ApiError } from 'src/core/type/ApiError';
 import { MutationOptions } from 'src/core/type/react-query-types';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
-import auth from 'src/recoil/auth/atom';
+import auth, { authDefaultValue } from 'src/recoil/auth/atom';
 import { clearTokens } from 'src/core/api/auth';
 import { signOut } from 'next-auth/react';
 import { logout } from '../api';
@@ -15,18 +15,12 @@ export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {
   return useMutation<void, ApiError, void>(() => logout(), {
     ...options,
     onSuccess: () => {
-      const resetValue = {
-        nickname: '',
-        birthdate: 0,
-        isDeleted: false,
-      };
-
       signOut({ redirect: false });
-      setAuth(resetValue);
+      setAuth(authDefaultValue);
       clearTokens();
       setTimeout(() => {
         router.push(route.Landing);
-      }, 200);
+      }, 100);
     },
   });
 };
