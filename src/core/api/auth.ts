@@ -1,3 +1,4 @@
+import { signOut } from 'next-auth/react';
 import cookieStorage from '../lib/cookie-storage';
 
 export const AUTH_KEY = 'client-auth';
@@ -59,10 +60,11 @@ export function clearTokens(): void {
 // api level에서 로그아웃 처리
 export function logout() {
   clearTokens();
+  signOut();
   location.href =
     process.env.NODE_ENV === 'production'
-      ? 'https://dearmy2023.click/login'
+      ? 'https://dearmy2023.click'
       : process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000/login'
+      ? 'http://localhost:3000'
       : '';
 }

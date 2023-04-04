@@ -21,7 +21,7 @@ export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, L
 
       setAuth({ nickname, birthdate, isDeleted });
       setApiJwt(data);
-      router.push(route.List);
+      router.push({ pathname: route.List, query: { userId: 1 } });
     },
   });
 };

@@ -23,6 +23,7 @@ import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import { css } from '@emotion/react';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -147,11 +148,14 @@ const Message = styled.div`
   margin: 20px 0 15px;
 `;
 
-function PuzzleList() {
+// queryParam ?userId=1 으로 유저아이디 가져오기
+// 임시로 d 넣어놨어요. 내용 구현해주세요!
+function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const puzzlePosition = [{ left: 0, top: 0 }];
   const { data } = usePuzzles();
   const router = useRouter();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
+  // const { userId } = router.query;
 
   const handleClickPiece = (data: any) => setLetterData(null);
   const handleClose = () => setLetterData(null);
@@ -236,5 +240,14 @@ function PuzzleList() {
     </Layout>
   );
 }
+
+// query 의 userId 를 request param 으로 보내주세요.
+export const getServerSideProps: GetServerSideProps<{ d: unknown }> = async ({ query }) => {
+  return {
+    props: {
+      d: '',
+    },
+  };
+};
 
 export default PuzzleList;
