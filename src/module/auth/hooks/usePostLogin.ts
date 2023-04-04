@@ -17,6 +17,7 @@ export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, L
   return useMutation<LoginResponse, ApiError, LoginPayload>((payload: LoginPayload) => login(payload), {
     ...options,
     onSuccess: (data) => {
+      console.log(data);
       if (data.isWithdrawUser) {
         restore.mutate();
       } else {

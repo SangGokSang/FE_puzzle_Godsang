@@ -21,7 +21,6 @@ export const api = createApiInstance(getAccessToken({ bearer: true }));
 api.interceptors.response.use(
   (result) => result,
   async (error) => {
-    console.log(error);
     if (error === undefined) throw error;
 
     if (error.response?.status === 401 && !getAccessToken()) {
