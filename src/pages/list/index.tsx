@@ -22,6 +22,7 @@ import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
+import { css } from '@emotion/react';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -38,38 +39,40 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
-const Goal = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  text-align: center;
+const title = css`
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 33px;
+  color: #000000;
+`;
 
-  .title {
-    font-size: 22px;
-    font-weight: 400;
-    line-height: 33px;
-    color: #000000;
-  }
-  .description {
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 20px;
-    color: #727272;
-    max-width: 234px;
-    word-wrap: break-word;
-    word-break: normal;
-  }
+const goal = css`
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #727272;
+  max-width: 234px;
+  height: 40px;
+  margin-top: 6px;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  word-break: normal;
 `;
 
 const SwiperContainer = styled.div`
   width: 100%;
-  height: 305px;
-  margin-top: 20px;
+  display: flex;
+  align-items: center;
 
   .swiper {
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   .swiper-wrapper {
     height: fit-content;
@@ -77,8 +80,9 @@ const SwiperContainer = styled.div`
 
   .swiper-slide {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
 
   .swiper-pagination {
@@ -86,7 +90,8 @@ const SwiperContainer = styled.div`
     display: flex;
     justify-content: center;
     gap: 13px;
-    bottom: 0 !important;
+    position: unset;
+    margin-top: 15px;
 
     .swiper-pagination-bullet {
       width: 10px;
@@ -103,15 +108,9 @@ const SwiperContainer = styled.div`
   }
 `;
 
-const NoPuzzleWrap = styled.div`
-  width: 270px;
-  height: 270px;
+const PuzzleContainer = styled.div`
   display: flex;
-  gap: 15px;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background-color: #f3f3f3;
 `;
 
 const PuzzleWrap = styled.div`
@@ -126,6 +125,19 @@ const PuzzlePiece = styled(Image)<{ position: [number, number] }>`
   position: absolute;
   left: ${({ position }) => position[0]}px;
   top: ${({ position }) => position[1]}px;
+`;
+
+const NoPuzzleWrap = styled.div`
+  min-width: 270px;
+  height: 270px;
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f3f3;
+  white-space: nowrap;
+  margin-top: 66px;
 `;
 
 const Message = styled.div`
@@ -174,33 +186,43 @@ function PuzzleList() {
     <Layout>
       <PuzzleListWrap>
         <Content>
-          <Goal>
-            <div className="title">별명님의 목표</div>
-            <div className="description">저의 목표는 어쩌고 저쩌고 응원 부탁 ^^~</div>
-          </Goal>
+          <div css={title}>별명님의 목표</div>
           <SwiperContainer>
             <Swiper pagination={true} modules={[Pagination]}>
               {data && !!data.length ? (
-                <SwiperSlide>
-                  <PuzzleWrap>
-                    {PUZZLE_LIST.map((data, index) => (
-                      <PuzzlePiece
-                        key={index}
-                        src={data}
-                        position={getPuzzlePosition(index)}
-                        alt="puzzle-piece"
-                        onClick={() => handleClickPiece(data)}
-                      />
-                    ))}
-                  </PuzzleWrap>
-                </SwiperSlide>
+                data.map((puzzle, index) => (
+                  <div key={puzzle.id}>
+                    {index === 0 && puzzle?.messages?.length === 9 && (
+                      <SwiperSlide>
+                        <NoPuzzleWrap>
+                          <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                          <p>퍼즐을 만들어보세요!</p>
+                        </NoPuzzleWrap>
+                      </SwiperSlide>
+                    )}
+                    <SwiperSlide key={puzzle.id}>
+                      <div css={goal}>{puzzle.title}</div>
+                      <PuzzleContainer>
+                        <PuzzleWrap>
+                          {PUZZLE_LIST.map((data, index) => (
+                            <PuzzlePiece
+                              key={index}
+                              src={data}
+                              position={getPuzzlePosition(index)}
+                              alt="puzzle-piece"
+                              onClick={() => handleClickPiece(data)}
+                            />
+                          ))}
+                        </PuzzleWrap>
+                      </PuzzleContainer>
+                    </SwiperSlide>
+                  </div>
+                ))
               ) : (
-                <SwiperSlide>
-                  <NoPuzzleWrap>
-                    <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                    <p>퍼즐을 만들어보세요!</p>
-                  </NoPuzzleWrap>
-                </SwiperSlide>
+                <NoPuzzleWrap>
+                  <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                  <p>퍼즐을 만들어보세요!</p>
+                </NoPuzzleWrap>
               )}
             </Swiper>
           </SwiperContainer>

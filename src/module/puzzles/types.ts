@@ -4,7 +4,7 @@ export type Puzzle = {
   id: number;
   category: string;
   title: string;
-  message: PuzzleMSG[];
+  messages: PuzzleMSG[];
 };
 
 export type PuzzleMSG = {
