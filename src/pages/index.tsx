@@ -2,7 +2,6 @@ import React from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FacebookIcon, GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
 import useLogin from 'src/core/hooks/useLogin';
@@ -10,23 +9,30 @@ import { Provider } from 'src/core/type/provider';
 import Image from 'next/image';
 import symbol_img from 'public/assets/images/main-symbol.png';
 
-const layoutCss = css`
-  .wrapper {
-    width: 100%;
-    height: 100%;
-    padding-top: 15%;
-    display: flex;
-    flex-direction: column;
-    gap: 10%;
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  padding-top: 15%;
+  display: flex;
+  flex-direction: column;
+  gap: 12%;
+
+  @media screen and (min-width: 768px) {
+    width: 768px;
+    padding-top: 25%;
+    gap: 15%;
   }
 `;
 
 // main color 테마로 지정하기
 const TitleSection = styled.div`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   h3 {
     margin: 0;
-    margin-bottom: 6px;
+    margin-top: 10px;
     line-height: 34px;
     font-size: 32px;
     color: #9148da;
@@ -37,12 +43,6 @@ const TitleSection = styled.div`
     font-size: 16px;
     line-height: 25px;
   }
-`;
-
-const ImageSection = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const IconSection = styled.div`
@@ -76,15 +76,13 @@ export default function Home() {
   };
 
   return (
-    <Layout layoutCss={layoutCss} useHeader={false}>
-      <div className="wrapper">
+    <Layout useHeader={false}>
+      <Wrapper>
         <TitleSection>
+          <Image alt="img" src={symbol_img} width="70" height="70" />
           <h3>디어,마이 2023</h3>
           <p>나의 퍼즐을 맞춰주세요.</p>
         </TitleSection>
-        <ImageSection>
-          <Image alt="img" src={symbol_img} width="120" height="120" />
-        </ImageSection>
         <IconSection>
           <p>소셜 계정으로 간편하게 로그인하기</p>
           <div className="icon-wrapper">
@@ -99,7 +97,7 @@ export default function Home() {
             이용방법
           </Button>
         </ButtonSection>
-      </div>
+      </Wrapper>
     </Layout>
   );
 }
