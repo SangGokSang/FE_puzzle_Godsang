@@ -4,10 +4,10 @@ import { MutationOptions } from 'src/core/type/react-query-types';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth/atom';
-import { Pathname } from 'src/core/const/enum';
 import { clearTokens } from 'src/core/api/auth';
 import { signOut } from 'next-auth/react';
 import { logout } from '../api';
+import route from 'src/core/const/route.path';
 
 export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {}) => {
   const router = useRouter();
@@ -25,7 +25,7 @@ export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {
       setAuth(resetValue);
       clearTokens();
       setTimeout(() => {
-        router.push(Pathname.login);
+        router.push(route.Landing);
       }, 200);
     },
   });

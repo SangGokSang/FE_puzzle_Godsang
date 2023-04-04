@@ -21,7 +21,7 @@ import { PuzzleMSG, usePuzzles } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
-import { Pathname } from 'src/core/const/enum';
+import route from 'src/core/const/route.path';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -149,7 +149,7 @@ function PuzzleList() {
   }, []);
 
   const handleClickMakePuzzle = () => {
-    router.push(Pathname.create);
+    router.push(route.Create);
   };
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
