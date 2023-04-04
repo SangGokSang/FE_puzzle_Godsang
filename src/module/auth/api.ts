@@ -16,3 +16,18 @@ export async function logout() {
     method: 'post',
   });
 }
+
+export async function restore(): Promise<LoginResponse> {
+  const { data } = await api({
+    url: '/user/restore',
+    method: 'patch',
+  });
+  return data;
+}
+
+export async function withdraw(): Promise<void> {
+  await api({
+    url: '/user/withdraw',
+    method: 'patch',
+  });
+}

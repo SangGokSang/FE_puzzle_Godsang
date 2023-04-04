@@ -80,7 +80,7 @@ function Create() {
   const [step, setStep] = useState(1);
   const [disabledButton, setDisabledButton] = useState(true);
   const router = useRouter();
-  const { nickname } = useRecoilValue(auth);
+  const { nickname, userId } = useRecoilValue(auth);
   const createForm = useForm<CreateFormType>({
     resolver: yupResolver(
       yup.object().shape({
@@ -100,7 +100,7 @@ function Create() {
   });
 
   const addPuzzle = useAddPuzzle({
-    onSuccess: () => router.push(route.List),
+    onSuccess: () => router.push({ pathname: route.List, query: { userId } }),
     onError: (err) => console.log(err),
   });
 

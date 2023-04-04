@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
@@ -155,7 +155,6 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
   const { data } = usePuzzles();
   const router = useRouter();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
-  // const { userId } = router.query;
 
   const handleClickPiece = (data: any) => setLetterData(null);
   const handleClose = () => setLetterData(null);
@@ -184,6 +183,18 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
 
     index && puzzlePosition.push({ left: puzzleX, top: puzzleY });
     return [puzzleX, puzzleY];
+  }, []);
+
+  // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 딱 한번 실행
+  useEffect(() => {
+    if (router.pathname === route.List && router.query.userId === undefined) {
+      location.href =
+        process.env.NODE_ENV === 'production'
+          ? 'https://dearmy2023.click'
+          : process.env.NODE_ENV === 'development'
+          ? 'http://localhost:3000'
+          : '';
+    }
   }, []);
 
   return (
@@ -243,6 +254,7 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
 
 // query 의 userId 를 request param 으로 보내주세요.
 export const getServerSideProps: GetServerSideProps<{ d: unknown }> = async ({ query }) => {
+  console.log(query.userId);
   return {
     props: {
       d: '',
