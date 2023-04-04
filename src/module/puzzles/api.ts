@@ -7,6 +7,96 @@ export async function fetchPuzzles(): Promise<Puzzle[]> {
     url: `/puzzles`,
     method: 'get',
   });
+
+  // const data = await new Promise<Puzzle[]>((resolve) => {
+  //   resolve([
+  //     {
+  //       id: 0,
+  //       category: 'af',
+  //       title: '파이팅',
+  //       messages: [
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       id: 0,
+  //       category: 'af',
+  //       title: '파이팅',
+  //       messages: [
+  //         {
+  //           id: 2,
+  //           content: 'hi',
+  //           from: '정현',
+  //           to: '동희',
+  //           isOpened: false,
+  //         },
+  //       ],
+  //     },
+  //   ]);
+  // });
+
   return data;
 }
 
