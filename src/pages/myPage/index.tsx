@@ -11,6 +11,8 @@ import dayjs from 'dayjs';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { getDDay } from 'src/core/util/util';
+import { scheme } from 'src/core/const/scheme';
+import { errorCss } from 'src/components/wizard/puzzle/style';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -27,13 +29,6 @@ const layoutCss = css`
     justify-content: space-between;
   }
 `;
-
-export const errorCss = css`
-  margin-left: 12px;
-  font-size: 11.5px;
-  color: red;
-`;
-
 const MyPageSection = styled.section`
   width: 100%;
   height: calc(100% - 60px);
@@ -94,21 +89,16 @@ const Story = styled.div`
   gap: 20px;
 `;
 
-const schema = yup.object().shape({
-  nickname: yup
-    .string()
-    .required('반드시 입력해주세요.')
-    .min(1, '한 글자 이상 입력해주세요.')
-    .max(7, '일곱 자 이하만 입력 가능합니다.'),
-  birth: yup.number().required('반드시 입력해주세요.'),
-});
-
 function MyPage() {
   const { watch } = useForm();
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const createForm = useForm<User>({
-    resolver: yupResolver(schema),
+  const {
+    formState: { errors },
+    control,
+    getValues,
+  } = useForm<User>({
+    resolver: yupResolver(yup.object().shape({ nickname: scheme.nickname, birth: scheme.birth })),
     mode: 'all',
     defaultValues: {
       nickname: '',
@@ -116,17 +106,8 @@ function MyPage() {
     },
   });
 
-  const {
-    formState: { errors },
-    getFieldState,
-    control,
-  } = createForm;
-
-  const { birth } = watch();
-
   const handleClick = () => {
     if (isEdit) {
-      const { getValues } = createForm;
       console.log(getValues());
       setIsEdit(false);
     } else {
@@ -135,6 +116,7 @@ function MyPage() {
   };
 
   const description = useMemo(() => {
+    const birth = watch('birth');
     const dDay = isNaN(birth) ? '0' : getDDay(dayjs(birth));
     const countMeals = +dDay * 3;
     const countBooks = Math.floor(+dDay / 7);
@@ -150,7 +132,7 @@ function MyPage() {
         <div>⋮</div>
       </div>
     );
-  }, [birth]);
+  }, [watch]);
 
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
@@ -210,7 +192,6 @@ function MyPage() {
               <div>2023년 6월 부터 만 30살까지,</div>
               <div> 576일이라는 시간이 남았습니다.</div>
             </div>
-
             <div>이 시점 우리가 할 수 있는 것은?</div>
             {description}
           </Story>

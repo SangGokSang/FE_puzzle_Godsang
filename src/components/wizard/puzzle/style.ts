@@ -14,7 +14,6 @@ export const Description = styled.pre`
 
 export const Container = styled.section`
   width: 100%;
-  /* height: calc(100% - 20px); */
 
   @media screen and (min-width: 768px) {
     display: flex;

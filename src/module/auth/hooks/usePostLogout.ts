@@ -24,7 +24,9 @@ export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {
       signOut({ redirect: false });
       setAuth(resetValue);
       clearTokens();
-      router.push(Pathname.login);
+      setTimeout(() => {
+        router.push(Pathname.login);
+      }, 200);
     },
   });
 };

@@ -19,6 +19,9 @@ import puzzle8 from 'public/assets/images/puzzle-8.png';
 import puzzle9 from 'public/assets/images/puzzle-9.png';
 import { PuzzleMSG, usePuzzles } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
+import { AddPuzzleIcon } from 'src/core/icons';
+import { useRouter } from 'next/router';
+import { Pathname } from 'src/core/const/enum';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -100,6 +103,17 @@ const SwiperContainer = styled.div`
   }
 `;
 
+const NoPuzzleWrap = styled.div`
+  width: 270px;
+  height: 270px;
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f3f3;
+`;
+
 const PuzzleWrap = styled.div`
   width: 270px;
   height: 270px;
@@ -123,7 +137,8 @@ const Message = styled.div`
 
 function PuzzleList() {
   const puzzlePosition = [{ left: 0, top: 0 }];
-  usePuzzles();
+  const { data } = usePuzzles();
+  const router = useRouter();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
 
   const handleClickPiece = (data: any) => setLetterData(null);
@@ -132,6 +147,10 @@ function PuzzleList() {
   const handleClickShare = useCallback(() => {
     //
   }, []);
+
+  const handleClickMakePuzzle = () => {
+    router.push(Pathname.create);
+  };
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
     const row = Math.floor(index / 3);
@@ -161,22 +180,28 @@ function PuzzleList() {
           </Goal>
           <SwiperContainer>
             <Swiper pagination={true} modules={[Pagination]}>
-              <SwiperSlide>
-                <PuzzleWrap>
-                  {PUZZLE_LIST.map((data, index) => (
-                    <PuzzlePiece
-                      key={index}
-                      src={data}
-                      position={getPuzzlePosition(index)}
-                      alt="puzzle-piece"
-                      onClick={() => handleClickPiece(data)}
-                    />
-                  ))}
-                </PuzzleWrap>
-              </SwiperSlide>
-              <SwiperSlide>
-                <PuzzleWrap>puzzle</PuzzleWrap>
-              </SwiperSlide>
+              {data && !!data.length ? (
+                <SwiperSlide>
+                  <PuzzleWrap>
+                    {PUZZLE_LIST.map((data, index) => (
+                      <PuzzlePiece
+                        key={index}
+                        src={data}
+                        position={getPuzzlePosition(index)}
+                        alt="puzzle-piece"
+                        onClick={() => handleClickPiece(data)}
+                      />
+                    ))}
+                  </PuzzleWrap>
+                </SwiperSlide>
+              ) : (
+                <SwiperSlide>
+                  <NoPuzzleWrap>
+                    <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                    <p>퍼즐을 만들어보세요!</p>
+                  </NoPuzzleWrap>
+                </SwiperSlide>
+              )}
             </Swiper>
           </SwiperContainer>
           <Message>친구에게 공유해서 퍼즐조각을 완성해보세요!</Message>
