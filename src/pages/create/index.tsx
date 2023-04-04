@@ -100,7 +100,7 @@ function Create() {
   });
 
   const addPuzzle = useAddPuzzle({
-    onSuccess: () => router.push(route.Create),
+    onSuccess: () => router.push(route.List),
     onError: (err) => console.log(err),
   });
 
