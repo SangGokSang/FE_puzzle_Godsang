@@ -137,7 +137,7 @@ const NoPuzzleWrap = styled.div`
   justify-content: center;
   background-color: #f3f3f3;
   white-space: nowrap;
-  margin-top: 60px;
+  margin-top: 66px;
 `;
 
 const Message = styled.div`
