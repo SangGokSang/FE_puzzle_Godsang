@@ -11,13 +11,14 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import { Category, Pathname } from 'src/core/const/enum';
+import { Category } from 'src/core/const/enum';
 import { BackIcon } from 'src/core/icons';
 import { useJoin } from 'src/module/join';
 import { isEmpty } from 'lodash';
 import { useAddPuzzle } from 'src/module/puzzles/hooks/useAddPuzzle';
 import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth/atom';
+import route from 'src/core/const/route.path';
 import { scheme } from 'src/core/const/scheme';
 
 export type CreateFormType = {
@@ -99,7 +100,7 @@ function Create() {
   });
 
   const addPuzzle = useAddPuzzle({
-    onSuccess: () => router.push(Pathname.list),
+    onSuccess: () => router.push(route.List),
     onError: (err) => console.log(err),
   });
 

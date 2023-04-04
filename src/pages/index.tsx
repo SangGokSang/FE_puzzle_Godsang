@@ -1,61 +1,105 @@
 import React from 'react';
-import { css } from '@emotion/react';
+import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
-import styled from '@emotion/styled';
-import Button from 'src/components/button';
-import { ButtonType } from 'src/components/button/Button';
 import { ButtonSection } from 'src/core/styles/common';
-import { useRouter } from 'next/router';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import { FacebookIcon, GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
+import useLogin from 'src/core/hooks/useLogin';
+import { Provider } from 'src/core/type/provider';
+import Image from 'next/image';
+import symbol_img from 'public/assets/images/main-symbol.png';
 
 const layoutCss = css`
-  display: flex;
-  flex-direction: column;
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    padding-top: 15%;
+    display: flex;
+    flex-direction: column;
+    gap: 10%;
+  }
 `;
 
-const ImageSection = styled.section`
-  width: 100%;
-  height: calc(100% - 140px);
+// main color 테마로 지정하기
+const TitleSection = styled.div`
+  text-align: center;
+  h3 {
+    margin: 0;
+    margin-bottom: 6px;
+    line-height: 34px;
+    font-size: 32px;
+    color: #9148da;
+    font-family: 'EstablishRetrosans';
+    letter-spacing: -0.002em;
+  }
+  p {
+    font-size: 16px;
+    line-height: 25px;
+  }
+`;
+
+const ImageSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
 
-  & .img {
-    width: 300px;
-    height: 300px;
-    border-radius: 100px;
-    background-color: #000;
+const IconSection = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #727272;
+  p {
+    font-size: 13px;
+    line-height: 20px;
+  }
+  .icon-wrapper {
+    display: flex;
+    gap: 15px;
+    margin-top: 18px;
+  }
+  svg {
+    cursor: pointer;
   }
 `;
 
 export default function Home() {
-  const route = useRouter();
-  const handleLoginClick = () => {
-    route.push('login');
+  const login = useLogin();
+  const handleClickHowToUse = () => {
+    // 처리필요
   };
 
-  const handleUseWayClick = () => {
-    // 이용방법 페이지 없으면 외부 라우팅
+  const handleClickIcon = (provider: Provider) => () => {
+    login(provider);
   };
 
   return (
-    <Layout useHeader={false} layoutCss={layoutCss}>
-      <ImageSection>
-        <div className="img" />
-      </ImageSection>
-      <ButtonSection
-        css={css`
-          height: 120px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        `}>
-        <Button buttonType={ButtonType.Basic} onClick={handleLoginClick}>
-          로그인
-        </Button>
-        <Button buttonType={ButtonType.Text} onClick={handleUseWayClick}>
-          이용방법
-        </Button>
-      </ButtonSection>
+    <Layout layoutCss={layoutCss} useHeader={false}>
+      <div className="wrapper">
+        <TitleSection>
+          <h3>디어,마이 2023</h3>
+          <p>나의 퍼즐을 맞춰주세요.</p>
+        </TitleSection>
+        <ImageSection>
+          <Image alt="img" src={symbol_img} width="120" height="120" />
+        </ImageSection>
+        <IconSection>
+          <p>소셜 계정으로 간편하게 로그인하기</p>
+          <div className="icon-wrapper">
+            <GoogleIcon onClick={handleClickIcon('google')} />
+            <NaverIcon onClick={handleClickIcon('naver')} />
+            <KakaoIcon onClick={handleClickIcon('kakao')} />
+            <FacebookIcon onClick={handleClickIcon('facebook')} />
+          </div>
+        </IconSection>
+        <ButtonSection>
+          <Button buttonType={ButtonType.Text} onClick={handleClickHowToUse}>
+            이용방법
+          </Button>
+        </ButtonSection>
+      </div>
     </Layout>
   );
 }

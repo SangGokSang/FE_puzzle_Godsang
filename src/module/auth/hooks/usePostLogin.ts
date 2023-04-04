@@ -9,7 +9,7 @@ import jwtDecode from 'jwt-decode';
 import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth/atom';
 import { setApiJwt } from 'src/core/api/api';
-import { Pathname } from 'src/core/const/enum';
+import route from 'src/core/const/route.path';
 
 export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, LoginPayload> = {}) => {
   const router = useRouter();
@@ -21,7 +21,7 @@ export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, L
 
       setAuth({ nickname, birthdate, isDeleted });
       setApiJwt(data);
-      router.push(Pathname.list);
+      router.push(route.List);
     },
   });
 };
