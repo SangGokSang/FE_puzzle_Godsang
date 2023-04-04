@@ -6,7 +6,8 @@ const auth = atom<User>({
   default: {
     birthdate: 0,
     nickname: '',
-    isDeleted: false,
+    userId: null,
+    isWithdrawUser: false,
   },
 });
 

@@ -5,4 +5,10 @@ export type LoginPayload = {
   email: string;
 };
 
-export type LoginResponse = string;
+export type LoginResponse = {
+  userId: number;
+  nickname: string;
+  birthdate: number;
+  isWithdrawUser: boolean;
+  accessToken: string;
+};
