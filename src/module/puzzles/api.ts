@@ -1,4 +1,4 @@
-import api from 'src/core/api/api';
+import api from 'src/core/api';
 import { Puzzle, PuzzleReq } from './types';
 
 // fetch puzzles

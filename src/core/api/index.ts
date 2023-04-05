@@ -1,13 +1,8 @@
 import qs from 'qs';
 import axios, { AxiosRequestConfig } from 'axios';
-import { getAccessToken, logout, setAccessToken, setTokens } from './auth';
+import { getAccessToken, logout, setAccessToken } from './auth';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-function paramsSerializer(params: unknown): string {
-  return qs.stringify(params);
-}
-
 const initialConfig: AxiosRequestConfig = Object.freeze({
   baseURL: API_BASE_URL,
   timeout: 0,
@@ -22,17 +17,10 @@ api.interceptors.response.use(
   (result) => result,
   async (error) => {
     if (error === undefined) throw error;
-
-    if (error.response?.status === 401 && !getAccessToken()) {
-      logout();
-      return;
-    }
-
     if (error.response?.status === 401 && !error.request?.responseURL?.endsWith('/api/user/login')) {
       try {
         const token = await useRefresh();
 
-        // Retry failed request
         const retryConfig = {
           ...error.config,
           headers: { ...error.config.headers, Authorization: `Bearer ${token}` },
@@ -42,6 +30,9 @@ api.interceptors.response.use(
         logout();
         return;
       }
+    } else if (error.response?.status === 401) {
+      logout();
+      return;
     } else if (error) {
       const e = { ...error.response?.data, status: error.response?.status };
       throw e;
@@ -60,7 +51,6 @@ function createApiInstance(bearerJwt = '', options: AxiosRequestConfig = {}) {
   return api;
 }
 
-// 로직 처리해야함
 async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
   const refreshApi = createApiInstance();
   try {
@@ -68,7 +58,6 @@ async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
       url: '/user/refresh-token',
       method: 'post',
     });
-    setTokens(token);
     return token;
   } catch (error) {
     logout();
@@ -76,16 +65,16 @@ async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
   }
 }
 
-/**
- * Set bearer token to the API.
- * @param token A JWT. Not bearer.
- */
+function paramsSerializer(params: unknown): string {
+  return qs.stringify(params);
+}
+
 function setApiJwt(token: string): void {
   const bearerToken = `Bearer ${token}`;
   setAccessToken(token);
+  console.log(bearerToken);
   api.defaults.headers.common.Authorization = bearerToken;
 }
 
 export { API_BASE_URL, setApiJwt };
-
 export default api;

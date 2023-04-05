@@ -24,6 +24,7 @@ import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import { css } from '@emotion/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import copy from 'copy-to-clipboard';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -156,11 +157,12 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
   const router = useRouter();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
 
-  const handleClickPiece = (data: any) => setLetterData(null);
+  const handleClickPiece = (data: any) => () => setLetterData(data);
   const handleClose = () => setLetterData(null);
 
   const handleClickShare = useCallback(() => {
-    //
+    console.log(location.href);
+    copy(location.href);
   }, []);
 
   const handleClickMakePuzzle = () => {
@@ -225,7 +227,7 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
                               src={data}
                               position={getPuzzlePosition(index)}
                               alt="puzzle-piece"
-                              onClick={() => handleClickPiece(data)}
+                              onClick={handleClickPiece(data)}
                             />
                           ))}
                         </PuzzleWrap>

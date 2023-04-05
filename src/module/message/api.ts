@@ -1,4 +1,4 @@
-import api from 'src/core/api/api';
+import api from 'src/core/api';
 import { SendMessage } from './types';
 
 export async function postDM(puzzleId: number, param: SendMessage): Promise<SendMessage> {

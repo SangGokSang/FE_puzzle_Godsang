@@ -7,6 +7,7 @@ const cookieStorage: PersistStorage = {
       path: '/',
       domain: document.location.hostname,
       sameSite: 'Strict',
+      secure: true,
     });
   },
   getItem: (key: string) => {

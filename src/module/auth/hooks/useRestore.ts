@@ -6,7 +6,7 @@ import { LoginResponse } from '../types';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth/atom';
-import { setApiJwt } from 'src/core/api/api';
+import { setApiJwt } from 'src/core/api';
 import route from 'src/core/const/route.path';
 
 export const useRestore = (options: MutationOptions<LoginResponse, ApiError, void> = {}) => {

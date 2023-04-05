@@ -1,4 +1,4 @@
-import api from 'src/core/api/api';
+import api from 'src/core/api';
 import { KeyInfo } from './types';
 
 export async function getKeyInfo(): Promise<KeyInfo> {

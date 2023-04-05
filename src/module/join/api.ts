@@ -1,4 +1,4 @@
-import api from 'src/core/api/api';
+import api from 'src/core/api';
 import { UserReq } from './types';
 
 export async function postJoin(param: UserReq) {

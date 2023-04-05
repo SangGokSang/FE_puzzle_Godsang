@@ -4,16 +4,19 @@ import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive 
 import { ButtonGroup, Wrapper } from './style';
 import { usePostLogout } from 'src/module/auth/hooks/usePostLogout';
 import route from 'src/core/const/route.path';
+import { useRecoilValue } from 'recoil';
+import auth from 'src/recoil/auth';
 
 export default function Header() {
   const router = useRouter();
+  const user = useRecoilValue(auth);
   const logout = usePostLogout();
   const handleLogoClick = () => {
     logout.mutate();
   };
 
   const handleBackClick = () => {
-    router.back();
+    router.push({ pathname: route.List, query: { userId: user.userId } });
   };
 
   const handleKeyClick = () => {
@@ -26,7 +29,11 @@ export default function Header() {
 
   return (
     <Wrapper>
-      {router.pathname === route.MyPage ? <BackIcon onClick={handleBackClick} /> : <Logo onClick={handleLogoClick} />}
+      {router.pathname === route.MyPage || router.pathname === route.Key ? (
+        <BackIcon onClick={handleBackClick} />
+      ) : (
+        <Logo onClick={handleLogoClick} />
+      )}
       <ButtonGroup>
         {router.pathname === route.Key ? (
           <KeyIconActive onClick={handleKeyClick} />

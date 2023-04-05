@@ -49,15 +49,10 @@ export function setAccessToken(token: string): void {
   setToken(TKey.token, token);
 }
 
-export function setTokens(token: string) {
-  setToken(TKey.token, token);
-}
-
 export function clearTokens(): void {
   cookieStorage.setItem(AUTH_KEY, '');
 }
 
-// api level에서 로그아웃 처리
 export function logout() {
   clearTokens();
   signOut();
