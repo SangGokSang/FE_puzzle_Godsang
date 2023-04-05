@@ -17,7 +17,7 @@ export const useRestore = (options: MutationOptions<LoginResponse, ApiError, voi
     onSuccess: (data) => {
       setAuth(data);
       setApiJwt(data.accessToken);
-      router.push(route.List);
+      router.push({ pathname: route.List, query: { userId: data.userId } });
     },
   });
 };

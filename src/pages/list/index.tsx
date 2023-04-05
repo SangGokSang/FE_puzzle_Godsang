@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
@@ -23,6 +23,7 @@ import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import { css } from '@emotion/react';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -147,7 +148,9 @@ const Message = styled.div`
   margin: 20px 0 15px;
 `;
 
-function PuzzleList() {
+// queryParam ?userId=1 으로 유저아이디 가져오기
+// 임시로 d 넣어놨어요. 내용 구현해주세요!
+function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const puzzlePosition = [{ left: 0, top: 0 }];
   const { data } = usePuzzles();
   const router = useRouter();
@@ -180,6 +183,18 @@ function PuzzleList() {
 
     index && puzzlePosition.push({ left: puzzleX, top: puzzleY });
     return [puzzleX, puzzleY];
+  }, []);
+
+  // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 딱 한번 실행
+  useEffect(() => {
+    if (router.pathname === route.List && router.query.userId === undefined) {
+      location.href =
+        process.env.NODE_ENV === 'production'
+          ? 'https://dearmy2023.click'
+          : process.env.NODE_ENV === 'development'
+          ? 'http://localhost:3000'
+          : '';
+    }
   }, []);
 
   return (
@@ -236,5 +251,15 @@ function PuzzleList() {
     </Layout>
   );
 }
+
+// query 의 userId 를 request param 으로 보내주세요.
+export const getServerSideProps: GetServerSideProps<{ d: unknown }> = async ({ query }) => {
+  console.log(query.userId);
+  return {
+    props: {
+      d: '',
+    },
+  };
+};
 
 export default PuzzleList;
