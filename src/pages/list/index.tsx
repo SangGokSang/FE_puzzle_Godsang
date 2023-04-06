@@ -229,13 +229,19 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
                 data.map((puzzle, index) => (
                   <div key={puzzle.id}>
                     {index === 0 && puzzle?.messages?.length === 9 && (
-                      <SwiperSlide>
+                      <SwiperSlide key={'create'}>
                         <NoPuzzleWrap>
                           <AddPuzzleIcon onClick={handleClickMakePuzzle} />
                           <p>퍼즐을 만들어보세요!</p>
                         </NoPuzzleWrap>
                       </SwiperSlide>
                     )}
+                    <SwiperSlide>
+                      <NoPuzzleWrap>
+                        <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                        <p>퍼즐을 만들어보세요!</p>
+                      </NoPuzzleWrap>
+                    </SwiperSlide>
                     <SwiperSlide key={puzzle.id}>
                       <div css={goal}>{puzzle.title}</div>
                       <PuzzleContainer>
