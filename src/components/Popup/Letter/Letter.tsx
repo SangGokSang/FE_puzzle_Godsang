@@ -7,11 +7,12 @@ import { MessageCard, RecipientField, SenderField, TextBodyField } from './style
 import { ButtonSection } from 'src/core/styles/common';
 import { BackIcon } from 'src/core/icons';
 import { Controller, useForm } from 'react-hook-form';
+import { useSendDM } from 'src/module/message';
 
 type LetterProps = {
   isOpen: boolean;
   onClose: () => void;
-  data: MessageData | null;
+  data: MessageData | number | null;
   isWrite: boolean;
 };
 
@@ -34,8 +35,9 @@ const Bar = React.forwardRef((props: any, ref: any) => (
 
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps): ReactElement {
-  const { isOpen, onClose, isWrite } = props;
-  const { control, watch } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
+  const { isOpen, onClose, isWrite, data } = props;
+  const { control, watch, getValues } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
+  const sendDM = useSendDM();
   // const [isWrite, setIsEdit] = useState<boolean>(false);
 
   const handleCloseModal = () => {
@@ -45,7 +47,10 @@ function Letter(props: LetterProps): ReactElement {
   };
 
   const onSubmit = () => {
-    console.log('submit');
+    const value = getValues();
+    if (isWrite) {
+      sendDM.mutate({ puzzleId: data as number, message: value });
+    }
   };
 
   return (

@@ -72,7 +72,6 @@ function paramsSerializer(params: unknown): string {
 function setApiJwt(token: string): void {
   const bearerToken = `Bearer ${token}`;
   setAccessToken(token);
-  console.log(bearerToken);
   api.defaults.headers.common.Authorization = bearerToken;
 }
 

@@ -3,3 +3,8 @@ export type SendMessage = {
   to: string;
   content: string;
 };
+
+export type SendMessageRequest = {
+  puzzleId: number;
+  message: SendMessage;
+};
