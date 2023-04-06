@@ -236,7 +236,7 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
                         </NoPuzzleWrap>
                       </SwiperSlide>
                     )}
-                    <SwiperSlide>
+                    <SwiperSlide key={'create-test'}>
                       <NoPuzzleWrap>
                         <AddPuzzleIcon onClick={handleClickMakePuzzle} />
                         <p>퍼즐을 만들어보세요!</p>
