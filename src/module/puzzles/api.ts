@@ -1,12 +1,25 @@
 import api from 'src/core/api';
+import { getAccessToken } from 'src/core/api/auth';
 import { Puzzle, PuzzleReq } from './types';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const accessToken = getAccessToken({ bearer: true }) || '';
+
 // fetch puzzles
-export async function fetchPuzzles(): Promise<Puzzle[]> {
-  const { data } = await api({
-    url: `/puzzles`,
-    method: 'get',
-  });
+export async function fetchPuzzles(userId: string): Promise<Puzzle[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/puzzles?` +
+      new URLSearchParams({
+        userId,
+      }),
+    {
+      method: 'GET',
+      headers: {
+        Authorization: accessToken as string,
+      },
+    },
+  );
+  const data = await response.json();
 
   // const data = await new Promise<Puzzle[]>((resolve) => {
   //   resolve([

@@ -12,6 +12,7 @@ type LetterProps = {
   isOpen: boolean;
   onClose: () => void;
   data: MessageData | null;
+  isWrite: boolean;
 };
 
 export type MessageData = {
@@ -33,9 +34,9 @@ const Bar = React.forwardRef((props: any, ref: any) => (
 
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps): ReactElement {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, isWrite } = props;
   const { control, watch } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  // const [isWrite, setIsEdit] = useState<boolean>(false);
 
   const handleCloseModal = () => {
     if (onClose instanceof Function) {
@@ -57,7 +58,7 @@ function Letter(props: LetterProps): ReactElement {
           <MessageCard>
             <RecipientField>
               To.
-              {isEdit ? (
+              {isWrite ? (
                 <Controller
                   name="to"
                   control={control}
@@ -76,7 +77,7 @@ function Letter(props: LetterProps): ReactElement {
               )}
             </RecipientField>
             <TextBodyField>
-              {isEdit ? (
+              {isWrite ? (
                 <Controller
                   name="content"
                   control={control}
@@ -101,7 +102,7 @@ function Letter(props: LetterProps): ReactElement {
             </TextBodyField>
             <SenderField>
               From.
-              {isEdit ? (
+              {isWrite ? (
                 <Controller
                   name="from"
                   control={control}
@@ -123,7 +124,7 @@ function Letter(props: LetterProps): ReactElement {
               )}
             </SenderField>
           </MessageCard>
-          {isEdit && (
+          {isWrite && (
             <ButtonSection css={buttonSectionCss}>
               <Button buttonType={ButtonType.Text} onClick={onSubmit}>
                 DM 보내기
