@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useEffect, useId, useState } from 'react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
@@ -8,16 +8,16 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import puzzle1 from 'public/assets/images/puzzle-1.png';
-import puzzle2 from 'public/assets/images/puzzle-2.png';
-import puzzle3 from 'public/assets/images/puzzle-3.png';
-import puzzle4 from 'public/assets/images/puzzle-4.png';
-import puzzle5 from 'public/assets/images/puzzle-5.png';
-import puzzle6 from 'public/assets/images/puzzle-6.png';
-import puzzle7 from 'public/assets/images/puzzle-7.png';
-import puzzle8 from 'public/assets/images/puzzle-8.png';
-import puzzle9 from 'public/assets/images/puzzle-9.png';
-import { PuzzleMSG, usePuzzles } from 'src/module/puzzles';
+import puzzle1 from 'public/assets/images/puzzles/exercise/exercise1.png';
+import puzzle2 from 'public/assets/images/puzzles/exercise/exercise2.png';
+import puzzle3 from 'public/assets/images/puzzles/exercise/exercise3.png';
+import puzzle4 from 'public/assets/images/puzzles/exercise/exercise4.png';
+import puzzle5 from 'public/assets/images/puzzles/exercise/exercise5.png';
+import puzzle6 from 'public/assets/images/puzzles/exercise/exercise6.png';
+import puzzle7 from 'public/assets/images/puzzles/exercise/exercise7.png';
+import puzzle8 from 'public/assets/images/puzzles/exercise/exercise8.png';
+import puzzle9 from 'public/assets/images/puzzles/exercise/exercise9.png';
+import { fetchPuzzles, Puzzle, PuzzleMSG } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
@@ -25,6 +25,8 @@ import route from 'src/core/const/route.path';
 import { css } from '@emotion/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import copy from 'copy-to-clipboard';
+import { useRecoilValue } from 'recoil';
+import auth from 'src/recoil/auth';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -149,25 +151,42 @@ const Message = styled.div`
   margin: 20px 0 15px;
 `;
 
-// queryParam ?userId=1 으로 유저아이디 가져오기
-// 임시로 d 넣어놨어요. 내용 구현해주세요!
-function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function PuzzleList({ data }: { data: Puzzle[] }) {
   const puzzlePosition = [{ left: 0, top: 0 }];
-  const { data } = usePuzzles();
   const router = useRouter();
   const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
+  const { userId } = useRecoilValue(auth);
+  const [openLetter, setOpenLetter] = useState<boolean>(false);
+  console.log(userId);
 
-  const handleClickPiece = (data: any) => () => setLetterData(data);
-  const handleClose = () => setLetterData(null);
+  const handleClickPiece = (data: any) => () => {
+    setOpenLetter(true);
+    setLetterData(data);
+  };
+  const handleClose = () => {
+    setOpenLetter(false);
+    setLetterData(null);
+  };
 
   const handleClickShare = useCallback(() => {
-    console.log(location.href);
-    copy(location.href);
+    if (navigator.share) {
+      navigator.share({
+        title: 'Dear My 2023',
+        url: location.href,
+      });
+    } else {
+      copy(location.href);
+    }
   }, []);
 
   const handleClickMakePuzzle = () => {
     router.push(route.Create);
   };
+
+  const handleClickSendMessage = useCallback(() => {
+    setOpenLetter(true);
+    setLetterData(null);
+  }, []);
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
     const row = Math.floor(index / 3);
@@ -203,7 +222,7 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
     <Layout>
       <PuzzleListWrap>
         <Content>
-          <div css={title}>별명님의 목표</div>
+          <div css={title}>{data[0]?.userNickname} 님의 목표</div>
           <SwiperContainer>
             <Swiper pagination={true} modules={[Pagination]}>
               {data && !!data.length ? (
@@ -221,13 +240,14 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
                       <div css={goal}>{puzzle.title}</div>
                       <PuzzleContainer>
                         <PuzzleWrap>
-                          {PUZZLE_LIST.map((data, index) => (
+                          {puzzle.messages.map((message, index) => (
                             <PuzzlePiece
                               key={index}
-                              src={data}
+                              src={PUZZLE_LIST[index]}
                               position={getPuzzlePosition(index)}
                               alt="puzzle-piece"
-                              onClick={handleClickPiece(data)}
+                              onClick={handleClickPiece(message)}
+                              placeholder="blur"
                             />
                           ))}
                         </PuzzleWrap>
@@ -243,25 +263,25 @@ function PuzzleList({ d }: InferGetServerSidePropsType<typeof getServerSideProps
               )}
             </Swiper>
           </SwiperContainer>
-          <Message>친구에게 공유해서 퍼즐조각을 완성해보세요!</Message>
+          <Message>{userId ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '뭐라고 하지'}</Message>
         </Content>
-        <Button buttonType={ButtonType.Basic} onClick={handleClickShare}>
-          공유하기
+        <Button buttonType={ButtonType.Basic} onClick={userId ? handleClickShare : handleClickSendMessage}>
+          {userId ? '공유하기' : 'DM 보내기'}
         </Button>
       </PuzzleListWrap>
-      <Letter isOpen={!!letterData} onClose={handleClose} data={letterData} />
+      <Letter isOpen={openLetter} onClose={handleClose} data={letterData} isWrite={openLetter && !letterData} />
     </Layout>
   );
 }
 
-// query 의 userId 를 request param 으로 보내주세요.
-export const getServerSideProps: GetServerSideProps<{ d: unknown }> = async ({ query }) => {
-  console.log(query.userId);
+export default PuzzleList;
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const userId = query.userId as string;
+  const data = await fetchPuzzles(userId);
   return {
     props: {
-      d: '',
+      data,
     },
   };
 };
-
-export default PuzzleList;
