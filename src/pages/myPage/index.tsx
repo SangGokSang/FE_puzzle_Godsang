@@ -13,6 +13,8 @@ import * as yup from 'yup';
 import { getDDay } from 'src/core/util/util';
 import { scheme } from 'src/core/const/scheme';
 import { errorCss } from 'src/components/wizard/puzzle/style';
+import { useRecoilValue } from 'recoil';
+import auth from 'src/recoil/auth';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -91,7 +93,9 @@ const Story = styled.div`
 
 function MyPage() {
   const { watch } = useForm();
+  const { userId, nickname, birthdate } = useRecoilValue(auth);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  console.log(userId);
 
   const {
     formState: { errors },
