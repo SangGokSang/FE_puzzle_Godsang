@@ -1,11 +1,11 @@
 import api from 'src/core/api';
-import { SendMessage } from './types';
+import { SendMessage, SendMessageRequest } from './types';
 
-export async function postDM(puzzleId: number, param: SendMessage): Promise<SendMessage> {
+export async function postDM({ puzzleId, message }: SendMessageRequest): Promise<void> {
   const { data } = await api({
-    url: `/puzzle/${puzzleId}`,
+    url: `/puzzles/${puzzleId}`,
     method: 'post',
-    data: param,
+    data: message,
   });
   return data;
 }

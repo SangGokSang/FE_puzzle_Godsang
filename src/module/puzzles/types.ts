@@ -10,6 +10,7 @@ export type Puzzle = {
 
 export type PuzzleMSG = {
   id: number;
+  displayOrder: number;
   content: string;
   from: string;
   to: string;

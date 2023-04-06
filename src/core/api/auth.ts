@@ -7,7 +7,7 @@ export const DEFAULT_AUTH = {
 };
 
 enum TKey {
-  token = 'token',
+  token = 'accessToken',
 }
 
 function getToken(key: TKey, bearer: boolean) {

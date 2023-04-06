@@ -8,15 +8,15 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import puzzle1 from 'public/assets/images/puzzles/exercise/exercise1.png';
-import puzzle2 from 'public/assets/images/puzzles/exercise/exercise2.png';
-import puzzle3 from 'public/assets/images/puzzles/exercise/exercise3.png';
-import puzzle4 from 'public/assets/images/puzzles/exercise/exercise4.png';
-import puzzle5 from 'public/assets/images/puzzles/exercise/exercise5.png';
-import puzzle6 from 'public/assets/images/puzzles/exercise/exercise6.png';
-import puzzle7 from 'public/assets/images/puzzles/exercise/exercise7.png';
-import puzzle8 from 'public/assets/images/puzzles/exercise/exercise8.png';
-import puzzle9 from 'public/assets/images/puzzles/exercise/exercise9.png';
+import puzzle1 from 'public/assets/images/puzzles/test/puzzle-1.png';
+import puzzle2 from 'public/assets/images/puzzles/test/puzzle-2.png';
+import puzzle3 from 'public/assets/images/puzzles/test/puzzle-3.png';
+import puzzle4 from 'public/assets/images/puzzles/test/puzzle-4.png';
+import puzzle5 from 'public/assets/images/puzzles/test/puzzle-5.png';
+import puzzle6 from 'public/assets/images/puzzles/test/puzzle-6.png';
+import puzzle7 from 'public/assets/images/puzzles/test/puzzle-7.png';
+import puzzle8 from 'public/assets/images/puzzles/test/puzzle-8.png';
+import puzzle9 from 'public/assets/images/puzzles/test/puzzle-9.png';
 import { fetchPuzzles, Puzzle, PuzzleMSG } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon } from 'src/core/icons';
@@ -154,17 +154,17 @@ const Message = styled.div`
 function PuzzleList({ data }: { data: Puzzle[] }) {
   const puzzlePosition = [{ left: 0, top: 0 }];
   const router = useRouter();
-  const [letterData, setLetterData] = useState<PuzzleMSG | null>(null);
-  const { userId } = useRecoilValue(auth);
-  const [openLetter, setOpenLetter] = useState<boolean>(false);
-  console.log(userId);
+  const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
+  const { userId: authUserId } = useRecoilValue(auth);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [isUser, setIsUser] = useState<boolean>(false);
+
+  console.log(data);
 
   const handleClickPiece = (data: any) => () => {
-    setOpenLetter(true);
     setLetterData(data);
   };
   const handleClose = () => {
-    setOpenLetter(false);
     setLetterData(null);
   };
 
@@ -172,6 +172,7 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
     if (navigator.share) {
       navigator.share({
         title: 'Dear My 2023',
+        text: '우리에게 선물로 다가온 시간을 채워봐요.',
         url: location.href,
       });
     } else {
@@ -184,9 +185,9 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
   };
 
   const handleClickSendMessage = useCallback(() => {
-    setOpenLetter(true);
-    setLetterData(null);
-  }, []);
+    // setOpenLetter(true);
+    setLetterData(data[0].id); // 가장 마지막에 생성된 퍼즐 id
+  }, [data]);
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
     const row = Math.floor(index / 3);
@@ -218,6 +219,9 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
     }
   }, []);
 
+  useEffect(() => setUserId(authUserId), [authUserId]);
+  useEffect(() => setIsUser(Number(userId) === Number(router.query.userId)), [router.query.userId, userId]);
+
   return (
     <Layout>
       <PuzzleListWrap>
@@ -226,41 +230,44 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
           <SwiperContainer>
             <Swiper pagination={true} modules={[Pagination]}>
               {data && !!data.length ? (
-                data.map((puzzle, index) => (
-                  <div key={puzzle.id}>
-                    {index === 0 && puzzle?.messages?.length === 9 && (
-                      <SwiperSlide key={'create'}>
-                        <NoPuzzleWrap>
-                          <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                          <p>퍼즐을 만들어보세요!</p>
-                        </NoPuzzleWrap>
+                <>
+                  {data.map((puzzle, index) => (
+                    <div key={puzzle.id}>
+                      {index === 0 && puzzle?.messages?.length === 9 && (
+                        <SwiperSlide key={'create'}>
+                          <NoPuzzleWrap>
+                            <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                            <p>퍼즐을 만들어보세요!</p>
+                          </NoPuzzleWrap>
+                        </SwiperSlide>
+                      )}
+                      <SwiperSlide key={puzzle.id}>
+                        <div css={goal}>{puzzle.title}</div>
+                        <PuzzleContainer>
+                          <PuzzleWrap>
+                            {puzzle.messages.map((message, index) => (
+                              <PuzzlePiece
+                                key={index}
+                                src={PUZZLE_LIST[index]}
+                                position={getPuzzlePosition(index)}
+                                alt="puzzle-piece"
+                                onClick={handleClickPiece(message)}
+                                placeholder="blur"
+                                // width={'40%'}
+                              />
+                            ))}
+                          </PuzzleWrap>
+                        </PuzzleContainer>
                       </SwiperSlide>
-                    )}
-                    <SwiperSlide key={'create-test'}>
-                      <NoPuzzleWrap>
-                        <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                        <p>퍼즐을 만들어보세요!</p>
-                      </NoPuzzleWrap>
-                    </SwiperSlide>
-                    <SwiperSlide key={puzzle.id}>
-                      <div css={goal}>{puzzle.title}</div>
-                      <PuzzleContainer>
-                        <PuzzleWrap>
-                          {puzzle.messages.map((message, index) => (
-                            <PuzzlePiece
-                              key={index}
-                              src={PUZZLE_LIST[index]}
-                              position={getPuzzlePosition(index)}
-                              alt="puzzle-piece"
-                              onClick={handleClickPiece(message)}
-                              placeholder="blur"
-                            />
-                          ))}
-                        </PuzzleWrap>
-                      </PuzzleContainer>
-                    </SwiperSlide>
-                  </div>
-                ))
+                    </div>
+                  ))}
+                  <SwiperSlide key={'create-test'}>
+                    <NoPuzzleWrap>
+                      <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                      <p>퍼즐을 만들어보세요!</p>
+                    </NoPuzzleWrap>
+                  </SwiperSlide>
+                </>
               ) : (
                 <NoPuzzleWrap>
                   <AddPuzzleIcon onClick={handleClickMakePuzzle} />
@@ -269,13 +276,13 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
               )}
             </Swiper>
           </SwiperContainer>
-          <Message>{userId ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '뭐라고 하지'}</Message>
+          <Message>{isUser ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '뭐라고 하지'}</Message>
         </Content>
-        <Button buttonType={ButtonType.Basic} onClick={userId ? handleClickShare : handleClickSendMessage}>
-          {userId ? '공유하기' : 'DM 보내기'}
+        <Button buttonType={ButtonType.Basic} onClick={isUser ? handleClickShare : handleClickSendMessage}>
+          {isUser ? '공유하기' : 'DM 보내기'}
         </Button>
       </PuzzleListWrap>
-      <Letter isOpen={openLetter} onClose={handleClose} data={letterData} isWrite={openLetter && !letterData} />
+      <Letter isOpen={!!letterData} onClose={handleClose} data={letterData} isWrite={!isUser} />
     </Layout>
   );
 }
