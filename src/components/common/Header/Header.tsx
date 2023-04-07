@@ -6,6 +6,18 @@ import { usePostLogout } from 'src/module/auth/hooks/usePostLogout';
 import route from 'src/core/const/route.path';
 import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth';
+import styled from '@emotion/styled';
+
+const LoginButton = styled.button`
+  width: 60px;
+  height: 30px;
+  border-radius: 50px;
+  line-height: 20px;
+  font-weight: 400;
+  font-size: 13px;
+  background: #ffffff;
+  border: 1px solid #000000;
+`;
 
 export default function Header() {
   const router = useRouter();
@@ -27,6 +39,10 @@ export default function Header() {
     router.push(route.MyPage);
   };
 
+  const handleLoginClick = () => {
+    router.push(route.Landing);
+  };
+
   return (
     <Wrapper>
       {router.pathname === route.MyPage || router.pathname === route.Key ? (
@@ -35,15 +51,21 @@ export default function Header() {
         <Logo onClick={handleLogoClick} />
       )}
       <ButtonGroup>
-        {router.pathname === route.Key ? (
-          <KeyIconActive onClick={handleKeyClick} />
+        {user.userId === null ? (
+          <LoginButton onClick={handleLoginClick}>로그인</LoginButton>
         ) : (
-          <KeyIcon onClick={handleKeyClick} />
-        )}
-        {router.pathname === route.MyPage ? (
-          <ProfileIconActive onClick={handleUserClick} />
-        ) : (
-          <ProfileIcon onClick={handleUserClick} />
+          <>
+            {router.pathname === route.Key ? (
+              <KeyIconActive onClick={handleKeyClick} />
+            ) : (
+              <KeyIcon onClick={handleKeyClick} />
+            )}
+            {router.pathname === route.MyPage ? (
+              <ProfileIconActive onClick={handleUserClick} />
+            ) : (
+              <ProfileIcon onClick={handleUserClick} />
+            )}
+          </>
         )}
       </ButtonGroup>
     </Wrapper>
