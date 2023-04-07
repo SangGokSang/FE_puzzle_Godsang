@@ -30,7 +30,8 @@ api.interceptors.response.use(
         logout();
         return;
       }
-    } else if (error.response?.status === 401) {
+    } else if (error.response?.status === 401 && error.response?.status === 400) {
+      // 401 unAuthrozied, 400 Bad Request 대응
       logout();
       return;
     } else if (error) {
