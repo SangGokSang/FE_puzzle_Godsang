@@ -36,8 +36,13 @@ const Bar = React.forwardRef((props: any, ref: any) => (
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
-  const { control, getValues } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
-  const sendDM = useSendDM({ onSuccess: () => onClose() });
+  const { control, getValues, reset } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
+  const sendDM = useSendDM({
+    onSuccess: () => {
+      handleCloseModal();
+      reset();
+    },
+  });
   // const [isWrite, setIsEdit] = useState<boolean>(false);
 
   const handleCloseModal = () => {
