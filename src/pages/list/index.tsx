@@ -17,7 +17,7 @@ import puzzle6 from 'public/assets/images/puzzles/test/puzzle-6.png';
 import puzzle7 from 'public/assets/images/puzzles/test/puzzle-7.png';
 import puzzle8 from 'public/assets/images/puzzles/test/puzzle-8.png';
 import puzzle9 from 'public/assets/images/puzzles/test/puzzle-9.png';
-import { fetchPuzzles, Puzzle, PuzzleMSG } from 'src/module/puzzles';
+import { fetchPuzzles, Puzzle, PuzzleMSG, PUZZLES_KEY } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
@@ -29,6 +29,9 @@ import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth';
 import isMobile from 'src/recoil/isMobile';
 import { useSnackbar } from 'notistack';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { ApiError } from 'src/core/type/ApiError';
+import { usePuzzles } from 'src/module/puzzles/hooks/useFetchPuzzles';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -153,15 +156,17 @@ const Message = styled.div`
   margin: 20px 0 15px;
 `;
 
-function PuzzleList({ data }: { data: Puzzle[] }) {
+function PuzzleList() {
   const puzzlePosition = [{ left: 0, top: 0 }];
   const router = useRouter();
   const isMobileView = useRecoilValue(isMobile);
   const { userId: authUserId } = useRecoilValue(auth);
   const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
-  const [userId, setUserId] = useState<number | null>(null);
+  const [loginUserId, setLoginUserId] = useState<number | null>(null);
   const [isUser, setIsUser] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
+
+  const { data } = usePuzzles(router.query.userId as string);
 
   const handleClickPiece = (data: any) => () => {
     if (isUser) {
@@ -192,7 +197,7 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
   };
 
   const handleClickSendMessage = useCallback(() => {
-    setLetterData(data[0].id); // 가장 마지막에 생성된 퍼즐 id
+    setLetterData(data?.length ? data[0].id : null); // 가장 마지막에 생성된 퍼즐 id
   }, [data]);
 
   const getPuzzlePosition = useCallback((index: number): [number, number] => {
@@ -225,14 +230,14 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
     }
   }, []);
 
-  useEffect(() => setUserId(authUserId), [authUserId]);
-  useEffect(() => setIsUser(Number(userId) === Number(router.query.userId)), [router.query.userId, userId]);
+  useEffect(() => setLoginUserId(authUserId), [authUserId]);
+  useEffect(() => setIsUser(Number(loginUserId) === Number(router.query.userId)), [router.query.userId, loginUserId]);
 
   return (
     <Layout>
       <PuzzleListWrap>
         <Content>
-          <div css={title}>{data[0]?.userNickname} 님의 목표</div>
+          <div css={title}>{data?.length ? data[0]?.userNickname : '별명'} 님의 목표</div>
           <SwiperContainer>
             <Swiper pagination={true} modules={[Pagination]}>
               {data && !!data.length ? (
@@ -298,10 +303,13 @@ export default PuzzleList;
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const userId = query.userId as string;
-  const data = await fetchPuzzles(userId);
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery<Puzzle[], ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
+
   return {
     props: {
-      data,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };
