@@ -84,7 +84,7 @@ export default function Home() {
     if (!isMobileView) {
       enqueueSnackbar('모바일 화면에 최적화 되어있습니다.');
     }
-  }, [isMobileView, enqueueSnackbar]);
+  }, [isMobileView]);
 
   return (
     <Layout useHeader={false}>

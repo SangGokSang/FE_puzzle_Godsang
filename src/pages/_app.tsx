@@ -6,8 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
-import { SnackbarProvider, useSnackbar } from 'notistack';
-import { ApiError } from 'src/core/type/ApiError';
+import { SnackbarProvider } from 'notistack';
 
 const theme = createTheme({
   components: {
