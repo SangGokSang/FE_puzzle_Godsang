@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useId, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
@@ -23,10 +23,12 @@ import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import { css } from '@emotion/react';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSideProps } from 'next';
 import copy from 'copy-to-clipboard';
 import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth';
+import isMobile from 'src/recoil/isMobile';
+import { useSnackbar } from 'notistack';
 
 const PUZZLE_SIZE = 90;
 const PUZZLE_ROUND_SIZE = 18;
@@ -154,10 +156,12 @@ const Message = styled.div`
 function PuzzleList({ data }: { data: Puzzle[] }) {
   const puzzlePosition = [{ left: 0, top: 0 }];
   const router = useRouter();
-  const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
+  const isMobileView = useRecoilValue(isMobile);
   const { userId: authUserId } = useRecoilValue(auth);
+  const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [isUser, setIsUser] = useState<boolean>(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClickPiece = (data: any) => () => {
     if (isUser) {
@@ -177,15 +181,17 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
       });
     } else {
       copy(location.href);
+      if (!isMobileView) {
+        enqueueSnackbar('링크를 복사했습니다.');
+      }
     }
-  }, []);
+  }, [isMobileView]);
 
   const handleClickMakePuzzle = () => {
     router.push(route.Create);
   };
 
   const handleClickSendMessage = useCallback(() => {
-    // setOpenLetter(true);
     setLetterData(data[0].id); // 가장 마지막에 생성된 퍼즐 id
   }, [data]);
 
@@ -209,7 +215,7 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
 
   // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 딱 한번 실행
   useEffect(() => {
-    if (router.pathname === route.List && router.query.userId === undefined) {
+    if (router.pathname === route.List && !router.query.userId) {
       location.href =
         process.env.NODE_ENV === 'production'
           ? 'https://dearmy2023.click'
@@ -253,7 +259,6 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
                                 alt="puzzle-piece"
                                 onClick={handleClickPiece(message)}
                                 placeholder="blur"
-                                // width={'40%'}
                               />
                             ))}
                           </PuzzleWrap>
@@ -276,7 +281,9 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
               )}
             </Swiper>
           </SwiperContainer>
-          <Message>{isUser ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '뭐라고 하지'}</Message>
+          <Message>
+            {isUser ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '아래 버튼을 클릭해 응원의 메세지를 보내주세요!'}
+          </Message>
         </Content>
         <Button buttonType={ButtonType.Basic} onClick={isUser ? handleClickShare : handleClickSendMessage}>
           {isUser ? '공유하기' : 'DM 보내기'}

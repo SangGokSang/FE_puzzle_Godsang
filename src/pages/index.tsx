@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
@@ -8,6 +8,9 @@ import useLogin from 'src/core/hooks/useLogin';
 import { Provider } from 'src/core/type/provider';
 import Image from 'next/image';
 import symbol_img from 'public/assets/images/main-symbol.png';
+import { useRecoilValue } from 'recoil';
+import isMobile from 'src/recoil/isMobile';
+import { useSnackbar } from 'notistack';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -67,6 +70,8 @@ const IconSection = styled.div`
 
 export default function Home() {
   const login = useLogin();
+  const isMobileView = useRecoilValue(isMobile);
+  const { enqueueSnackbar } = useSnackbar();
   const handleClickHowToUse = () => {
     // 처리필요
   };
@@ -74,6 +79,12 @@ export default function Home() {
   const handleClickIcon = (provider: Provider) => () => {
     login(provider);
   };
+
+  useEffect(() => {
+    if (!isMobileView) {
+      enqueueSnackbar('모바일 화면에 최적화 되어있습니다.');
+    }
+  }, [isMobileView, enqueueSnackbar]);
 
   return (
     <Layout useHeader={false}>
