@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Global } from '@emotion/react';
 import type { AppProps } from 'next/app';
 import { globalStyle } from 'src/core/styles/global';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
@@ -55,16 +55,18 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={pageProps.session}>
-        <RecoilRoot>
-          <ThemeProvider theme={theme}>
-            <Global styles={globalStyle} />
-            <SnackbarProvider autoHideDuration={4000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-              <Component {...pageProps} />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </RecoilRoot>
-      </SessionProvider>
+      <Hydrate state={pageProps.dehydratedState}>
+        <SessionProvider session={pageProps.session}>
+          <RecoilRoot>
+            <ThemeProvider theme={theme}>
+              <Global styles={globalStyle} />
+              <SnackbarProvider autoHideDuration={4000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                <Component {...pageProps} />
+              </SnackbarProvider>
+            </ThemeProvider>
+          </RecoilRoot>
+        </SessionProvider>
+      </Hydrate>
     </QueryClientProvider>
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
 import { ButtonGroup, Wrapper } from './style';
@@ -27,14 +27,15 @@ const buttonHoverCss = css`
 
 export default function Header() {
   const router = useRouter();
-  const user = useRecoilValue(auth);
+  const { userId: authUserId } = useRecoilValue(auth);
+  const [loginUserId, setLoginUserId] = useState<number | null>(null);
   const logout = usePostLogout();
   const handleLogoClick = () => {
     logout.mutate();
   };
 
   const handleBackClick = () => {
-    router.push({ pathname: route.List, query: { userId: user.userId } });
+    router.push({ pathname: route.List, query: { userId: loginUserId } });
   };
 
   const handleKeyClick = () => {
@@ -49,6 +50,8 @@ export default function Header() {
     router.push(route.Landing);
   };
 
+  useEffect(() => setLoginUserId(authUserId), [authUserId]);
+
   return (
     <Wrapper>
       {router.pathname === route.MyPage || router.pathname === route.Key ? (
@@ -57,7 +60,7 @@ export default function Header() {
         <Logo onClick={handleLogoClick} css={buttonHoverCss} />
       )}
       <ButtonGroup>
-        {user.userId === null ? (
+        {loginUserId === null ? (
           <LoginButton onClick={handleLoginClick}>로그인</LoginButton>
         ) : (
           <>
