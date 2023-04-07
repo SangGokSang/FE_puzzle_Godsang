@@ -71,7 +71,7 @@ function Letter(props: LetterProps): ReactElement {
                     onChange={onChange}
                     inputProps={{ minLength: 1, maxLength: 7 }}
                     className="to"
-                    placeholder="누구"
+                    placeholder="to"
                   />
                 )}
               />
@@ -118,7 +118,7 @@ function Letter(props: LetterProps): ReactElement {
                     }}
                     inputProps={{ minLength: 1, maxLength: 7 }}
                     className="from"
-                    placeholder="누구"
+                    placeholder="from"
                   />
                 )}
               />
