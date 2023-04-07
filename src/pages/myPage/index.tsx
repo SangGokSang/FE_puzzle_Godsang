@@ -95,7 +95,6 @@ function MyPage() {
   const { watch } = useForm();
   const { userId, nickname, birthdate } = useRecoilValue(auth);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  console.log(userId);
 
   const {
     formState: { errors },

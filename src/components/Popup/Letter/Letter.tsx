@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import { Modal, TextField } from '@mui/material';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import Layout from 'src/components/common/Layout';
 import { MessageCard, RecipientField, SenderField, TextBodyField } from './style';
 import { ButtonSection } from 'src/core/styles/common';
@@ -36,8 +36,8 @@ const Bar = React.forwardRef((props: any, ref: any) => (
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
-  const { control, watch, getValues } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
-  const sendDM = useSendDM();
+  const { control, getValues } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
+  const sendDM = useSendDM({ onSuccess: () => onClose() });
   // const [isWrite, setIsEdit] = useState<boolean>(false);
 
   const handleCloseModal = () => {
