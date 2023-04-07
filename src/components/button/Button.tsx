@@ -5,6 +5,7 @@ export enum ButtonType {
   Basic = 'basic',
   Disabled = 'disabled',
   Text = 'text',
+  SignOut = 'signOut',
 }
 
 type ButtonProps = {
@@ -37,6 +38,16 @@ const Btn = styled.button`
     background-color: #cecece;
     color: #727272;
     border: 1px solid #727272;
+  }
+
+  &.signOut {
+    background-color: transparent;
+    border: none;
+    color: #9148da;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 28px;
+    text-decoration: underline;
   }
 `;
 

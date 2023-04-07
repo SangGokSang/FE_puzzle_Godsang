@@ -7,6 +7,8 @@ import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { InfoKeyIcon, XIcon } from 'src/core/icons';
 import { useGetKeyInfo } from 'src/module/keyInfo';
+import { useRecoilValue } from 'recoil';
+import auth from 'src/recoil/auth';
 
 export type KeyInfo = {
   keyCount: number;
@@ -76,6 +78,7 @@ const Attention = styled.div`
 
 function KeyInfo() {
   const { data } = useGetKeyInfo();
+  const { nickname } = useRecoilValue(auth);
 
   const handleClick = () => {
     console.log('광고보기');
@@ -85,7 +88,7 @@ function KeyInfo() {
     <Layout layoutCss={layoutCss} useHeader={true}>
       <KeyInfoSection>
         <InfoWrap>
-          <InfoTitle>별명님의 열쇠 갯수</InfoTitle>
+          <InfoTitle>{nickname}님의 열쇠 갯수</InfoTitle>
           <InfoBox>
             <InfoContent>
               <InfoKeyIcon />
