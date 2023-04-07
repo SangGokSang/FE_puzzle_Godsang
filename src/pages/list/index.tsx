@@ -160,7 +160,9 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
   const [isUser, setIsUser] = useState<boolean>(false);
 
   const handleClickPiece = (data: any) => () => {
-    setLetterData(data);
+    if (isUser) {
+      setLetterData(data);
+    }
   };
   const handleClose = () => {
     setLetterData(null);
