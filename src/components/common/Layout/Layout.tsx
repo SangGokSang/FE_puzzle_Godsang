@@ -36,7 +36,8 @@ export default function Layout({ children, useHeader = true, layoutCss }: Layout
 
   useEffect(() => {
     setIsMobile(isMobileSize);
-  }, [isMobileSize]);
+  }, []);
+
   return (
     <>
       <Head>

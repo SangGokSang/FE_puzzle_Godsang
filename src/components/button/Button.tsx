@@ -21,6 +21,7 @@ const Btn = styled.button`
   font-size: 18px;
   font-weight: 500;
   padding: 16px 0;
+  cursor: pointer;
 
   &.basic {
     color: #ffffff;

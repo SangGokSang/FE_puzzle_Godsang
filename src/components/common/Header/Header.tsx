@@ -7,6 +7,7 @@ import route from 'src/core/const/route.path';
 import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth';
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 
 const LoginButton = styled.button`
   width: 60px;
@@ -17,6 +18,11 @@ const LoginButton = styled.button`
   font-size: 13px;
   background: #ffffff;
   border: 1px solid #000000;
+  cursor: pointer;
+`;
+
+const buttonHoverCss = css`
+  cursor: pointer;
 `;
 
 export default function Header() {
@@ -46,9 +52,9 @@ export default function Header() {
   return (
     <Wrapper>
       {router.pathname === route.MyPage || router.pathname === route.Key ? (
-        <BackIcon onClick={handleBackClick} />
+        <BackIcon onClick={handleBackClick} css={buttonHoverCss} />
       ) : (
-        <Logo onClick={handleLogoClick} />
+        <Logo onClick={handleLogoClick} css={buttonHoverCss} />
       )}
       <ButtonGroup>
         {user.userId === null ? (
@@ -56,14 +62,14 @@ export default function Header() {
         ) : (
           <>
             {router.pathname === route.Key ? (
-              <KeyIconActive onClick={handleKeyClick} />
+              <KeyIconActive onClick={handleKeyClick} css={buttonHoverCss} />
             ) : (
-              <KeyIcon onClick={handleKeyClick} />
+              <KeyIcon onClick={handleKeyClick} css={buttonHoverCss} />
             )}
             {router.pathname === route.MyPage ? (
-              <ProfileIconActive onClick={handleUserClick} />
+              <ProfileIconActive onClick={handleUserClick} css={buttonHoverCss} />
             ) : (
-              <ProfileIcon onClick={handleUserClick} />
+              <ProfileIcon onClick={handleUserClick} css={buttonHoverCss} />
             )}
           </>
         )}
