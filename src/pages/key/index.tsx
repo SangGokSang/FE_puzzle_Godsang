@@ -75,7 +75,7 @@ const Attention = styled.div`
 `;
 
 function KeyInfo() {
-  // const { data } = useGetKeyInfo();
+  const { data } = useGetKeyInfo();
 
   const handleClick = () => {
     console.log('광고보기');
@@ -90,7 +90,7 @@ function KeyInfo() {
             <InfoContent>
               <InfoKeyIcon />
               <XIcon />
-              <KeyCount>0</KeyCount>
+              <KeyCount>{data?.keyCount}</KeyCount>
             </InfoContent>
             <Attention>DM 확인에 필요한 열쇠 갯수: 1개</Attention>
           </InfoBox>
