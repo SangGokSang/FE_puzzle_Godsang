@@ -1,2 +1,2 @@
-export * from './useFetchPuzzles';
+export * from './usePuzzles';
 export * from './useAddPuzzle';

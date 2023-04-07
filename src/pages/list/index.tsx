@@ -22,7 +22,7 @@ import isMobile from 'src/recoil/isMobile';
 import { useSnackbar } from 'notistack';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
-import { useFetchPuzzles } from 'src/module/puzzles/hooks';
+import { usePuzzles } from 'src/module/puzzles/hooks';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -154,7 +154,7 @@ function PuzzleList() {
   const [isUser, setIsUser] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data } = useFetchPuzzles(router.query.userId as string);
+  const { data } = usePuzzles(router.query.userId as string);
 
   const puzzlePosition = [
     { left: 0, top: 0 },
