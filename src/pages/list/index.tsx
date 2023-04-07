@@ -8,15 +8,6 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import puzzle1 from 'public/assets/images/puzzles/test/puzzle-1.png';
-import puzzle2 from 'public/assets/images/puzzles/test/puzzle-2.png';
-import puzzle3 from 'public/assets/images/puzzles/test/puzzle-3.png';
-import puzzle4 from 'public/assets/images/puzzles/test/puzzle-4.png';
-import puzzle5 from 'public/assets/images/puzzles/test/puzzle-5.png';
-import puzzle6 from 'public/assets/images/puzzles/test/puzzle-6.png';
-import puzzle7 from 'public/assets/images/puzzles/test/puzzle-7.png';
-import puzzle8 from 'public/assets/images/puzzles/test/puzzle-8.png';
-import puzzle9 from 'public/assets/images/puzzles/test/puzzle-9.png';
 import { fetchPuzzles, Puzzle, PuzzleMSG, PUZZLES_KEY } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon } from 'src/core/icons';
@@ -31,11 +22,9 @@ import isMobile from 'src/recoil/isMobile';
 import { useSnackbar } from 'notistack';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
-import { usePuzzles } from 'src/module/puzzles/hooks/useFetchPuzzles';
+import { useFetchPuzzles } from 'src/module/puzzles/hooks';
 
-const PUZZLE_SIZE = 90;
-const PUZZLE_ROUND_SIZE = 18;
-const PUZZLE_LIST = [puzzle1, puzzle2, puzzle3, puzzle4, puzzle5, puzzle6, puzzle7, puzzle8, puzzle9];
+const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const PuzzleListWrap = styled.div`
   height: 100%;
@@ -130,10 +119,10 @@ const PuzzleWrap = styled.div`
   position: relative;
 `;
 
-const PuzzlePiece = styled(Image)<{ position: [number, number] }>`
+const PuzzlePiece = styled(Image)<{ position: { left: number; top: number } }>`
   position: absolute;
-  left: ${({ position }) => position[0]}px;
-  top: ${({ position }) => position[1]}px;
+  left: ${({ position: { left } }) => left}px;
+  top: ${({ position: { top } }) => top}px;
 `;
 
 const NoPuzzleWrap = styled.div`
@@ -157,7 +146,6 @@ const Message = styled.div`
 `;
 
 function PuzzleList() {
-  const puzzlePosition = [{ left: 0, top: 0 }];
   const router = useRouter();
   const isMobileView = useRecoilValue(isMobile);
   const { userId: authUserId } = useRecoilValue(auth);
@@ -166,7 +154,31 @@ function PuzzleList() {
   const [isUser, setIsUser] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data } = usePuzzles(router.query.userId as string);
+  const { data } = useFetchPuzzles(router.query.userId as string);
+
+  const puzzlePosition = [
+    { left: 0, top: 0 },
+    { left: 77.5, top: 0 },
+    { left: 180, top: 0 },
+    { left: 0, top: 90 },
+    { left: 90, top: 90 },
+    { left: 167.5, top: 90 },
+    { left: 0, top: 180 },
+    { left: 90, top: 167.5 },
+    { left: 167.5, top: 180 },
+  ];
+
+  const puzzleSize = [
+    { width: 90, height: 102.5 },
+    { width: 115, height: 102.5 },
+    { width: 90, height: 102.5 },
+    { width: 102.5, height: 102.5 },
+    { width: 90, height: 90 },
+    { width: 102.5, height: 102.5 },
+    { width: 102.5, height: 90 },
+    { width: 90, height: 102.5 },
+    { width: 102.5, height: 90 },
+  ];
 
   const handleClickPiece = (data: any) => () => {
     if (isUser) {
@@ -200,22 +212,10 @@ function PuzzleList() {
     setLetterData(data?.length ? data[0].id : null); // 가장 마지막에 생성된 퍼즐 id
   }, [data]);
 
-  const getPuzzlePosition = useCallback((index: number): [number, number] => {
-    const row = Math.floor(index / 3);
-    const col = index % 3;
-    const leftPuzzleIndex = col ? index - 1 : 0;
-    const topPuzzleIndex = row ? index - 3 : 0;
-    const leftPuzzleW = PUZZLE_LIST[leftPuzzleIndex].width;
-    const topPuzzleH = PUZZLE_LIST[topPuzzleIndex].height;
-    const leftPuzzlePosition = col ? puzzlePosition[leftPuzzleIndex].left + leftPuzzleW : 0;
-    const topPuzzlePosition = row ? puzzlePosition[topPuzzleIndex].top + topPuzzleH : 0;
-    const originX = col * PUZZLE_SIZE;
-    const originY = row * PUZZLE_SIZE;
-    const puzzleX = originX ? (originX < leftPuzzlePosition ? originX : originX - PUZZLE_ROUND_SIZE) : 0;
-    const puzzleY = originY ? (originY < topPuzzlePosition ? originY : originY - PUZZLE_ROUND_SIZE) : 0;
+  const getUrl = useCallback((categories: string, index: number) => {
+    const category = categories.toLowerCase();
 
-    index && puzzlePosition.push({ left: puzzleX, top: puzzleY });
-    return [puzzleX, puzzleY];
+    return `/assets/images/puzzles/${category}/${category}${index}.png`;
   }, []);
 
   // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 딱 한번 실행
@@ -244,7 +244,7 @@ function PuzzleList() {
                 <>
                   {data.map((puzzle, index) => (
                     <div key={puzzle.id}>
-                      {index === 0 && puzzle?.messages?.length === 9 && (
+                      {isUser && index === 0 && puzzle?.messages?.length === 9 && (
                         <SwiperSlide key={'create'}>
                           <NoPuzzleWrap>
                             <AddPuzzleIcon onClick={handleClickMakePuzzle} />
@@ -256,14 +256,14 @@ function PuzzleList() {
                         <div css={goal}>{puzzle.title}</div>
                         <PuzzleContainer>
                           <PuzzleWrap>
-                            {puzzle.messages.map((message, index) => (
+                            {puzzle.messages.map((message) => (
                               <PuzzlePiece
-                                key={index}
-                                src={PUZZLE_LIST[index]}
-                                position={getPuzzlePosition(index)}
+                                key={message.displayOrder}
+                                src={getUrl(puzzle.category, message.displayOrder)}
+                                position={puzzlePosition[message.displayOrder]}
                                 alt="puzzle-piece"
                                 onClick={handleClickPiece(message)}
-                                placeholder="blur"
+                                {...puzzleSize[message.displayOrder]}
                               />
                             ))}
                           </PuzzleWrap>
@@ -271,17 +271,25 @@ function PuzzleList() {
                       </SwiperSlide>
                     </div>
                   ))}
-                  <SwiperSlide key={'create-test'}>
-                    <NoPuzzleWrap>
-                      <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                      <p>퍼즐을 만들어보세요!</p>
-                    </NoPuzzleWrap>
-                  </SwiperSlide>
+                  {isUser && (
+                    <SwiperSlide key={'create-test'}>
+                      <NoPuzzleWrap>
+                        <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                        <p>퍼즐을 만들어보세요!</p>
+                      </NoPuzzleWrap>
+                    </SwiperSlide>
+                  )}
                 </>
               ) : (
                 <NoPuzzleWrap>
-                  <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                  <p>퍼즐을 만들어보세요!</p>
+                  {isUser ? (
+                    <>
+                      <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                      <p>퍼즐을 만들어보세요!</p>
+                    </>
+                  ) : (
+                    <div>아직 퍼즐이 생성되지 않았어요!</div>
+                  )}
                 </NoPuzzleWrap>
               )}
             </Swiper>
