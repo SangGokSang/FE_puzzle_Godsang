@@ -27,12 +27,6 @@ const buttonSectionCss = css`
   bottom: 0;
 `;
 
-const Bar = React.forwardRef((props: any, ref: any) => (
-  <span {...props} ref={ref}>
-    {props.children}
-  </span>
-));
-
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
@@ -53,96 +47,94 @@ function Letter(props: LetterProps): ReactElement {
 
   const onSubmit = () => {
     const value = getValues();
-    if (isWrite) {
-      sendDM.mutate({ puzzleId: data as number, message: value });
+    if (isWrite && typeof data === 'number') {
+      sendDM.mutate({ puzzleId: data, message: value });
     }
   };
 
   return (
     <Modal open={isOpen} onClose={handleCloseModal}>
-      <Bar>
-        <Layout useHeader={false}>
-          <span className="back-button">
-            <BackIcon onClick={handleCloseModal} />
-          </span>
-          <MessageCard>
-            <RecipientField>
-              To.
-              {isWrite ? (
-                <Controller
-                  name="to"
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange}
-                      inputProps={{ minLength: 1, maxLength: 7 }}
-                      className="to"
-                      placeholder="누구"
-                    />
-                  )}
-                />
-              ) : (
-                ' 누구'
-              )}
-            </RecipientField>
-            <TextBodyField>
-              {isWrite ? (
-                <Controller
-                  name="content"
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange}
-                      sx={{
-                        width: '240px',
-                        maxHeight: '240px',
-                      }}
-                      multiline
-                      className="content"
-                      inputProps={{ maxLength: 102 }}
-                      placeholder="응원의 메시지를 보내세요!"
-                    />
-                  )}
-                />
-              ) : (
-                'Text...'
-              )}
-            </TextBodyField>
-            <SenderField>
-              From.
-              {isWrite ? (
-                <Controller
-                  name="from"
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange}
-                      sx={{
-                        width: '80px',
-                      }}
-                      inputProps={{ minLength: 1, maxLength: 7 }}
-                      className="from"
-                      placeholder="누구"
-                    />
-                  )}
-                />
-              ) : (
-                ' 누구'
-              )}
-            </SenderField>
-          </MessageCard>
-          {isWrite && (
-            <ButtonSection css={buttonSectionCss}>
-              <Button buttonType={ButtonType.Text} onClick={onSubmit}>
-                DM 보내기
-              </Button>
-            </ButtonSection>
-          )}
-        </Layout>
-      </Bar>
+      <Layout useHeader={false}>
+        <span className="back-button">
+          <BackIcon onClick={handleCloseModal} />
+        </span>
+        <MessageCard>
+          <RecipientField>
+            To.
+            {isWrite ? (
+              <Controller
+                name="to"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    onChange={onChange}
+                    inputProps={{ minLength: 1, maxLength: 7 }}
+                    className="to"
+                    placeholder="to"
+                  />
+                )}
+              />
+            ) : (
+              (data as MessageData)?.to
+            )}
+          </RecipientField>
+          <TextBodyField>
+            {isWrite ? (
+              <Controller
+                name="content"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    onChange={onChange}
+                    sx={{
+                      width: '240px',
+                      maxHeight: '240px',
+                    }}
+                    multiline
+                    className="content"
+                    inputProps={{ maxLength: 102 }}
+                    placeholder="응원의 메시지를 보내세요!"
+                  />
+                )}
+              />
+            ) : (
+              (data as MessageData)?.content
+            )}
+          </TextBodyField>
+          <SenderField>
+            From.
+            {isWrite ? (
+              <Controller
+                name="from"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    onChange={onChange}
+                    sx={{
+                      width: '80px',
+                    }}
+                    inputProps={{ minLength: 1, maxLength: 7 }}
+                    className="from"
+                    placeholder="from"
+                  />
+                )}
+              />
+            ) : (
+              (data as MessageData)?.from
+            )}
+          </SenderField>
+        </MessageCard>
+        {isWrite && (
+          <ButtonSection css={buttonSectionCss}>
+            <Button buttonType={ButtonType.Text} onClick={onSubmit}>
+              DM 보내기
+            </Button>
+          </ButtonSection>
+        )}
+      </Layout>
     </Modal>
   );
 }
