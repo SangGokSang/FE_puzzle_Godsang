@@ -221,7 +221,7 @@ function PuzzleList({ data }: { data: Puzzle[] }) {
 
   useEffect(() => setUserId(authUserId), [authUserId]);
   useEffect(() => setIsUser(Number(userId) === Number(router.query.userId)), [router.query.userId, userId]);
-  console.log(authUserId);
+
   return (
     <Layout>
       <PuzzleListWrap>
