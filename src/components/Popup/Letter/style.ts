@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
 
 export const MessageCard = styled.form`
-  width: 280px;
-  height: 280px;
+  width: 320px;
+  height: 320px;
   background-color: #f0edf2;
   border: 1px solid #000000;
   border-radius: 6px;
   position: relative;
-  top: 32%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
 `;
@@ -17,6 +17,7 @@ export const RecipientField = styled.div`
   align-items: center;
   gap: 10px;
   margin: 18px;
+  margin-bottom: 0;
   color: #000000;
   font-weight: 400;
   font-size: 13px;
@@ -27,12 +28,14 @@ export const RecipientField = styled.div`
 `;
 
 export const TextBodyField = styled.div`
-  margin: 18px;
   width: 100%;
+  padding: 0 18px;
   display: flex;
   align-items: center;
   .content {
     background: none;
+    width: 100%;
+    height: 100%;
   }
 `;
 
