@@ -8,6 +8,8 @@ import { ButtonSection } from 'src/core/styles/common';
 import { BackIcon } from 'src/core/icons';
 import { Controller, useForm } from 'react-hook-form';
 import { useSendDM } from 'src/module/message';
+import { useQueryClient } from '@tanstack/react-query';
+import { PUZZLES_KEY } from 'src/module/puzzles';
 
 type LetterProps = {
   isOpen: boolean;
@@ -31,8 +33,10 @@ const buttonSectionCss = css`
 function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
   const { control, getValues, reset } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
+  const client = useQueryClient();
   const sendDM = useSendDM({
     onSuccess: () => {
+      client.invalidateQueries([PUZZLES_KEY]);
       handleCloseModal();
       reset();
     },
@@ -93,6 +97,7 @@ function Letter(props: LetterProps): ReactElement {
                       maxHeight: '240px',
                     }}
                     multiline
+                    maxRows="5"
                     className="content"
                     inputProps={{ maxLength: 102 }}
                     placeholder="응원의 메시지를 보내세요!"

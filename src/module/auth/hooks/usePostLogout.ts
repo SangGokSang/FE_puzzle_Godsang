@@ -20,7 +20,7 @@ export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {
       clearTokens();
       setTimeout(() => {
         router.push(route.Landing);
-      }, 100);
+      }, 300);
     },
   });
 };
