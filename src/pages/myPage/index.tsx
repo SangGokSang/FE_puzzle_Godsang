@@ -9,7 +9,7 @@ import { Controller, useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { diffDay } from 'src/core/util/util';
+import { getDDay } from 'src/core/util/util';
 import { scheme } from 'src/core/const/scheme';
 import { errorCss } from 'src/components/wizard/puzzle/style';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -69,6 +69,9 @@ const InputField = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  .label {
+    padding-left: 40px;
+  }
 `;
 
 const LabelInputWrap = styled.div`
@@ -77,8 +80,8 @@ const LabelInputWrap = styled.div`
 `;
 
 const NicknameTextField = styled(TextField)`
-  width: 100px;
-  height: fit-content;
+  width: 200px;
+  height: 28px;
   position: relative;
 
   .MuiInputBase-input {
@@ -95,7 +98,7 @@ const NicknameTextField = styled(TextField)`
 
 const BirthDayTextField = styled(TextField)`
   width: 200px;
-  height: fit-content;
+  height: 28px;
   padding: 0;
 
   .MuiInputBase-input {
@@ -181,13 +184,17 @@ function MyPage() {
 
   const description = useMemo(() => {
     const birth = getValues('birth');
-    const { countNextAge, dDay, countMeals, countBooks, countBodyProfile } = diffDay(birth);
+    const d_day = getDDay(dayjs(birthdate));
+    const countNextAge = dayjs().get('y') - +birth.slice(0, 4) + 1;
+    const countMeals = +d_day * 3;
+    const countBooks = Math.floor(+d_day / 7);
+    const countBodyProfile = Math.floor(+d_day / 90);
 
     return (
       <>
         <div>
-          <div>당신은 2023년 6월 1일 부터 만 {countNextAge}살까지,</div>
-          <div> {dDay}일 이라는 시간이 남았습니다.</div>
+          <div>당신은 오늘부터 만 {countNextAge}살까지,</div>
+          <div> {d_day}일 이라는 시간이 남았습니다.</div>
         </div>
         <div>이 시점 우리가 할 수 있는 것은?</div>
         <div>
@@ -201,7 +208,7 @@ function MyPage() {
         </div>
       </>
     );
-  }, [getValues]);
+  }, [birthdate, getValues]);
 
   return (
     mounted && (
@@ -231,12 +238,11 @@ function MyPage() {
                         />
                       )}
                     />
-
-                    <div className="label">
-                      {!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}
-                    </div>
                   </div>
                 </LabelInputWrap>
+                <div className="label">
+                  {!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}
+                </div>
                 <LabelInputWrap>
                   <Text isEdit={isEdit}>생일</Text>
                   <Controller
@@ -260,8 +266,8 @@ function MyPage() {
                       );
                     }}
                   />
-                  <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
                 </LabelInputWrap>
+                <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
               </InputField>
             </NameBirthDay>
             <Story>{description}</Story>
