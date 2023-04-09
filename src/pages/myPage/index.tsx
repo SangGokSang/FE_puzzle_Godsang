@@ -199,7 +199,7 @@ function MyPage() {
         <div>이 시점 우리가 할 수 있는 것은?</div>
         <div>
           <div>식사 {countMeals}번</div>
-          <div>바프 {countBodyProfile}번 찍기</div>
+          <div>바디프로필 {countBodyProfile}번 찍기</div>
           <div>독서 {countBooks}권</div>
           <div>롤 골드 티어 찍기</div>
           <div>제주 살이</div>
