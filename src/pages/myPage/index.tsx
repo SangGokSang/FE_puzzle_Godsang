@@ -136,7 +136,6 @@ function MyPage() {
   const setAuth = useSetRecoilState(auth);
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false);
 
   const {
     formState: { errors },
@@ -178,10 +177,6 @@ function MyPage() {
     console.log('탈퇴');
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const description = useMemo(() => {
     const birth = getValues('birth');
     const d_day = getDDay(dayjs(birthdate));
@@ -211,78 +206,74 @@ function MyPage() {
   }, [birthdate, getValues]);
 
   return (
-    mounted && (
-      <Layout layoutCss={layoutCss} useHeader={true}>
-        <MyPageSection>
-          <StoryLine>
-            <NameBirthDay>
-              <InputField>
-                <LabelInputWrap>
-                  <Text isEdit={isEdit}>별명:</Text>
-                  <div style={{ alignItems: 'center', display: 'flex' }}>
-                    <Controller
-                      name="nickname"
-                      control={control}
-                      render={({ field: { value, onChange } }) => (
-                        <NicknameTextField
-                          value={value}
-                          onChange={onChange}
-                          disabled={!isEdit}
-                          sx={{
-                            background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                          }}
-                          inputProps={{
-                            minLength: 1,
-                            maxLength: 7,
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                </LabelInputWrap>
-                <div className="label">
-                  {!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}
-                </div>
-                <LabelInputWrap>
-                  <Text isEdit={isEdit}>생일:</Text>
+    <Layout layoutCss={layoutCss} useHeader={true}>
+      <MyPageSection>
+        <StoryLine>
+          <NameBirthDay>
+            <InputField>
+              <LabelInputWrap>
+                <Text isEdit={isEdit}>별명:</Text>
+                <div style={{ alignItems: 'center', display: 'flex' }}>
                   <Controller
+                    name="nickname"
                     control={control}
-                    name="birth"
-                    render={({ field: { value, onChange } }) => {
-                      const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-                        onChange(dayjs(event.currentTarget.value).valueOf());
-                      };
-                      const val = dayjs(value).format('YYYY-MM-DD');
-                      return (
-                        <BirthDayTextField
-                          type="date"
-                          value={val}
-                          sx={{
-                            background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                          }}
-                          onChange={handleChange}
-                          disabled={!isEdit}
-                        />
-                      );
-                    }}
+                    render={({ field: { value, onChange } }) => (
+                      <NicknameTextField
+                        value={value}
+                        onChange={onChange}
+                        disabled={!isEdit}
+                        sx={{
+                          background: `${isEdit ? '#f3f3f3' : 'none'}`,
+                        }}
+                        inputProps={{
+                          minLength: 1,
+                          maxLength: 7,
+                        }}
+                      />
+                    )}
                   />
-                </LabelInputWrap>
-                <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
-              </InputField>
-            </NameBirthDay>
-            <Story>{description}</Story>
-          </StoryLine>
-        </MyPageSection>
-        <ButtonSection>
-          <Button buttonType={ButtonType.Basic} onClick={isEdit ? handleSubmit : handleClick}>
-            {isEdit ? '저장' : '수정'}
-          </Button>
-          <Button buttonType={ButtonType.SignOut} onClick={handleWithdrawal}>
-            회원탈퇴
-          </Button>
-        </ButtonSection>
-      </Layout>
-    )
+                </div>
+              </LabelInputWrap>
+              <div className="label">{!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}</div>
+              <LabelInputWrap>
+                <Text isEdit={isEdit}>생일:</Text>
+                <Controller
+                  control={control}
+                  name="birth"
+                  render={({ field: { value, onChange } }) => {
+                    const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+                      onChange(dayjs(event.currentTarget.value).valueOf());
+                    };
+                    const val = dayjs(value).format('YYYY-MM-DD');
+                    return (
+                      <BirthDayTextField
+                        type="date"
+                        value={val}
+                        sx={{
+                          background: `${isEdit ? '#f3f3f3' : 'none'}`,
+                        }}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                      />
+                    );
+                  }}
+                />
+              </LabelInputWrap>
+              <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
+            </InputField>
+          </NameBirthDay>
+          <Story>{description}</Story>
+        </StoryLine>
+      </MyPageSection>
+      <ButtonSection>
+        <Button buttonType={ButtonType.Basic} onClick={isEdit ? handleSubmit : handleClick}>
+          {isEdit ? '저장' : '수정'}
+        </Button>
+        <Button buttonType={ButtonType.SignOut} onClick={handleWithdrawal}>
+          회원탈퇴
+        </Button>
+      </ButtonSection>
+    </Layout>
   );
 }
 
