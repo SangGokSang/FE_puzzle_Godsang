@@ -167,7 +167,7 @@ function MyPage() {
   const handleSubmit = () => {
     if (isEdit && isEmpty(errors)) {
       const { nickname, birth } = getValues();
-      const birthdate = Number(birth);
+      const birthdate = dayjs(birth).valueOf();
       join.mutate({ nickname, birthdate });
     } else {
       setIsEdit(false);
