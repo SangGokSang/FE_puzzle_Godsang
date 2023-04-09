@@ -218,7 +218,7 @@ function MyPage() {
             <NameBirthDay>
               <InputField>
                 <LabelInputWrap>
-                  <Text isEdit={isEdit}>별명</Text>
+                  <Text isEdit={isEdit}>별명:</Text>
                   <div style={{ alignItems: 'center', display: 'flex' }}>
                     <Controller
                       name="nickname"
@@ -244,7 +244,7 @@ function MyPage() {
                   {!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}
                 </div>
                 <LabelInputWrap>
-                  <Text isEdit={isEdit}>생일</Text>
+                  <Text isEdit={isEdit}>생일:</Text>
                   <Controller
                     control={control}
                     name="birth"
