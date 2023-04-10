@@ -132,9 +132,11 @@ export const ButtonSection = styled.section`
 `;
 
 function MyPage() {
-  const { nickname, birthdate } = useRecoilValue(auth);
+  const { nickname: name, birthdate: birthday } = useRecoilValue(auth);
+  const [mounted, setMounted] = useState<boolean>(false);
+  // const [user, setUser] = useState<string>();
+  // const [userBirth, setUserBirth] = useState<number>();
   const setAuth = useSetRecoilState(auth);
-
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const {
@@ -145,16 +147,15 @@ function MyPage() {
     resolver: yupResolver(yup.object().shape({ nickname: scheme.nickname, birth: scheme.birth })),
     mode: 'all',
     defaultValues: {
-      nickname: nickname,
-      birth: dayjs(birthdate).format('YYYY-MM-DD'),
+      nickname: name,
+      birth: dayjs(birthday).format('YYYY-MM-DD'),
     },
   });
 
   const join = useJoin({
     onSuccess: (data) => {
       setIsEdit(false);
-      console.log(data);
-      // setAuth(data);
+      setAuth(data);
     },
     onError: (err) => console.log(err),
   });
@@ -179,7 +180,7 @@ function MyPage() {
 
   const description = useMemo(() => {
     const birth = getValues('birth');
-    const d_day = getDDay(dayjs(birthdate));
+    const d_day = getDDay(dayjs(birthday));
     const countNextAge = dayjs().get('y') - +birth.slice(0, 4) + 1;
     const countMeals = +d_day * 3;
     const countBooks = Math.floor(+d_day / 7);
@@ -203,77 +204,90 @@ function MyPage() {
         </div>
       </>
     );
-  }, [birthdate, getValues]);
+  }, [getValues, birthday]);
+
+  // useEffect(() => {
+  //   setUserBirth(birthday);
+  //   setUser(name);
+  // }, [birthday, name]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <Layout layoutCss={layoutCss} useHeader={true}>
-      <MyPageSection>
-        <StoryLine>
-          <NameBirthDay>
-            <InputField>
-              <LabelInputWrap>
-                <Text isEdit={isEdit}>별명:</Text>
-                <div style={{ alignItems: 'center', display: 'flex' }}>
-                  <Controller
-                    name="nickname"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <NicknameTextField
-                        value={value}
-                        onChange={onChange}
-                        disabled={!isEdit}
-                        sx={{
-                          background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                        }}
-                        inputProps={{
-                          minLength: 1,
-                          maxLength: 7,
-                        }}
-                      />
-                    )}
-                  />
+    mounted && (
+      <Layout layoutCss={layoutCss} useHeader={true}>
+        <MyPageSection>
+          <StoryLine>
+            <NameBirthDay>
+              <InputField>
+                <LabelInputWrap>
+                  <Text isEdit={isEdit}>별명:</Text>
+                  <div style={{ alignItems: 'center', display: 'flex' }}>
+                    <Controller
+                      name="nickname"
+                      control={control}
+                      render={({ field: { value, onChange } }) => (
+                        <NicknameTextField
+                          value={value}
+                          onChange={onChange}
+                          disabled={!isEdit}
+                          sx={{
+                            background: `${isEdit ? '#f3f3f3' : 'none'}`,
+                          }}
+                          inputProps={{
+                            minLength: 1,
+                            maxLength: 7,
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </LabelInputWrap>
+                <div className="label">
+                  {!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}
                 </div>
-              </LabelInputWrap>
-              <div className="label">{!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}</div>
-              <LabelInputWrap>
-                <Text isEdit={isEdit}>생일:</Text>
-                <Controller
-                  control={control}
-                  name="birth"
-                  render={({ field: { value, onChange } }) => {
-                    const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-                      onChange(dayjs(event.currentTarget.value).valueOf());
-                    };
-                    const val = dayjs(value).format('YYYY-MM-DD');
-                    return (
-                      <BirthDayTextField
-                        type="date"
-                        value={val}
-                        sx={{
-                          background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                        }}
-                        onChange={handleChange}
-                        disabled={!isEdit}
-                      />
-                    );
-                  }}
-                />
-              </LabelInputWrap>
-              <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
-            </InputField>
-          </NameBirthDay>
-          <Story>{description}</Story>
-        </StoryLine>
-      </MyPageSection>
-      <ButtonSection>
-        <Button buttonType={ButtonType.Basic} onClick={isEdit ? handleSubmit : handleClick}>
-          {isEdit ? '저장' : '수정'}
-        </Button>
-        <Button buttonType={ButtonType.SignOut} onClick={handleWithdrawal}>
-          회원탈퇴
-        </Button>
-      </ButtonSection>
-    </Layout>
+                <LabelInputWrap>
+                  <Text isEdit={isEdit}>생일:</Text>
+                  <Controller
+                    control={control}
+                    name="birth"
+                    render={({ field: { value, onChange } }) => {
+                      const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+                        onChange(dayjs(event.currentTarget.value).valueOf());
+                      };
+                      const val = dayjs(value).format('YYYY-MM-DD');
+                      return (
+                        <BirthDayTextField
+                          type="date"
+                          value={val}
+                          sx={{
+                            background: `${isEdit ? '#f3f3f3' : 'none'}`,
+                          }}
+                          onChange={handleChange}
+                          disabled={!isEdit}
+                        />
+                      );
+                    }}
+                  />
+                </LabelInputWrap>
+                <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
+              </InputField>
+            </NameBirthDay>
+            <Story>{description}</Story>
+          </StoryLine>
+        </MyPageSection>
+        <ButtonSection>
+          <Button buttonType={ButtonType.Basic} onClick={isEdit ? handleSubmit : handleClick}>
+            {isEdit ? '저장' : '수정'}
+          </Button>
+          <Button buttonType={ButtonType.SignOut} onClick={handleWithdrawal}>
+            회원탈퇴
+          </Button>
+        </ButtonSection>
+      </Layout>
+    )
   );
 }
 

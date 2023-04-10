@@ -20,7 +20,6 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !error.request?.responseURL?.endsWith('/api/user/login')) {
       try {
         const token = await useRefresh();
-
         const retryConfig = {
           ...error.config,
           headers: { ...error.config.headers, Authorization: `Bearer ${token}` },
