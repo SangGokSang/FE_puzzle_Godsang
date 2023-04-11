@@ -30,7 +30,7 @@
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "next": "13.1.0",
-    "next-auth": "^4.20.1",
+    "next-auth": "^4.22.0",
     "next-images": "^1.8.4",
     "notistack": "^3.0.1",
     "qs": "^6.11.0",

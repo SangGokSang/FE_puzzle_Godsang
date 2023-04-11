@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
 import { ButtonGroup, Wrapper } from './style';
 import { usePostLogout } from 'src/module/auth/hooks/usePostLogout';
 import route from 'src/core/const/route.path';
-import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
+import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
+import { User } from 'src/recoil/auth/type';
+import { authDefaultValue } from 'src/recoil/auth/atom';
 
 const LoginButton = styled.button`
   width: 60px;
@@ -27,15 +29,15 @@ const buttonHoverCss = css`
 
 export default function Header() {
   const router = useRouter();
-  const { userId: authUserId } = useRecoilValue(auth);
-  const [loginUserId, setLoginUserId] = useState<number | null>(null);
+  const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
+
   const handleLogoClick = () => {
     logout.mutate();
   };
 
   const handleBackClick = () => {
-    router.push({ pathname: route.List, query: { userId: loginUserId } });
+    router.push({ pathname: route.List, query: { userId } });
   };
 
   const handleKeyClick = () => {
@@ -50,8 +52,6 @@ export default function Header() {
     router.push(route.Landing);
   };
 
-  useEffect(() => setLoginUserId(authUserId), [authUserId]);
-
   return (
     <Wrapper>
       {router.pathname === route.MyPage || router.pathname === route.Key ? (
@@ -60,7 +60,7 @@ export default function Header() {
         <Logo onClick={handleLogoClick} css={buttonHoverCss} />
       )}
       <ButtonGroup>
-        {loginUserId === null ? (
+        {userId === null ? (
           <LoginButton onClick={handleLoginClick}>로그인</LoginButton>
         ) : (
           <>

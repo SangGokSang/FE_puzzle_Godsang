@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEventHandler, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
@@ -12,11 +12,13 @@ import * as yup from 'yup';
 import { getDDay } from 'src/core/util/util';
 import { scheme } from 'src/core/const/scheme';
 import { errorCss } from 'src/components/wizard/puzzle/style';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth';
 import { useJoin } from 'src/module/join';
 import { isEmpty } from 'lodash';
-import { userAgent } from 'next/server';
+import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
+import { authDefaultValue } from 'src/recoil/auth/atom';
+import { User as RecoilUser } from 'src/recoil/auth/type';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -133,12 +135,9 @@ export const ButtonSection = styled.section`
 `;
 
 function MyPage() {
-  const { nickname: name, birthdate: birthday } = useRecoilValue(auth);
-  // const [mounted, setMounted] = useState<boolean>(false);
-  const [user, setUser] = useState<string>();
-  const [userBirth, setUserBirth] = useState<number>();
-  const setAuth = useSetRecoilState(auth);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const setAuth = useSetRecoilState(auth);
+  const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
 
   const {
     formState: { errors },
@@ -148,8 +147,8 @@ function MyPage() {
     resolver: yupResolver(yup.object().shape({ nickname: scheme.nickname, birth: scheme.birth })),
     mode: 'all',
     defaultValues: {
-      nickname: user,
-      birth: dayjs(userBirth).format('YYYY-MM-DD'),
+      nickname: nickname,
+      birth: dayjs(birthdate).format('YYYY-MM-DD'),
     },
   });
 
@@ -181,7 +180,7 @@ function MyPage() {
 
   const description = useMemo(() => {
     const birth = getValues('birth');
-    const d_day = getDDay(dayjs(userBirth));
+    const d_day = getDDay(dayjs(birthdate));
     const countNextAge = dayjs().get('y') - +birth.slice(0, 4) + 1;
     const countMeals = +d_day * 3;
     const countBooks = Math.floor(+d_day / 7);
@@ -205,19 +204,9 @@ function MyPage() {
         </div>
       </>
     );
-  }, [getValues, userBirth]);
-
-  useEffect(() => {
-    setUserBirth(birthday);
-    setUser(name);
-  }, [birthday, name]);
-
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
+  }, [getValues, birthdate]);
 
   return (
-    // mounted && (
     <Layout layoutCss={layoutCss} useHeader={true}>
       <MyPageSection>
         <StoryLine>
@@ -287,7 +276,6 @@ function MyPage() {
       </ButtonSection>
     </Layout>
   );
-  // );
 }
 
 export default MyPage;

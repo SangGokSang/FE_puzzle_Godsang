@@ -7,8 +7,10 @@ import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { InfoKeyIcon, XIcon } from 'src/core/icons';
 import { useGetKeyInfo } from 'src/module/keyInfo';
-import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth';
+import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
+import { User } from 'src/recoil/auth/type';
+import { authDefaultValue } from 'src/recoil/auth/atom';
 
 export type KeyInfo = {
   keyCount: number;
@@ -78,7 +80,7 @@ const Attention = styled.div`
 
 function KeyInfo() {
   const { data } = useGetKeyInfo();
-  const { nickname } = useRecoilValue(auth);
+  const { nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
 
   const handleClick = () => {
     console.log('광고보기');

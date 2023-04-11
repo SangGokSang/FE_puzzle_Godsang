@@ -17,7 +17,7 @@ export const RecipientField = styled.div`
   align-items: center;
   gap: 10px;
   margin: 18px;
-  margin-bottom: 0;
+  margin-bottom: 12px;
   color: #000000;
   font-weight: 400;
   font-size: 13px;
@@ -29,6 +29,7 @@ export const RecipientField = styled.div`
 
 export const TextBodyField = styled.div`
   width: 100%;
+  max-height: 260px;
   padding: 0 18px;
   display: flex;
   align-items: center;
