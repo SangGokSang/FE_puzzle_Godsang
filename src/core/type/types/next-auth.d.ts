@@ -7,6 +7,10 @@ declare module 'next-auth' {
       providerId: string;
       email: string;
       name: string;
+      // nickname?: string;
+      // birthdate?: number;
+      // isWithdrawUser?: boolean;
+      // userId?: number;
     };
   }
 }

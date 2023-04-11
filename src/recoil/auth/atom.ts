@@ -1,6 +1,5 @@
 import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
-import { AUTH_KEY } from 'src/core/api/auth';
 import cookieStorage from 'src/core/lib/cookie-storage';
 import { User } from './type';
 
@@ -12,12 +11,12 @@ export const authDefaultValue = {
 };
 
 const { persistAtom } = recoilPersist({
-  key: AUTH_KEY,
+  key: 'auth',
   storage: cookieStorage,
 });
 
 const auth = atom<User>({
-  key: AUTH_KEY,
+  key: 'auth',
   default: authDefaultValue,
   effects: [persistAtom],
 });

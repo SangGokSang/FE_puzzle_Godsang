@@ -23,8 +23,9 @@ import { useSnackbar } from 'notistack';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
 import { usePuzzles } from 'src/module/puzzles/hooks';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
+import { User } from 'src/recoil/auth/type';
+import { authDefaultValue } from 'src/recoil/auth/atom';
 
 const PuzzleListWrap = styled.div`
   height: 100%;
@@ -148,9 +149,8 @@ const Message = styled.div`
 function PuzzleList() {
   const router = useRouter();
   const isMobileView = useRecoilValue(isMobile);
-  const { userId: authUserId } = useRecoilValue(auth);
   const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
-  const [loginUserId, setLoginUserId] = useState<number | null>(null);
+  const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const [isUser, setIsUser] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -230,8 +230,7 @@ function PuzzleList() {
     }
   }, []);
 
-  useEffect(() => setLoginUserId(authUserId), [authUserId]);
-  useEffect(() => setIsUser(Number(loginUserId) === Number(router.query.userId)), [router.query.userId, loginUserId]);
+  useEffect(() => setIsUser(Number(userId) === Number(router.query.userId)), [router.query.userId, userId]);
 
   return (
     <Layout>

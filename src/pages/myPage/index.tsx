@@ -12,10 +12,13 @@ import * as yup from 'yup';
 import { getDDay } from 'src/core/util/util';
 import { scheme } from 'src/core/const/scheme';
 import { errorCss } from 'src/components/wizard/puzzle/style';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth';
 import { useJoin } from 'src/module/join';
 import { isEmpty } from 'lodash';
+import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
+import { authDefaultValue } from 'src/recoil/auth/atom';
+import { User as RecoilUser } from 'src/recoil/auth/type';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -132,15 +135,16 @@ export const ButtonSection = styled.section`
 `;
 
 function MyPage() {
-  const { nickname, birthdate } = useRecoilValue(auth);
-  const setAuth = useSetRecoilState(auth);
-
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const setAuth = useSetRecoilState(auth);
+  const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
 
   const {
+    watch,
     formState: { errors },
     control,
     getValues,
+    setValue,
   } = useForm<User>({
     resolver: yupResolver(yup.object().shape({ nickname: scheme.nickname, birth: scheme.birth })),
     mode: 'all',
@@ -153,8 +157,7 @@ function MyPage() {
   const join = useJoin({
     onSuccess: (data) => {
       setIsEdit(false);
-      console.log(data);
-      // setAuth(data);
+      setAuth(data);
     },
     onError: (err) => console.log(err),
   });
@@ -172,7 +175,6 @@ function MyPage() {
       setIsEdit(false);
     }
   };
-
   const handleWithdrawal = () => {
     console.log('탈퇴');
   };
@@ -184,7 +186,6 @@ function MyPage() {
     const countMeals = +d_day * 3;
     const countBooks = Math.floor(+d_day / 7);
     const countBodyProfile = Math.floor(+d_day / 90);
-
     return (
       <>
         <div>
@@ -203,7 +204,12 @@ function MyPage() {
         </div>
       </>
     );
-  }, [birthdate, getValues]);
+  }, [getValues, birthdate]);
+
+  useEffect(() => {
+    setValue('nickname', nickname);
+    setValue('birth', dayjs(birthdate).format('YYYY-MM-DD'));
+  }, [birthdate, nickname, setValue]);
 
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
