@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useMemo, useState } from 'react';
+import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
@@ -140,9 +140,11 @@ function MyPage() {
   const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
 
   const {
+    watch,
     formState: { errors },
     control,
     getValues,
+    setValue,
   } = useForm<User>({
     resolver: yupResolver(yup.object().shape({ nickname: scheme.nickname, birth: scheme.birth })),
     mode: 'all',
@@ -173,7 +175,6 @@ function MyPage() {
       setIsEdit(false);
     }
   };
-
   const handleWithdrawal = () => {
     console.log('탈퇴');
   };
@@ -185,7 +186,6 @@ function MyPage() {
     const countMeals = +d_day * 3;
     const countBooks = Math.floor(+d_day / 7);
     const countBodyProfile = Math.floor(+d_day / 90);
-
     return (
       <>
         <div>
@@ -205,6 +205,11 @@ function MyPage() {
       </>
     );
   }, [getValues, birthdate]);
+
+  useEffect(() => {
+    setValue('nickname', nickname);
+    setValue('birth', dayjs(birthdate).format('YYYY-MM-DD'));
+  }, [birthdate, nickname, setValue]);
 
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
