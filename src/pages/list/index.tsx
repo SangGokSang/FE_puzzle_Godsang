@@ -156,7 +156,12 @@ function PuzzleList() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data } = usePuzzles(router.query.userId as string);
+  const { data } = usePuzzles(router.query.userId as string, {
+    onError: (error) => {
+      // if(error.code === '없는 유저')
+      router.push(route.NotFound);
+    },
+  });
   const { data: key } = useGetKeyInfo();
   const { mutate } = useReadMessage({
     onSuccess: () => setIsOpen(true),
@@ -330,8 +335,11 @@ export default PuzzleList;
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const userId = query.userId as string;
   const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery<Puzzle[], ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
+  try {
+    await queryClient.prefetchQuery<Puzzle[], ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     props: {

@@ -1,5 +1,5 @@
 import api from 'src/core/api';
-import { SendMessage, SendMessageRequest } from './types';
+import { SendMessageRequest } from './types';
 
 export async function postDM({ puzzleId, message }: SendMessageRequest): Promise<void> {
   const { data } = await api({
