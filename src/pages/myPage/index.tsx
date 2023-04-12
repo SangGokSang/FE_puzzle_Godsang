@@ -19,6 +19,7 @@ import { isEmpty } from 'lodash';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { User as RecoilUser } from 'src/recoil/auth/type';
+import { useWithdraw } from 'src/module/auth/hooks/useWithdraw';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -138,6 +139,7 @@ function MyPage() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const setAuth = useSetRecoilState(auth);
   const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
+  const withdraw = useWithdraw();
 
   const {
     watch,
@@ -176,7 +178,9 @@ function MyPage() {
     }
   };
   const handleWithdrawal = () => {
-    console.log('탈퇴');
+    if (confirm('정말로 회원탈퇴 하실건가요? 🫣')) {
+      withdraw.mutate();
+    }
   };
 
   const description = useMemo(() => {

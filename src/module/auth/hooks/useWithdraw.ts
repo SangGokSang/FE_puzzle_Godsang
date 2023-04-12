@@ -10,6 +10,7 @@ export const useWithdraw = (options: MutationOptions<void, ApiError, void> = {})
   return useMutation<void, ApiError, void>(() => withdraw(), {
     ...options,
     onSuccess: () => {
+      alert('다음에 또봐요! 😎');
       router.push(route.Landing);
     },
   });
