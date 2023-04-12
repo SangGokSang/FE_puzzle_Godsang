@@ -147,6 +147,15 @@ const Message = styled.div`
   margin: 20px 0 15px;
 `;
 
+const NoMessage = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+`;
+
 function PuzzleList() {
   const router = useRouter();
   const isMobileView = useRecoilValue(isMobile);
@@ -155,6 +164,7 @@ function PuzzleList() {
   const [isUser, setIsUser] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
+  const MaxMessage = 9;
 
   const { data } = usePuzzles(router.query.userId as string);
   const { data: key } = useGetKeyInfo();
@@ -262,7 +272,7 @@ function PuzzleList() {
                 <>
                   {data.map((puzzle, index) => (
                     <div key={puzzle.id}>
-                      {isUser && index === 0 && puzzle?.messages?.length === 9 && (
+                      {isUser && index === 0 && puzzle?.messages?.length === MaxMessage && (
                         <SwiperSlide key={'create'}>
                           <NoPuzzleWrap>
                             <AddPuzzleIcon onClick={handleClickMakePuzzle} />
@@ -274,29 +284,30 @@ function PuzzleList() {
                         <div css={goal}>{puzzle.title}</div>
                         <PuzzleContainer>
                           <PuzzleWrap>
-                            {puzzle.messages.map((message) => (
-                              <PuzzlePiece
-                                key={message.displayOrder}
-                                alt="puzzle-piece"
-                                src={getUrl(puzzle.category, message.displayOrder)}
-                                position={puzzlePosition[message.displayOrder]}
-                                onClick={handleClickPiece(message, puzzle.id)}
-                                {...puzzleSize[message.displayOrder]}
-                              />
-                            ))}
+                            {puzzle?.messages?.length ? (
+                              puzzle.messages.map((message) => (
+                                <PuzzlePiece
+                                  key={message.displayOrder}
+                                  alt="puzzle-piece"
+                                  src={getUrl(puzzle.category, message.displayOrder)}
+                                  position={puzzlePosition[message.displayOrder]}
+                                  onClick={handleClickPiece(message, puzzle.id)}
+                                  {...puzzleSize[message.displayOrder]}
+                                />
+                              ))
+                            ) : (
+                              <NoMessage>
+                                <p>😥</p>
+                                <p>도착한 응원의 편지가 없어요.</p>
+                                <p>링크를 공유해</p>
+                                <p>응원의 편지를 요청해보세요!</p>
+                              </NoMessage>
+                            )}
                           </PuzzleWrap>
                         </PuzzleContainer>
                       </SwiperSlide>
                     </div>
                   ))}
-                  {isUser && (
-                    <SwiperSlide key={'create-test'}>
-                      <NoPuzzleWrap>
-                        <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                        <p>퍼즐을 만들어보세요!</p>
-                      </NoPuzzleWrap>
-                    </SwiperSlide>
-                  )}
                 </>
               ) : (
                 <NoPuzzleWrap>
