@@ -22,10 +22,11 @@ import isMobile from 'src/recoil/isMobile';
 import { useSnackbar } from 'notistack';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
-import { usePuzzles } from 'src/module/puzzles/hooks';
+import { usePuzzles, useReadMessage } from 'src/module/puzzles/hooks';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
+import { useGetKeyInfo } from 'src/module/keyInfo';
 
 const PuzzleListWrap = styled.div`
   height: 100%;
@@ -152,9 +153,14 @@ function PuzzleList() {
   const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const [isUser, setIsUser] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const { data } = usePuzzles(router.query.userId as string);
+  const { data: key } = useGetKeyInfo();
+  const { mutate } = useReadMessage({
+    onSuccess: () => setIsOpen(true),
+  });
 
   const puzzlePosition = [
     { left: 0, top: 0 },
@@ -180,13 +186,25 @@ function PuzzleList() {
     { width: 102.5, height: 90 },
   ];
 
-  const handleClickPiece = (data: any) => () => {
+  const handleClickPiece = (data: PuzzleMSG, puzzleId: number) => async () => {
     if (isUser) {
+      // 일단 confirm 으로 처리
       setLetterData(data);
+      if (!data.isOpened) {
+        if (key?.keyCount === 0) {
+          return alert('보유하고 있는 열쇠가 없습니다! 열쇠를 획득해주세요!');
+        }
+        if (confirm('열쇠를 사용하여 DM을 열어보시겠나요?')) {
+          mutate({ messageId: data.id, puzzleId });
+        }
+      } else {
+        setIsOpen(true);
+      }
     }
   };
+
   const handleClose = () => {
-    setLetterData(null);
+    setIsOpen(false);
   };
 
   const handleClickShare = useCallback(() => {
@@ -209,7 +227,8 @@ function PuzzleList() {
   };
 
   const handleClickSendMessage = useCallback(() => {
-    setLetterData(data?.length ? data[0].id : null); // 가장 마지막에 생성된 퍼즐 id
+    setLetterData(data?.length ? data[data.length - 1].id : null); // 가장 마지막에 생성된 퍼즐 id
+    setIsOpen(true);
   }, [data]);
 
   const getUrl = useCallback((categories: string, index: number) => {
@@ -218,7 +237,7 @@ function PuzzleList() {
     return `/assets/images/puzzles/${category}/${category}${index}.png`;
   }, []);
 
-  // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 딱 한번 실행
+  // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 랜더링 이후 실행
   useEffect(() => {
     if (router.pathname === route.List && !router.query.userId) {
       location.href =
@@ -258,10 +277,10 @@ function PuzzleList() {
                             {puzzle.messages.map((message) => (
                               <PuzzlePiece
                                 key={message.displayOrder}
+                                alt="puzzle-piece"
                                 src={getUrl(puzzle.category, message.displayOrder)}
                                 position={puzzlePosition[message.displayOrder]}
-                                alt="puzzle-piece"
-                                onClick={handleClickPiece(message)}
+                                onClick={handleClickPiece(message, puzzle.id)}
                                 {...puzzleSize[message.displayOrder]}
                               />
                             ))}
@@ -301,7 +320,7 @@ function PuzzleList() {
           {isUser ? '공유하기' : 'DM 보내기'}
         </Button>
       </PuzzleListWrap>
-      <Letter isOpen={!!letterData} onClose={handleClose} data={letterData} isWrite={!isUser} />
+      <Letter isOpen={isOpen} onClose={handleClose} data={letterData} isWrite={!isUser} />
     </Layout>
   );
 }

@@ -79,7 +79,6 @@ const Breadcrumb = styled.p`
   font-size: 13px;
 `;
 
-// 공백 검증 구현해야함
 function Create() {
   const [step, setStep] = useState(1);
   const router = useRouter();

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import Button, { ButtonType } from 'src/components/button/Button';
-import { Modal, TextField } from '@mui/material';
+import { Modal, TextField as MuiTextField } from '@mui/material';
 import React, { ReactElement } from 'react';
 import Layout from 'src/components/common/Layout';
 import { MessageCard, RecipientField, SenderField, TextBodyField } from './style';
@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useSendDM } from 'src/module/message';
 import { useQueryClient } from '@tanstack/react-query';
 import { PUZZLES_KEY } from 'src/module/puzzles';
+import styled from '@emotion/styled';
 
 type LetterProps = {
   isOpen: boolean;
@@ -29,6 +30,14 @@ const buttonSectionCss = css`
   bottom: 0;
 `;
 
+const TextField = styled(MuiTextField)`
+  height: unset;
+  & .MuiInputBase-input {
+    width: 140px;
+    padding: 0;
+  }
+`;
+
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
@@ -41,7 +50,6 @@ function Letter(props: LetterProps): ReactElement {
       reset();
     },
   });
-  // const [isWrite, setIsEdit] = useState<boolean>(false);
 
   const handleCloseModal = () => {
     if (onClose instanceof Function) {
@@ -64,7 +72,6 @@ function Letter(props: LetterProps): ReactElement {
         </span>
         <MessageCard>
           <RecipientField>
-            To.
             {isWrite ? (
               <Controller
                 name="to"
@@ -75,12 +82,12 @@ function Letter(props: LetterProps): ReactElement {
                     onChange={onChange}
                     inputProps={{ minLength: 1, maxLength: 7 }}
                     className="to"
-                    placeholder="누구"
+                    placeholder="To. 소중한 사람에게"
                   />
                 )}
               />
             ) : (
-              (data as MessageData)?.to
+              <>To.{(data as MessageData)?.to}</>
             )}
           </RecipientField>
           <TextBodyField>
@@ -95,9 +102,16 @@ function Letter(props: LetterProps): ReactElement {
                     sx={{
                       width: '240px',
                       maxHeight: '240px',
+                      '& .MuiInputBase-root': {
+                        padding: 0,
+                        paddingTop: '10px',
+                      },
+                      '& .MuiInputBase-input': {
+                        width: '100% !important',
+                      },
                     }}
                     multiline
-                    maxRows="5"
+                    maxRows="8"
                     className="content"
                     inputProps={{ maxLength: 102 }}
                     placeholder="응원의 메시지를 보내세요!"
@@ -109,7 +123,6 @@ function Letter(props: LetterProps): ReactElement {
             )}
           </TextBodyField>
           <SenderField>
-            From.
             {isWrite ? (
               <Controller
                 name="from"
@@ -118,17 +131,14 @@ function Letter(props: LetterProps): ReactElement {
                   <TextField
                     value={value}
                     onChange={onChange}
-                    sx={{
-                      width: '80px',
-                    }}
                     inputProps={{ minLength: 1, maxLength: 7 }}
                     className="from"
-                    placeholder="누구"
+                    placeholder="From. 귀여운 누군가"
                   />
                 )}
               />
             ) : (
-              (data as MessageData)?.from
+              <>From. {(data as MessageData)?.from}</>
             )}
           </SenderField>
         </MessageCard>
