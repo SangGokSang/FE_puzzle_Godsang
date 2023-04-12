@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useLayoutEffect, useState } from 'react';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
@@ -17,9 +17,13 @@ import { useJoin } from 'src/module/join';
 import { isEmpty } from 'lodash';
 import { useAddPuzzle } from 'src/module/puzzles/hooks/useAddPuzzle';
 import { useRecoilValue } from 'recoil';
-import auth from 'src/recoil/auth/atom';
+import auth, { authDefaultValue } from 'src/recoil/auth/atom';
 import route from 'src/core/const/route.path';
 import { scheme } from 'src/core/const/scheme';
+import { usePuzzles } from 'src/module/puzzles';
+import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
+import { User } from 'src/recoil/auth/type';
+import { notiCss } from 'src/components/wizard/puzzle/style';
 
 export type CreateFormType = {
   nickname: string;
@@ -78,9 +82,12 @@ const Breadcrumb = styled.p`
 // 공백 검증 구현해야함
 function Create() {
   const [step, setStep] = useState(1);
-  const [disabledButton, setDisabledButton] = useState(true);
   const router = useRouter();
-  const { nickname, userId } = useRecoilValue(auth);
+  const [disabledButton, setDisabledButton] = useState(true);
+  const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
+
+  const { data = [] } = usePuzzles(router.query.userId as string, { enabled: false });
+
   const createForm = useForm<CreateFormType>({
     resolver: yupResolver(
       yup.object().shape({
@@ -91,16 +98,10 @@ function Create() {
       }),
     ),
     mode: 'all',
-    defaultValues: {
-      nickname: nickname.slice(0, 7),
-      birth: Date.now(),
-      category: Category.exercise,
-      goal: '',
-    },
   });
 
   const addPuzzle = useAddPuzzle({
-    onSuccess: () => router.push({ pathname: route.List, query: { userId } }),
+    onSuccess: () => router.push({ pathname: route.List, query: { userId: user.userId } }),
     onError: (err) => console.log(err),
   });
 
@@ -136,6 +137,22 @@ function Create() {
   const handleBackClick = () => {
     if (step !== 1) setStep((prev) => --prev);
   };
+
+  useLayoutEffect(() => {
+    const defaultValues = {
+      nickname: '',
+      birth: Date.now(),
+      category: Category.exercise,
+      goal: '',
+    };
+    if (data.length > 1) {
+      setStep(2);
+      defaultValues.nickname = user.nickname;
+    } else {
+      defaultValues.nickname = user.nickname.slice(0, 7);
+    }
+    createForm.reset(defaultValues);
+  }, [user]);
 
   useEffect(() => {
     const { formState, getFieldState, watch } = createForm;

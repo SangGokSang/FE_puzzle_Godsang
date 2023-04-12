@@ -41,6 +41,12 @@ export const errorCss = css`
   color: red;
 `;
 
+export const notiCss = css`
+  margin-top: 12px;
+  font-size: 12px;
+  color: #9148da;
+`;
+
 export const annotateCss = css`
   margin-top: 6px;
   margin-bottom: 30px;
