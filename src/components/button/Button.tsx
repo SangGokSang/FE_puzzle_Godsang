@@ -14,7 +14,7 @@ type ButtonProps = {
   disabled?: boolean;
 };
 
-const Btn = styled.button`
+const Btn = styled.button<{ isDisabled: boolean }>`
   width: 100%;
   height: 60px;
   border: 1px solid #000000;
@@ -22,7 +22,7 @@ const Btn = styled.button`
   font-size: 18px;
   font-weight: 500;
   padding: 16px 0;
-  cursor: pointer;
+  cursor: ${(props) => !props.isDisabled && `pointer`};
 
   &.basic {
     color: #ffffff;
@@ -53,7 +53,7 @@ const Btn = styled.button`
 
 function Button({ children, buttonType, onClick, disabled = false }: PropsWithChildren<ButtonProps>) {
   return (
-    <Btn className={buttonType} onClick={onClick} disabled={disabled}>
+    <Btn className={buttonType} onClick={onClick} disabled={disabled} isDisabled={disabled}>
       {children}
     </Btn>
   );
