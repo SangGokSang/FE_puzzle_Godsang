@@ -54,8 +54,8 @@ export function clearTokens(): void {
 }
 
 export function logout() {
-  clearTokens();
   signOut();
+  clearTokens();
   location.href =
     process.env.NODE_ENV === 'production'
       ? 'https://dearmy2023.click'

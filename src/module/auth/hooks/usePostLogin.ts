@@ -17,11 +17,11 @@ export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, L
   return useMutation<LoginResponse, ApiError, LoginPayload>((payload: LoginPayload) => login(payload), {
     ...options,
     onSuccess: (data) => {
+      setApiJwt(data.accessToken);
+      setAuth(data);
       if (data.isWithdrawUser) {
         restore.mutate();
       } else {
-        setAuth(data);
-        setApiJwt(data.accessToken);
         router.push({ pathname: route.List, query: { userId: data.userId } });
       }
     },

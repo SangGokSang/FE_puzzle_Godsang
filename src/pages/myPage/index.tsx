@@ -11,7 +11,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { getDDay } from 'src/core/util/util';
 import { scheme } from 'src/core/const/scheme';
-import { errorCss } from 'src/components/wizard/puzzle/style';
 import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth';
 import { useJoin } from 'src/module/join';
@@ -19,6 +18,8 @@ import { isEmpty } from 'lodash';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { User as RecoilUser } from 'src/recoil/auth/type';
+import { useWithdraw } from 'src/module/auth/hooks/useWithdraw';
+import Image from 'next/image';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -53,28 +54,22 @@ const MyPageSection = styled.section`
 
 const StoryLine = styled.div`
   width: 500px;
-  height: 400px;
+  height: 100%;
+  padding-top: 40px;
   font-weight: 400;
   font-size: 20px;
   line-height: 26px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
-`;
-
-const NameBirthDay = styled.div`
-  display: flex;
-  align-items: center;
+  gap: 5px;
 `;
 
 const InputField = styled.div`
+  min-height: 95px;
   margin-left: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  .label {
-    padding-left: 40px;
-  }
+  font-size: 14px;
 `;
 
 const LabelInputWrap = styled.div`
@@ -82,35 +77,21 @@ const LabelInputWrap = styled.div`
   align-items: center;
 `;
 
-const NicknameTextField = styled(TextField)`
+const UserTextField = styled(TextField)<{ isEdit: boolean }>`
   width: 200px;
   height: 28px;
-  position: relative;
+  background-color: ${(props) => (props.isEdit ? '#f3f3f3' : '#fff')};
 
+  .MuiInputBase-root {
+    height: 28px;
+  }
   .MuiInputBase-input {
     padding: 3px;
   }
   .MuiInputBase-input.Mui-disabled {
     -webkit-text-fill-color: #000000;
     font-family: 'GmarketSans';
-    font-size: 20px;
-    padding: 0;
-    padding-left: 10px;
-  }
-`;
-
-const BirthDayTextField = styled(TextField)`
-  width: 200px;
-  height: 28px;
-  padding: 0;
-
-  .MuiInputBase-input {
-    padding: 3px;
-  }
-  .MuiInputBase-input.Mui-disabled {
-    -webkit-text-fill-color: #000000;
-    font-family: 'GmarketSans';
-    font-size: 20px;
+    font-size: 15px;
     padding: 0;
     padding-left: 10px;
   }
@@ -118,13 +99,36 @@ const BirthDayTextField = styled(TextField)`
 
 const Text = styled.div<{ isEdit: boolean }>`
   margin-right: ${({ isEdit }) => (isEdit ? '10px' : null)};
+  height: 28px;
+  display: flex;
+  align-items: center;
 `;
 
 const Story = styled.div`
-  margin-left: 20px;
+  margin-left: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  .list {
+    margin-left: 4px;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+  }
+`;
+
+const errLabel = css`
+  font-size: 10px;
+  min-height: 20px;
+  line-height: 20px;
+  color: red;
 `;
 
 export const ButtonSection = styled.section`
@@ -138,9 +142,9 @@ function MyPage() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const setAuth = useSetRecoilState(auth);
   const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
+  const withdraw = useWithdraw();
 
   const {
-    watch,
     formState: { errors },
     control,
     getValues,
@@ -154,10 +158,12 @@ function MyPage() {
     },
   });
 
+  const buttonDisabled = isEdit && !isEmpty(errors);
+
   const join = useJoin({
     onSuccess: (data) => {
       setIsEdit(false);
-      setAuth(data);
+      setAuth((prev) => ({ ...prev, ...data }));
     },
     onError: (err) => console.log(err),
   });
@@ -176,35 +182,58 @@ function MyPage() {
     }
   };
   const handleWithdrawal = () => {
-    console.log('탈퇴');
+    if (confirm('정말로 탈퇴 하실건가요? 🫣')) {
+      withdraw.mutate();
+    }
   };
 
   const description = useMemo(() => {
-    const birth = getValues('birth');
     const d_day = getDDay(dayjs(birthdate));
-    const countNextAge = dayjs().get('y') - +birth.slice(0, 4) + 1;
-    const countMeals = +d_day * 3;
-    const countBooks = Math.floor(+d_day / 7);
-    const countBodyProfile = Math.floor(+d_day / 90);
+    const countMeals = d_day * 3; // 하루에 3끼 (남은일수 * 3)
+    const countSquat = d_day * 60; // 하루에 60개 기준 (남은일수 * 60)
+    const countBooks = Math.floor(d_day / 7); // 일주일에 한권 기준
+    const countLoL = d_day * 2; // 하루에 2판 기준
+    const countTravel = Math.round(d_day / 365); // 일년에 2번 기준
+    const getUrl = (type: string) => `/assets/images/mypage/${type}.png`;
+
     return (
-      <>
+      <div
+        css={css`
+          font-size: 13px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        `}>
         <div>
-          <div>당신은 오늘부터 만 {countNextAge}살까지,</div>
-          <div> {d_day}일 이라는 시간이 남았습니다.</div>
+          <span>축하해요!</span>
+          <div>{d_day}일 이라는 시간을 선물로 받았어요 🥳</div>
+          <p>선물받은 시간에 우리가 할 수 있는 것을 알아볼까요?</p>
         </div>
-        <div>이 시점 우리가 할 수 있는 것은?</div>
-        <div>
-          <div>식사 {countMeals}번</div>
-          <div>바디프로필 {countBodyProfile}번 찍기</div>
-          <div>독서 {countBooks}권</div>
-          <div>롤 골드 티어 찍기</div>
-          <div>제주 살이</div>
-          {countNextAge <= 30 && <div>워킹홀리데이</div>}
-          <div>⋮</div>
+        <div className="list">
+          <div className="row">
+            <Image src={getUrl('lunch')} alt="밥" width="35" height="35" />
+            먹는게 제일 좋아~ {countMeals} 끼!
+          </div>
+          <div className="row">
+            <Image src={getUrl('squat')} alt="스쿼트" width="35" height="35" />
+            원판 더 꽂아! {countSquat} 회나 더 할 수 있어요!
+          </div>
+          <div className="row">
+            <Image src={getUrl('book')} alt="책" width="35" height="35" />
+            {countBooks} 권을 더 읽어서 척척박사로 진화!
+          </div>
+          <div className="row">
+            <Image src={getUrl('airplane')} alt="비행" width="35" height="35" />
+            {countTravel} 번의 여행! 세계를 정복해봐요!
+          </div>
+          <div className="row">
+            <Image src={getUrl('lol')} alt="롤" width="35" height="35" />
+            캐리 미쳤네? {countLoL} 번 더하고 챌린저!
+          </div>
         </div>
-      </>
+      </div>
     );
-  }, [getValues, birthdate]);
+  }, [birthdate]);
 
   useEffect(() => {
     setValue('nickname', nickname);
@@ -215,64 +244,53 @@ function MyPage() {
     <Layout layoutCss={layoutCss} useHeader={true}>
       <MyPageSection>
         <StoryLine>
-          <NameBirthDay>
-            <InputField>
-              <LabelInputWrap>
-                <Text isEdit={isEdit}>별명:</Text>
-                <div style={{ alignItems: 'center', display: 'flex' }}>
-                  <Controller
-                    name="nickname"
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <NicknameTextField
-                        value={value}
-                        onChange={onChange}
-                        disabled={!isEdit}
-                        sx={{
-                          background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                        }}
-                        inputProps={{
-                          minLength: 1,
-                          maxLength: 7,
-                        }}
-                      />
-                    )}
+          <InputField>
+            <LabelInputWrap>
+              <Text isEdit={isEdit}>별명:</Text>
+              <Controller
+                name="nickname"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <UserTextField
+                    value={value}
+                    onChange={onChange}
+                    disabled={!isEdit}
+                    isEdit={isEdit}
+                    inputProps={{
+                      minLength: 1,
+                      maxLength: 7,
+                    }}
                   />
-                </div>
-              </LabelInputWrap>
-              <div className="label">{!!errors?.nickname && <span css={errorCss}>{errors.nickname.message}</span>}</div>
-              <LabelInputWrap>
-                <Text isEdit={isEdit}>생일:</Text>
-                <Controller
-                  control={control}
-                  name="birth"
-                  render={({ field: { value, onChange } }) => {
-                    const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-                      onChange(dayjs(event.currentTarget.value).valueOf());
-                    };
-                    const val = dayjs(value).format('YYYY-MM-DD');
-                    return (
-                      <BirthDayTextField
-                        type="date"
-                        value={val}
-                        sx={{
-                          background: `${isEdit ? '#f3f3f3' : 'none'}`,
-                        }}
-                        onChange={handleChange}
-                        disabled={!isEdit}
-                      />
-                    );
-                  }}
-                />
-              </LabelInputWrap>
-              <div className="label">{!!errors?.birth && <span css={errorCss}>{errors.birth.message}</span>}</div>
-            </InputField>
-          </NameBirthDay>
+                )}
+              />
+            </LabelInputWrap>
+            <span css={errLabel}>{!!errors?.nickname && errors.nickname.message}</span>
+            <LabelInputWrap>
+              <Text isEdit={isEdit}>생일:</Text>
+              <Controller
+                control={control}
+                name="birth"
+                render={({ field: { value, onChange } }) => {
+                  const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+                    onChange(dayjs(event.currentTarget.value).valueOf());
+                  };
+                  const val = dayjs(value).format('YYYY-MM-DD');
+                  return (
+                    <UserTextField type="date" value={val} isEdit={isEdit} onChange={handleChange} disabled={!isEdit} />
+                  );
+                }}
+              />
+            </LabelInputWrap>
+            <span css={errLabel}>{!!errors?.birth && errors.birth.message}</span>
+          </InputField>
           <Story>{description}</Story>
         </StoryLine>
       </MyPageSection>
       <ButtonSection>
-        <Button buttonType={ButtonType.Basic} onClick={isEdit ? handleSubmit : handleClick}>
+        <Button
+          buttonType={buttonDisabled ? ButtonType.Disabled : ButtonType.Basic}
+          disabled={buttonDisabled}
+          onClick={isEdit ? handleSubmit : handleClick}>
           {isEdit ? '저장' : '수정'}
         </Button>
         <Button buttonType={ButtonType.SignOut} onClick={handleWithdrawal}>

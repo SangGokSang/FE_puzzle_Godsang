@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useMemo } from 'react';
+import React, { ChangeEventHandler, useEffect, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { TextField } from '@mui/material';
@@ -11,6 +11,7 @@ function FirstStep() {
     control,
     watch,
     formState: { errors },
+    trigger,
   } = useFormContext<CreateFormType>();
   const { nickname, birth } = watch();
 
@@ -22,6 +23,10 @@ ${birthday} 생이고
 지금의 나이로 돌아가기까지
 D-${d_day} 일 남았어요”`;
   }, [nickname, birth]);
+
+  useEffect(() => {
+    trigger('birth');
+  }, []);
 
   return (
     <Container>
@@ -35,7 +40,7 @@ D-${d_day} 일 남았어요”`;
             <TextField
               value={value}
               onChange={onChange}
-              inputProps={{ maxLength: 7 }}
+              inputProps={{ maxLength: 10 }}
               placeholder="별명을 입력해주세요!"
             />
           )}
@@ -51,14 +56,7 @@ D-${d_day} 일 남았어요”`;
               onChange(dayjs(event.currentTarget.value).valueOf());
             };
             const val = dayjs(value).format('YYYY-MM-DD');
-            return (
-              <TextField
-                type="date"
-                value={val}
-                onChange={handleChange}
-                InputProps={{ inputProps: { style: { textAlign: 'left' } } }}
-              />
-            );
+            return <TextField type="date" value={val} onChange={handleChange} />;
           }}
         />
       </Field>
