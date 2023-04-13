@@ -163,6 +163,7 @@ function PuzzleList() {
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const [isUser, setIsUser] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [activeSliderId, setActiveSliderId] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
   const MaxMessage = 9;
 
@@ -237,9 +238,9 @@ function PuzzleList() {
   };
 
   const handleClickSendMessage = useCallback(() => {
-    setLetterData(data?.length ? data[data.length - 1].id : null); // 가장 마지막에 생성된 퍼즐 id
+    setLetterData(data ? data[activeSliderId].id : null); // 가장 마지막에 생성된 퍼즐 id
     setIsOpen(true);
-  }, [data]);
+  }, [data, activeSliderId]);
 
   const getUrl = useCallback((categories: string, index: number) => {
     const category = categories.toLowerCase();
@@ -267,7 +268,10 @@ function PuzzleList() {
         <Content>
           <div css={title}>{data?.length ? data[0]?.userNickname : '별명'} 님의 목표</div>
           <SwiperContainer>
-            <Swiper pagination={true} modules={[Pagination]}>
+            <Swiper
+              pagination={true}
+              modules={[Pagination]}
+              onSlideChange={({ activeIndex }) => setActiveSliderId(activeIndex)}>
               {data && !!data.length ? (
                 <>
                   {data.map((puzzle, index) => (
@@ -327,7 +331,10 @@ function PuzzleList() {
             {isUser ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '아래 버튼을 클릭해 응원의 메세지를 보내주세요!'}
           </Message>
         </Content>
-        <Button buttonType={ButtonType.Basic} onClick={isUser ? handleClickShare : handleClickSendMessage}>
+        <Button
+          buttonType={!data?.length ? ButtonType.Disabled : ButtonType.Basic}
+          onClick={isUser ? handleClickShare : handleClickSendMessage}
+          disabled={!data?.length}>
           {isUser ? '공유하기' : 'DM 보내기'}
         </Button>
       </PuzzleListWrap>
