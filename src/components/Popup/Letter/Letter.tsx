@@ -32,6 +32,12 @@ const buttonSectionCss = css`
 
 const TextField = styled(MuiTextField)`
   height: unset;
+  &.from {
+    direction: rtl;
+    & .MuiInputBase-input {
+      text-align: unset;
+    }
+  }
   & .MuiInputBase-input {
     width: 140px;
     padding: 0;

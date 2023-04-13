@@ -147,6 +147,15 @@ const Message = styled.div`
   margin: 20px 0 15px;
 `;
 
+const NoMessage = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+`;
+
 function PuzzleList() {
   const router = useRouter();
   const isMobileView = useRecoilValue(isMobile);
@@ -154,7 +163,9 @@ function PuzzleList() {
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const [isUser, setIsUser] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [activeSliderId, setActiveSliderId] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
+  const MaxMessage = 9;
 
   const { data } = usePuzzles(router.query.userId as string);
   const { data: key } = useGetKeyInfo();
@@ -227,9 +238,9 @@ function PuzzleList() {
   };
 
   const handleClickSendMessage = useCallback(() => {
-    setLetterData(data?.length ? data[data.length - 1].id : null); // 가장 마지막에 생성된 퍼즐 id
+    setLetterData(data ? data[activeSliderId].id : null); // 가장 마지막에 생성된 퍼즐 id
     setIsOpen(true);
-  }, [data]);
+  }, [data, activeSliderId]);
 
   const getUrl = useCallback((categories: string, index: number) => {
     const category = categories.toLowerCase();
@@ -257,12 +268,15 @@ function PuzzleList() {
         <Content>
           <div css={title}>{data?.length ? data[0]?.userNickname : '별명'} 님의 목표</div>
           <SwiperContainer>
-            <Swiper pagination={true} modules={[Pagination]}>
+            <Swiper
+              pagination={true}
+              modules={[Pagination]}
+              onSlideChange={({ activeIndex }) => setActiveSliderId(activeIndex)}>
               {data && !!data.length ? (
                 <>
                   {data.map((puzzle, index) => (
                     <div key={puzzle.id}>
-                      {isUser && index === 0 && puzzle?.messages?.length === 9 && (
+                      {isUser && index === 0 && puzzle?.messages?.length === MaxMessage && (
                         <SwiperSlide key={'create'}>
                           <NoPuzzleWrap>
                             <AddPuzzleIcon onClick={handleClickMakePuzzle} />
@@ -274,29 +288,30 @@ function PuzzleList() {
                         <div css={goal}>{puzzle.title}</div>
                         <PuzzleContainer>
                           <PuzzleWrap>
-                            {puzzle.messages.map((message) => (
-                              <PuzzlePiece
-                                key={message.displayOrder}
-                                alt="puzzle-piece"
-                                src={getUrl(puzzle.category, message.displayOrder)}
-                                position={puzzlePosition[message.displayOrder]}
-                                onClick={handleClickPiece(message, puzzle.id)}
-                                {...puzzleSize[message.displayOrder]}
-                              />
-                            ))}
+                            {puzzle?.messages?.length ? (
+                              puzzle.messages.map((message) => (
+                                <PuzzlePiece
+                                  key={message.displayOrder}
+                                  alt="puzzle-piece"
+                                  src={getUrl(puzzle.category, message.displayOrder)}
+                                  position={puzzlePosition[message.displayOrder]}
+                                  onClick={handleClickPiece(message, puzzle.id)}
+                                  {...puzzleSize[message.displayOrder]}
+                                />
+                              ))
+                            ) : (
+                              <NoMessage>
+                                <p>😥</p>
+                                <p>도착한 응원의 편지가 없어요.</p>
+                                <p>링크를 공유해</p>
+                                <p>응원의 편지를 요청해보세요!</p>
+                              </NoMessage>
+                            )}
                           </PuzzleWrap>
                         </PuzzleContainer>
                       </SwiperSlide>
                     </div>
                   ))}
-                  {isUser && (
-                    <SwiperSlide key={'create-test'}>
-                      <NoPuzzleWrap>
-                        <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                        <p>퍼즐을 만들어보세요!</p>
-                      </NoPuzzleWrap>
-                    </SwiperSlide>
-                  )}
                 </>
               ) : (
                 <NoPuzzleWrap>
@@ -316,7 +331,10 @@ function PuzzleList() {
             {isUser ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '아래 버튼을 클릭해 응원의 메세지를 보내주세요!'}
           </Message>
         </Content>
-        <Button buttonType={ButtonType.Basic} onClick={isUser ? handleClickShare : handleClickSendMessage}>
+        <Button
+          buttonType={!data?.length ? ButtonType.Disabled : ButtonType.Basic}
+          onClick={isUser ? handleClickShare : handleClickSendMessage}
+          disabled={!data?.length}>
           {isUser ? '공유하기' : 'DM 보내기'}
         </Button>
       </PuzzleListWrap>

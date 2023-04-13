@@ -51,7 +51,14 @@ D-${d_day} 일 남았어요”`;
               onChange(dayjs(event.currentTarget.value).valueOf());
             };
             const val = dayjs(value).format('YYYY-MM-DD');
-            return <TextField type="date" value={val} onChange={handleChange} />;
+            return (
+              <TextField
+                type="date"
+                value={val}
+                onChange={handleChange}
+                InputProps={{ inputProps: { style: { textAlign: 'left' } } }}
+              />
+            );
           }}
         />
       </Field>
