@@ -219,20 +219,12 @@ function PuzzleList() {
     setIsOpen(false);
   };
 
-  const convertImageToFile = async (url: string) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const file = new File([blob], 'dm2023', { type: 'image/png' });
-    return Promise.resolve(file);
-  };
-
   const handleClickShare = useCallback(async () => {
     if (navigator.share) {
       navigator.share({
         title: 'Dear My 2023',
         text: '우리에게 선물로 다가온 시간을 채워봐요.',
         url: location.href,
-        files: [await convertImageToFile('/assets/images/main-symbol.png')],
       });
     } else {
       copy(location.href);
