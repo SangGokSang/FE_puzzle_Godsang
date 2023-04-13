@@ -4,6 +4,7 @@ const route = {
   List: '/list',
   Create: '/create',
   Landing: '/',
+  NotFound: '/notFound',
 };
 
 export default route;
