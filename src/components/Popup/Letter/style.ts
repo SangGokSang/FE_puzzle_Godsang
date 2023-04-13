@@ -34,7 +34,6 @@ export const TextBodyField = styled.div`
   padding: 0 18px;
   display: flex;
   flex: 1;
-  align-items: center;
   .content {
     background: none;
     width: 100%;
@@ -46,6 +45,7 @@ export const SenderField = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: flex-end;
   padding: 18px;
   color: #000000;
   font-weight: 400;

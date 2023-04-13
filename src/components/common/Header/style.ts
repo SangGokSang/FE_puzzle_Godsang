@@ -23,6 +23,7 @@ export const AuthButton = styled.button`
   font-size: 13px;
   background: #ffffff;
   border: 1px solid #000000;
+  color: #000;
   padding: 4px;
   cursor: pointer;
 `;

@@ -24,7 +24,8 @@ export default function Header() {
   const handleClickEvent: Record<IconType, () => void> = {
     logo: () => movePage(route.List, { userId }),
     login: () => movePage(route.Landing),
-    back: () => movePage(route.List, { userId: router.query.originId }),
+    back: () =>
+      router.pathname === route.HowToUse ? router.back() : movePage(route.List, { userId: router.query.originId }),
     mypage: () =>
       movePage(route.MyPage, { originId: router.pathname === route.Key ? router.query.originId : router.query.userId }),
     key: () =>
@@ -34,7 +35,7 @@ export default function Header() {
 
   return (
     <Wrapper>
-      {router.pathname === route.MyPage || router.pathname === route.Key ? (
+      {router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.HowToUse ? (
         <BackIcon onClick={handleClickEvent['back']} css={buttonHoverCss} />
       ) : (
         <Logo onClick={handleClickEvent['logo']} css={buttonHoverCss} />
