@@ -167,12 +167,7 @@ function PuzzleList() {
   const { enqueueSnackbar } = useSnackbar();
   const MaxMessage = 9;
 
-  const { data } = usePuzzles(router.query.userId as string, {
-    onError: () => {
-      // if(error.code === '없는 유저')
-      router.push(route.NotFound);
-    },
-  });
+  const { data } = usePuzzles(router.query.userId as string);
   const { data: key } = useGetKeyInfo();
   const { mutate } = useReadMessage({
     onSuccess: () => setIsOpen(true),
@@ -353,11 +348,8 @@ export default PuzzleList;
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const userId = query.userId as string;
   const queryClient = new QueryClient();
-  try {
-    await queryClient.prefetchQuery<Puzzle[], ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
-  } catch (error) {
-    console.log(error);
-  }
+
+  await queryClient.prefetchQuery<Puzzle[], ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
 
   return {
     props: {
