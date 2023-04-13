@@ -63,6 +63,10 @@ const StoryLine = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
+
+  @media screen and (min-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const InputField = styled.div`
@@ -213,11 +217,11 @@ function MyPage() {
         <div className="list">
           <div className="row">
             <Image src={getUrl('lunch')} alt="밥" width="35" height="35" />
-            먹는게 제일 좋아~ {countMeals} 끼!
+            먹는게~ 제일 좋아~🎶 {countMeals} 끼 더 버억~
           </div>
           <div className="row">
             <Image src={getUrl('squat')} alt="스쿼트" width="35" height="35" />
-            원판 더 꽂아! {countSquat} 회나 더 할 수 있어요!
+            원판 더더!! 스퀕 {countSquat} 회 더 할 수 있어요!
           </div>
           <div className="row">
             <Image src={getUrl('book')} alt="책" width="35" height="35" />
@@ -229,7 +233,7 @@ function MyPage() {
           </div>
           <div className="row">
             <Image src={getUrl('lol')} alt="롤" width="35" height="35" />
-            캐리 미쳤네? {countLoL} 번 더하고 챌린저!
+            캐리 미쳤네? {countLoL} 판 더하고 챌린저!
           </div>
         </div>
       </div>
