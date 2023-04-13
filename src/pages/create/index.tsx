@@ -144,9 +144,10 @@ function Create() {
       category: Category.exercise,
       goal: '',
     };
-    if (data.length > 1) {
+    if (data.length > 0 && user.nickname !== '') {
       setStep(2);
       defaultValues.nickname = user.nickname;
+      defaultValues.birth = user.birthdate;
     } else {
       defaultValues.nickname = user.nickname.slice(0, 7);
     }
