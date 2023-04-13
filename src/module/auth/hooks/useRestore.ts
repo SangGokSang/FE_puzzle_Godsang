@@ -14,7 +14,7 @@ export const useRestore = (options: MutationOptions<LoginResponse, ApiError, voi
   return useMutation<LoginResponse, ApiError, void>(() => restore(), {
     ...options,
     onSuccess: (data) => {
-      alert('다시 오신걸 환영해요! 다시 오실줄 알고 퍼즐을 다시 불러왔어요 🥰');
+      alert('다시 오신걸 환영해요! \n다시 오실줄 알고 퍼즐을 다시 불러왔어요 🥰');
       setUser(data);
       setTimeout(() => {
         router.push({ pathname: route.List, query: { userId: data.userId } });
