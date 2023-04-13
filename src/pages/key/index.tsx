@@ -13,6 +13,7 @@ import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
+import GoogleAd from 'src/components/googleAd/GoogldAd';
 
 export type KeyInfo = {
   keyCount: number;
@@ -106,9 +107,10 @@ function KeyInfo() {
       </KeyInfoSection>
       <ButtonSection>
         <Button buttonType={ButtonType.Basic} onClick={handleClick}>
-          열쇠 만들기
+          열쇠 획득하기
         </Button>
       </ButtonSection>
+      <GoogleAd />
     </Layout>
   );
 }
