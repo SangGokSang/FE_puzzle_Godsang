@@ -11,6 +11,8 @@ import auth from 'src/recoil/auth';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
+import { useRouter } from 'next/router';
+import route from 'src/core/const/route.path';
 
 export type KeyInfo = {
   keyCount: number;
@@ -79,15 +81,16 @@ const Attention = styled.div`
 `;
 
 function KeyInfo() {
+  const router = useRouter();
   const { data } = useGetKeyInfo();
   const { nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
 
   const handleClick = () => {
-    console.log('광고보기');
+    router.push(route.MakeKey);
   };
 
   return (
-    <Layout layoutCss={layoutCss} useHeader={true}>
+    <Layout layoutCss={layoutCss}>
       <KeyInfoSection>
         <InfoWrap>
           <InfoTitle>{nickname}님의 열쇠 갯수</InfoTitle>
