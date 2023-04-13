@@ -53,5 +53,9 @@ export const SenderField = styled.div`
   line-height: 20px;
   .from {
     background: none;
+
+    & .MuiInputBase-input {
+      text-align: end;
+    }
   }
 `;

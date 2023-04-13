@@ -32,12 +32,6 @@ const buttonSectionCss = css`
 
 const TextField = styled(MuiTextField)`
   height: unset;
-  &.from {
-    direction: rtl;
-    & .MuiInputBase-input {
-      text-align: unset;
-    }
-  }
   & .MuiInputBase-input {
     width: 100%;
     padding: 0;
@@ -137,7 +131,10 @@ function Letter(props: LetterProps): ReactElement {
                   <TextField
                     value={value}
                     onChange={onChange}
-                    inputProps={{ minLength: 1, maxLength: 19 }}
+                    inputProps={{
+                      minLength: 1,
+                      maxLength: 19,
+                    }}
                     className="from"
                     placeholder="From. 귀여운 누군가"
                   />
