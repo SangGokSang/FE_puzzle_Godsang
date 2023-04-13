@@ -5,12 +5,13 @@ import route from 'src/core/const/route.path';
 import Button, { ButtonType } from '../button/Button';
 
 const Wrapper = styled.div`
-  position: relative;
-  max-width: 768px;
-  min-width: 360px;
   width: 100%;
   height: 100%;
+  max-width: 768px;
+  min-width: 360px;
+  margin: 0 auto;
   padding: 20px 20px 40px;
+  position: relative;
   display: flex;
   flex-direction: column;
 `;

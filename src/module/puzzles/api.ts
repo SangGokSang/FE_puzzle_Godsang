@@ -1,12 +1,12 @@
 import api from 'src/core/api';
 import { getAccessToken } from 'src/core/api/auth';
-import { Puzzle, PuzzleReq, ReadMessageReq } from './types';
+import { PuzzleReq, Puzzles, ReadMessageReq } from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const accessToken = getAccessToken({ bearer: true }) || '';
 
 // fetch puzzles
-export async function fetchPuzzles(userId: string): Promise<Puzzle[]> {
+export async function fetchPuzzles(userId: string): Promise<Puzzles> {
   const data = await fetch(
     `${API_BASE_URL}/puzzles?` +
       new URLSearchParams({
