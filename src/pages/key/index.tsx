@@ -60,7 +60,7 @@ const InfoBox = styled.div`
 const InfoContent = styled.div`
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 12px;
   padding: 31px 60px;
 `;
 
