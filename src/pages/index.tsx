@@ -11,6 +11,8 @@ import symbol_img from 'public/assets/images/main-symbol.png';
 import { useRecoilValue } from 'recoil';
 import isMobile from 'src/recoil/isMobile';
 import { useSnackbar } from 'notistack';
+import { useRouter } from 'next/router';
+import route from 'src/core/const/route.path';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -70,10 +72,11 @@ const IconSection = styled.div`
 
 export default function Home() {
   const login = useLogin();
+  const router = useRouter();
   const isMobileView = useRecoilValue(isMobile);
   const { enqueueSnackbar } = useSnackbar();
   const handleClickHowToUse = () => {
-    // 처리필요
+    router.push(route.HowToUse);
   };
 
   const handleClickIcon = (provider: Provider) => () => {
