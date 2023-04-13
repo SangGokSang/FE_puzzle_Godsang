@@ -8,7 +8,7 @@ const accessToken = getAccessToken({ bearer: true }) || '';
 // fetch puzzles
 export async function fetchPuzzles(userId: string): Promise<Puzzle[]> {
   const data = await fetch(
-    `${API_BASE_URL}/puzzlesas?` +
+    `${API_BASE_URL}/puzzles?` +
       new URLSearchParams({
         userId,
       }),
