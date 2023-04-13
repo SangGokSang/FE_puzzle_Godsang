@@ -40,7 +40,7 @@ D-${d_day} 일 남았어요”`;
             <TextField
               value={value}
               onChange={onChange}
-              inputProps={{ maxLength: 7 }}
+              inputProps={{ maxLength: 10 }}
               placeholder="별명을 입력해주세요!"
             />
           )}

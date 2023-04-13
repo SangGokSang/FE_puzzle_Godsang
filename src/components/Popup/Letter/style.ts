@@ -10,14 +10,15 @@ export const MessageCard = styled.form`
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
 `;
 
 export const RecipientField = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 18px;
-  margin-bottom: 12px;
+  padding: 18px;
   color: #000000;
   font-weight: 400;
   font-size: 13px;
@@ -32,6 +33,7 @@ export const TextBodyField = styled.div`
   max-height: 260px;
   padding: 0 18px;
   display: flex;
+  flex: 1;
   align-items: center;
   .content {
     background: none;
@@ -44,9 +46,7 @@ export const SenderField = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
-  position: absolute;
-  bottom: 18px;
-  right: 18px;
+  padding: 18px;
   color: #000000;
   font-weight: 400;
   font-size: 13px;
