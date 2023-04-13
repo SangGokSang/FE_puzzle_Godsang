@@ -39,7 +39,7 @@ const TextField = styled(MuiTextField)`
     }
   }
   & .MuiInputBase-input {
-    width: 140px;
+    width: 100%;
     padding: 0;
   }
 `;
@@ -86,7 +86,7 @@ function Letter(props: LetterProps): ReactElement {
                   <TextField
                     value={value}
                     onChange={onChange}
-                    inputProps={{ minLength: 1, maxLength: 7 }}
+                    inputProps={{ minLength: 1, maxLength: 19 }}
                     className="to"
                     placeholder="To. 소중한 사람에게"
                   />
@@ -110,7 +110,7 @@ function Letter(props: LetterProps): ReactElement {
                       maxHeight: '240px',
                       '& .MuiInputBase-root': {
                         padding: 0,
-                        paddingTop: '10px',
+                        paddingTop: '4px',
                       },
                       '& .MuiInputBase-input': {
                         width: '100% !important',
@@ -137,7 +137,7 @@ function Letter(props: LetterProps): ReactElement {
                   <TextField
                     value={value}
                     onChange={onChange}
-                    inputProps={{ minLength: 1, maxLength: 7 }}
+                    inputProps={{ minLength: 1, maxLength: 19 }}
                     className="from"
                     placeholder="From. 귀여운 누군가"
                   />

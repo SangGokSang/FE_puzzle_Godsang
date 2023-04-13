@@ -1,9 +1,23 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import route from 'src/core/const/route.path';
 import { ApiError } from 'src/core/type/ApiError';
 import { fetchPuzzles } from '../api';
 import { PUZZLES_KEY } from '../key';
-import { Puzzle } from '../types';
+import { Puzzles } from '../types';
 
-export const usePuzzles = (userId: string, options?: UseQueryOptions<Puzzle[], ApiError>) => {
-  return useQuery<Puzzle[], ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId), options);
+export const usePuzzles = (userId: string, options?: UseQueryOptions<Puzzles, ApiError>) => {
+  const router = useRouter();
+
+  return useQuery<Puzzles, ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId), {
+    ...options,
+    onSuccess: (data) => {
+      if (data?.code) {
+        router.push(route.NotFound);
+      }
+      if (options?.onSuccess instanceof Function) {
+        options.onSuccess(data);
+      }
+    },
+  });
 };

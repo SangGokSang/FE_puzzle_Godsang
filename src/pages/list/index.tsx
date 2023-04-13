@@ -8,7 +8,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import { fetchPuzzles, Puzzle, PuzzleMSG, PUZZLES_KEY } from 'src/module/puzzles';
+import { fetchPuzzles, Puzzle, PuzzleMSG, Puzzles, PUZZLES_KEY } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
@@ -349,7 +349,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const userId = query.userId as string;
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery<Puzzle[], ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
+  await queryClient.prefetchQuery<Puzzles, ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
 
   return {
     props: {

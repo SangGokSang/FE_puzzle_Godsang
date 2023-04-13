@@ -8,6 +8,10 @@ export type Puzzle = {
   messages: PuzzleMSG[];
 };
 
+export type Puzzles = Puzzle[] & {
+  code?: string;
+};
+
 export type PuzzleMSG = {
   id: number;
   displayOrder: number;
