@@ -27,10 +27,23 @@ export default function Header() {
     back: () =>
       router.pathname === route.HowToUse ? router.back() : movePage(route.List, { userId: router.query.originId }),
     mypage: () =>
-      movePage(route.MyPage, { originId: router.pathname === route.Key ? router.query.originId : router.query.userId }),
+      movePage(route.MyPage, {
+        originId:
+          router.pathname === route.Key || router.pathname === route.MakeKey
+            ? router.query.originId
+            : router.query.userId,
+      }),
     key: () =>
-      movePage(route.Key, { originId: router.pathname === route.MyPage ? router.query.originId : router.query.userId }),
-    logout: () => logout.mutate(),
+      movePage(route.Key, {
+        originId:
+          router.pathname === route.MyPage || router.pathname === route.MakeKey
+            ? router.query.originId
+            : router.query.userId,
+      }),
+    logout: () => {
+      localStorage.clear();
+      logout.mutate();
+    },
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
@@ -14,6 +14,7 @@ import { authDefaultValue } from 'src/recoil/auth/atom';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import GoogleAd from 'src/components/googleAd/GoogldAd';
+import { ParsedUrlQueryInput } from 'querystring';
 
 export type KeyInfo = {
   keyCount: number;
@@ -82,11 +83,46 @@ const Attention = styled.div`
 `;
 
 function KeyInfo() {
+  const disabledTime = 30000;
   const router = useRouter();
   const { data } = useGetKeyInfo();
   const { nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
+  const [isClicked, setIsClicked] = useState<boolean>(localStorage.getItem('isButtonClicked') === 'true' || false);
+  const [remainingTime, setRemainingTime] = useState<number>(
+    localStorage.getItem('remainingTime') ? Number(localStorage.getItem('remainingTime')) : disabledTime,
+  );
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (isClicked) {
+      intervalId = setInterval(() => {
+        setRemainingTime((time) => time - 1000);
+        localStorage.setItem('remainingTime', (remainingTime - 1000).toString());
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [isClicked, remainingTime]);
+
+  useEffect(() => {
+    if (remainingTime <= 0) {
+      setIsClicked(false);
+      setRemainingTime(disabledTime);
+      localStorage.removeItem('isButtonClicked');
+      localStorage.removeItem('remainingTime');
+    }
+  }, [remainingTime]);
+
+  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
+    router.push({ pathname, query });
+  };
 
   const handleClick = () => {
+    movePage(route.MakeKey, {
+      originId:
+        router.pathname === route.Key || router.pathname === route.MyPage ? router.query.originId : router.query.userId,
+    });
+    setIsClicked(true);
+    localStorage.setItem('isButtonClicked', 'true');
     router.push(route.MakeKey);
   };
 
@@ -106,7 +142,13 @@ function KeyInfo() {
         </InfoWrap>
       </KeyInfoSection>
       <ButtonSection>
-        <Button buttonType={ButtonType.Basic} onClick={handleClick}>
+        <Button
+          buttonType={ButtonType.Basic}
+          onClick={handleClick}
+          disabled={isClicked}
+          isClicked={isClicked}
+          disabledTime={disabledTime}
+          remainingTime={remainingTime}>
           열쇠 획득하기
         </Button>
       </ButtonSection>
