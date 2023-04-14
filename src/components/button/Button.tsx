@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, SyntheticEvent, useState } from 'react';
+import React, { PropsWithChildren, SyntheticEvent } from 'react';
 import styled from '@emotion/styled';
 
 export enum ButtonType {

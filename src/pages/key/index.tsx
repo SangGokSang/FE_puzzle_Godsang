@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import GoogleAd from 'src/components/googleAd/GoogldAd';
 import { ParsedUrlQueryInput } from 'querystring';
+import { useMovePage } from 'src/core/util/util';
 
 export type KeyInfo = {
   keyCount: number;
