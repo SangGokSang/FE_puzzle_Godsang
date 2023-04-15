@@ -1,6 +1,5 @@
 import React, { PropsWithChildren, SyntheticEvent } from 'react';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 
 export enum ButtonType {
   Basic = 'basic',
