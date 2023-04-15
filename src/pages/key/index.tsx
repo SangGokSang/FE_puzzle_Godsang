@@ -20,8 +20,6 @@ export type KeyInfo = {
   keyCount: number;
 };
 
-type RouteType = 'makeKey';
-
 const layoutCss = css`
   background: #f9f9f9;
   .Wrapper {
@@ -119,12 +117,10 @@ function KeyInfo() {
       router.pathname === route.Key || router.pathname === route.MyPage ? router.query.originId : router.query.userId,
   });
 
-  const handleClick: Record<RouteType, () => void> = {
-    makeKey: () => {
-      setIsClicked(true);
-      localStorage.setItem('isButtonClicked', 'true');
-      moveToMakeKey();
-    },
+  const handleClick = () => {
+    setIsClicked(true);
+    localStorage.setItem('isButtonClicked', 'true');
+    moveToMakeKey();
   };
 
   return (
@@ -145,7 +141,7 @@ function KeyInfo() {
       <ButtonSection>
         <Button
           buttonType={ButtonType.Basic}
-          onClick={handleClick['makeKey']}
+          onClick={handleClick}
           disabled={isClicked}
           isClicked={isClicked}
           disabledTime={disabledTime}
