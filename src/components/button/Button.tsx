@@ -1,5 +1,6 @@
 import React, { PropsWithChildren, SyntheticEvent } from 'react';
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 
 export enum ButtonType {
   Basic = 'basic',
@@ -54,6 +55,19 @@ const Btn = styled.button<{ isDisabled: boolean }>`
   }
 `;
 
+const CounterBtn = styled(Btn)<{ remainingTime: number; disabledTime: number }>`
+  ${({ remainingTime, disabledTime }) => css`
+    background-color: #e6e6e6;
+    background-image: linear-gradient(
+      90deg,
+      #9148da ${((disabledTime - remainingTime) / disabledTime) * 100}%,
+      #e6e6e6 ${((disabledTime - remainingTime) / disabledTime) * 100}%
+    );
+    color: #999;
+    cursor: not-allowed;
+  `}
+`;
+
 function Button({
   children,
   buttonType,
@@ -63,30 +77,23 @@ function Button({
   disabledTime,
   remainingTime,
 }: PropsWithChildren<ButtonProps>) {
-  const disabledButtonStyle = {
-    backgroundColor: '#e6e6e6',
-    backgroundImage: `linear-gradient(90deg, #9148da ${
-      (((disabledTime as number) - (remainingTime as number)) / (disabledTime as number)) * 100
-    }%, #e6e6e6 ${(((disabledTime as number) - (remainingTime as number)) / (disabledTime as number)) * 100}%)`,
-    color: '#999',
-    cursor: 'not-allowed',
-    width: '100%',
-    height: '60px',
-    border: '1px solid #000000',
-    borderRadius: '6px',
-    fontSize: '18px',
-    fontWeight: '500',
-    padding: '16px 0',
-  };
   return (
-    <Btn
-      style={isClicked ? disabledButtonStyle : undefined}
-      className={!isClicked ? buttonType : undefined}
-      onClick={onClick}
-      disabled={disabled}
-      isDisabled={disabled}>
-      {isClicked ? `${Math.ceil((remainingTime as number) / 1000)}초 후 열쇠를 획득하세요` : children}
-    </Btn>
+    <>
+      {isClicked ? (
+        <CounterBtn
+          onClick={onClick}
+          disabled={disabled}
+          isDisabled={disabled}
+          remainingTime={remainingTime as number}
+          disabledTime={disabledTime as number}>
+          {`${Math.ceil((remainingTime as number) / 1000)}초 후 열쇠를 획득하세요`}
+        </CounterBtn>
+      ) : (
+        <Btn className={buttonType} onClick={onClick} disabled={disabled} isDisabled={disabled}>
+          {children}
+        </Btn>
+      )}
+    </>
   );
 }
 

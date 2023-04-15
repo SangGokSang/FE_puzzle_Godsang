@@ -14,7 +14,7 @@ import { authDefaultValue } from 'src/recoil/auth/atom';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import GoogleAd from 'src/components/googleAd/GoogldAd';
-import { useMovePage } from 'src/core/util/util';
+import { ParsedUrlQueryInput } from 'querystring';
 
 export type KeyInfo = {
   keyCount: number;
@@ -112,15 +112,16 @@ function KeyInfo() {
     }
   }, [remainingTime]);
 
-  const moveToMakeKey = useMovePage(router, route.MakeKey, {
-    originId:
-      router.pathname === route.Key || router.pathname === route.MyPage ? router.query.originId : router.query.userId,
-  });
+  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
+    router.push({ pathname, query });
+  };
 
   const handleClick = () => {
     setIsClicked(true);
     localStorage.setItem('isButtonClicked', 'true');
-    moveToMakeKey();
+    movePage(route.MakeKey, {
+      originId: router.pathname === route.Key ? router.query.originId : router.query.userId,
+    });
   };
 
   return (

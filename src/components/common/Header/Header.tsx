@@ -8,7 +8,7 @@ import auth from 'src/recoil/auth';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
-import { useMovePage } from 'src/core/util/util';
+import { ParsedUrlQueryInput } from 'querystring';
 
 type IconType = 'logo' | 'key' | 'myPage' | 'login' | 'logout' | 'back';
 
@@ -17,30 +17,30 @@ export default function Header() {
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
 
-  const moveToList = useMovePage(router, route.List, { userId });
-  const moveToLogin = useMovePage(router, route.Landing);
-  const moveToBack = useMovePage(router, route.List, { userId: router.query.originId });
-  const moveToMyPage = useMovePage(router, route.MyPage, {
-    originId:
-      router.pathname === route.Key || router.pathname === route.MakeKey ? router.query.originId : router.query.userId,
-  });
-  const moveToKey = useMovePage(router, route.Key, {
-    originId:
-      router.pathname === route.MyPage || router.pathname === route.MakeKey
-        ? router.query.originId
-        : router.query.userId,
-  });
+  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
+    router.push({ pathname, query });
+  };
 
   const handleClickEvent: Record<IconType, () => void> = {
-    logo: () => moveToList(),
-    login: () => moveToLogin(),
-    back: () => (router.pathname === route.HowToUse ? router.back() : moveToBack()),
-    myPage: () => moveToMyPage(),
-    key: () => moveToKey(),
-    logout: () => {
-      localStorage.clear();
-      logout.mutate();
-    },
+    logo: () => movePage(route.List, { userId }),
+    login: () => movePage(route.Landing),
+    back: () =>
+      router.pathname === route.HowToUse ? router.back() : movePage(route.List, { userId: router.query.originId }),
+    myPage: () =>
+      movePage(route.MyPage, {
+        originId:
+          router.pathname === route.Key || router.pathname === route.MyPage || router.pathname === route.MakeKey
+            ? router.query.originId
+            : router.query.userId,
+      }),
+    key: () =>
+      movePage(route.Key, {
+        originId:
+          router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
+            ? router.query.originId
+            : router.query.userId,
+      }),
+    logout: () => logout.mutate(),
   };
 
   return (
