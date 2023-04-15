@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { ButtonSection } from 'src/core/styles/common';
-import Button from 'src/components/button';
-import { ButtonType } from 'src/components/button/Button';
+import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { InfoKeyIcon, XIcon } from 'src/core/icons';
@@ -82,14 +81,37 @@ const Attention = styled.div`
   color: #9148da;
 `;
 
+const CounterBtn = styled.button<{ remainingTime: number; disabledTime: number; isClicked: boolean }>`
+  width: 100%;
+  height: 60px;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 16px 0;
+  color: ${(props) => (props.isClicked ? '#999' : '#ffffff')};
+  background-color: ${(props) => (props.isClicked ? null : '#9148da')};
+  background-image: ${(props) =>
+    props.isClicked
+      ? `linear-gradient(
+    90deg,
+    #9148da ${((props.disabledTime - props.remainingTime) / props.disabledTime) * 100}%,
+    #e6e6e6 ${((props.disabledTime - props.remainingTime) / props.disabledTime) * 100}%
+  )`
+      : 'none'};
+  cursor: ${(props) => (props.isClicked ? 'not-allowed' : 'pointer')};
+`;
+
+const isBrowser = typeof window !== 'undefined';
+
 function KeyInfo() {
   const disabledTime = 30000;
   const router = useRouter();
   const { data } = useGetKeyInfo();
   const { nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
-  const [isClicked, setIsClicked] = useState<boolean>(localStorage.getItem('isButtonClicked') === 'true' || false);
+  const [isClicked, setIsClicked] = useState<boolean>(isBrowser && localStorage.getItem('isButtonClicked') === 'true');
   const [remainingTime, setRemainingTime] = useState<number>(
-    localStorage.getItem('remainingTime') ? Number(localStorage.getItem('remainingTime')) : disabledTime,
+    isBrowser && localStorage.getItem('remainingTime') ? Number(localStorage.getItem('remainingTime')) : disabledTime,
   );
 
   useEffect(() => {
@@ -97,7 +119,7 @@ function KeyInfo() {
     if (isClicked) {
       intervalId = setInterval(() => {
         setRemainingTime((time) => time - 1000);
-        localStorage.setItem('remainingTime', (remainingTime - 1000).toString());
+        isBrowser && localStorage.setItem('remainingTime', (remainingTime - 1000).toString());
       }, 1000);
     }
     return () => clearInterval(intervalId);
@@ -107,8 +129,8 @@ function KeyInfo() {
     if (remainingTime <= 0) {
       setIsClicked(false);
       setRemainingTime(disabledTime);
-      localStorage.removeItem('isButtonClicked');
-      localStorage.removeItem('remainingTime');
+      isBrowser && localStorage.removeItem('isButtonClicked');
+      isBrowser && localStorage.removeItem('remainingTime');
     }
   }, [remainingTime]);
 
@@ -118,7 +140,7 @@ function KeyInfo() {
 
   const handleClick = () => {
     setIsClicked(true);
-    localStorage.setItem('isButtonClicked', 'true');
+    isBrowser && localStorage.setItem('isButtonClicked', 'true');
     movePage(route.MakeKey, {
       originId: router.pathname === route.Key ? router.query.originId : router.query.userId,
     });
@@ -140,15 +162,14 @@ function KeyInfo() {
         </InfoWrap>
       </KeyInfoSection>
       <ButtonSection>
-        <Button
-          buttonType={ButtonType.Basic}
+        <CounterBtn
           onClick={handleClick}
           disabled={isClicked}
-          isClicked={isClicked}
-          disabledTime={disabledTime}
-          remainingTime={remainingTime}>
-          열쇠 획득하기
-        </Button>
+          isClicked={isClicked as boolean}
+          remainingTime={remainingTime as number}
+          disabledTime={disabledTime as number}>
+          {isClicked ? `${Math.ceil((remainingTime as number) / 1000)}초 후 열쇠를 획득하세요` : '열쇠 획득하기'}
+        </CounterBtn>
       </ButtonSection>
       <GoogleAd />
     </Layout>

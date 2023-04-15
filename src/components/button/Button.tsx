@@ -13,9 +13,6 @@ type ButtonProps = {
   buttonType: ButtonType;
   onClick: (event: SyntheticEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
-  isClicked?: boolean;
-  disabledTime?: number | undefined;
-  remainingTime?: number | undefined;
 };
 
 const Btn = styled.button<{ isDisabled: boolean }>`
@@ -55,45 +52,11 @@ const Btn = styled.button<{ isDisabled: boolean }>`
   }
 `;
 
-const CounterBtn = styled(Btn)<{ remainingTime: number; disabledTime: number }>`
-  ${({ remainingTime, disabledTime }) => css`
-    background-color: #e6e6e6;
-    background-image: linear-gradient(
-      90deg,
-      #9148da ${((disabledTime - remainingTime) / disabledTime) * 100}%,
-      #e6e6e6 ${((disabledTime - remainingTime) / disabledTime) * 100}%
-    );
-    color: #999;
-    cursor: not-allowed;
-  `}
-`;
-
-function Button({
-  children,
-  buttonType,
-  onClick,
-  disabled = false,
-  isClicked,
-  disabledTime,
-  remainingTime,
-}: PropsWithChildren<ButtonProps>) {
+function Button({ children, buttonType, onClick, disabled = false }: PropsWithChildren<ButtonProps>) {
   return (
-    <>
-      {isClicked ? (
-        <CounterBtn
-          onClick={onClick}
-          disabled={disabled}
-          isDisabled={disabled}
-          remainingTime={remainingTime as number}
-          disabledTime={disabledTime as number}>
-          {`${Math.ceil((remainingTime as number) / 1000)}초 후 열쇠를 획득하세요`}
-        </CounterBtn>
-      ) : (
-        <Btn className={buttonType} onClick={onClick} disabled={disabled} isDisabled={disabled}>
-          {children}
-        </Btn>
-      )}
-    </>
+    <Btn className={buttonType} onClick={onClick} disabled={disabled} isDisabled={disabled}>
+      {children}
+    </Btn>
   );
 }
 
