@@ -223,7 +223,7 @@ function PuzzleList() {
     if (navigator.share) {
       navigator.share({
         title: 'Dear My 2023',
-        text: '우리에게 선물로 다가온 시간을 채워봐요.',
+        // text: '우리에게 선물로 다가온 시간을 채워봐요.\n',
         url: location.href,
       });
     } else {
