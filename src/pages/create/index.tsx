@@ -16,14 +16,12 @@ import { BackIcon } from 'src/core/icons';
 import { useJoin } from 'src/module/join';
 import { isEmpty } from 'lodash';
 import { useAddPuzzle } from 'src/module/puzzles/hooks/useAddPuzzle';
-import { useRecoilValue } from 'recoil';
 import auth, { authDefaultValue } from 'src/recoil/auth/atom';
 import route from 'src/core/const/route.path';
 import { scheme } from 'src/core/const/scheme';
 import { usePuzzles } from 'src/module/puzzles';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
-import { notiCss } from 'src/components/wizard/puzzle/style';
 
 export type CreateFormType = {
   nickname: string;
@@ -138,12 +136,19 @@ function Create() {
   };
 
   useLayoutEffect(() => {
+    if (data.length === 0) {
+      createForm.trigger('birth');
+    }
+  }, [data]);
+
+  useLayoutEffect(() => {
     const defaultValues = {
       nickname: '',
       birth: Date.now(),
       category: Category.exercise,
       goal: '',
     };
+
     if (data.length > 0 && user.nickname !== '') {
       setStep(2);
       defaultValues.nickname = user.nickname;

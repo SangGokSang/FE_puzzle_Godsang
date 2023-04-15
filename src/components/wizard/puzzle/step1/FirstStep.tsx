@@ -11,7 +11,6 @@ function FirstStep() {
     control,
     watch,
     formState: { errors },
-    trigger,
   } = useFormContext<CreateFormType>();
   const { nickname, birth } = watch();
 
@@ -23,10 +22,6 @@ ${birthday} 생이고
 지금의 나이로 돌아가기까지
 D-${d_day} 일 남았어요”`;
   }, [nickname, birth]);
-
-  useEffect(() => {
-    trigger('birth');
-  }, []);
 
   return (
     <Container>

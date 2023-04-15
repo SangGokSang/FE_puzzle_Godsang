@@ -14,13 +14,13 @@ export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {
   const setAuth = useSetRecoilState(auth);
   return useMutation<void, ApiError, void>(() => logout(), {
     ...options,
-    onSuccess: () => {
-      signOut({ redirect: false });
+    onSuccess: async () => {
+      await signOut({ redirect: false });
       setAuth(authDefaultValue);
       clearTokens();
       setTimeout(() => {
         router.push(route.Landing);
-      }, 100);
+      }, 300);
     },
   });
 };
