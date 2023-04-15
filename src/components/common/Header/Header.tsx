@@ -10,7 +10,7 @@ import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { ParsedUrlQueryInput } from 'querystring';
 
-type IconType = 'logo' | 'key' | 'mypage' | 'login' | 'logout' | 'back';
+type IconType = 'logo' | 'key' | 'myPage' | 'login' | 'logout' | 'back';
 
 export default function Header() {
   const router = useRouter();
@@ -26,10 +26,20 @@ export default function Header() {
     login: () => movePage(route.Landing),
     back: () =>
       router.pathname === route.HowToUse ? router.back() : movePage(route.List, { userId: router.query.originId }),
-    mypage: () =>
-      movePage(route.MyPage, { originId: router.pathname === route.Key ? router.query.originId : router.query.userId }),
+    myPage: () =>
+      movePage(route.MyPage, {
+        originId:
+          router.pathname === route.Key || router.pathname === route.MyPage || router.pathname === route.MakeKey
+            ? router.query.originId
+            : router.query.userId,
+      }),
     key: () =>
-      movePage(route.Key, { originId: router.pathname === route.MyPage ? router.query.originId : router.query.userId }),
+      movePage(route.Key, {
+        originId:
+          router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
+            ? router.query.originId
+            : router.query.userId,
+      }),
     logout: () => logout.mutate(),
   };
 
@@ -54,9 +64,9 @@ export default function Header() {
               <KeyIcon onClick={handleClickEvent['key']} css={buttonHoverCss} />
             )}
             {router.pathname === route.MyPage ? (
-              <ProfileIconActive onClick={handleClickEvent['mypage']} css={buttonHoverCss} />
+              <ProfileIconActive onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
             ) : (
-              <ProfileIcon onClick={handleClickEvent['mypage']} css={buttonHoverCss} />
+              <ProfileIcon onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
             )}
           </>
         )}
