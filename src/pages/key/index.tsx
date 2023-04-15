@@ -14,12 +14,13 @@ import { authDefaultValue } from 'src/recoil/auth/atom';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import GoogleAd from 'src/components/googleAd/GoogldAd';
-import { ParsedUrlQueryInput } from 'querystring';
 import { useMovePage } from 'src/core/util/util';
 
 export type KeyInfo = {
   keyCount: number;
 };
+
+type RouteType = 'makeKey';
 
 const layoutCss = css`
   background: #f9f9f9;
@@ -113,18 +114,17 @@ function KeyInfo() {
     }
   }, [remainingTime]);
 
-  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
-    router.push({ pathname, query });
-  };
+  const moveToMakeKey = useMovePage(router, route.MakeKey, {
+    originId:
+      router.pathname === route.Key || router.pathname === route.MyPage ? router.query.originId : router.query.userId,
+  });
 
-  const handleClick = () => {
-    movePage(route.MakeKey, {
-      originId:
-        router.pathname === route.Key || router.pathname === route.MyPage ? router.query.originId : router.query.userId,
-    });
-    setIsClicked(true);
-    localStorage.setItem('isButtonClicked', 'true');
-    router.push(route.MakeKey);
+  const handleClick: Record<RouteType, () => void> = {
+    makeKey: () => {
+      setIsClicked(true);
+      localStorage.setItem('isButtonClicked', 'true');
+      moveToMakeKey();
+    },
   };
 
   return (
@@ -145,7 +145,7 @@ function KeyInfo() {
       <ButtonSection>
         <Button
           buttonType={ButtonType.Basic}
-          onClick={handleClick}
+          onClick={handleClick['makeKey']}
           disabled={isClicked}
           isClicked={isClicked}
           disabledTime={disabledTime}

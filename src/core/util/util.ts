@@ -12,6 +12,8 @@ export function getDDay(birth: Dayjs): number {
   return d_day.diff(dayjs(), 'day');
 }
 
-export function useMovePage(router: NextRouter, pathname: string, query?: ParsedUrlQueryInput) {
-  return router.push({ pathname, query });
-}
+export const useMovePage = (router: NextRouter, pathname: string, query?: ParsedUrlQueryInput) => {
+  return () => {
+    router.push({ pathname, query });
+  };
+};

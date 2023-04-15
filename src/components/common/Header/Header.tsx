@@ -8,38 +8,35 @@ import auth from 'src/recoil/auth';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
-import { ParsedUrlQueryInput } from 'querystring';
+import { useMovePage } from 'src/core/util/util';
 
-type IconType = 'logo' | 'key' | 'mypage' | 'login' | 'logout' | 'back';
+type IconType = 'logo' | 'key' | 'myPage' | 'login' | 'logout' | 'back';
 
 export default function Header() {
   const router = useRouter();
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
 
-  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
-    router.push({ pathname, query });
-  };
+  const moveToList = useMovePage(router, route.List, { userId });
+  const moveToLogin = useMovePage(router, route.Landing);
+  const moveToBack = useMovePage(router, route.List, { userId: router.query.originId });
+  const moveToMyPage = useMovePage(router, route.MyPage, {
+    originId:
+      router.pathname === route.Key || router.pathname === route.MakeKey ? router.query.originId : router.query.userId,
+  });
+  const moveToKey = useMovePage(router, route.Key, {
+    originId:
+      router.pathname === route.MyPage || router.pathname === route.MakeKey
+        ? router.query.originId
+        : router.query.userId,
+  });
 
   const handleClickEvent: Record<IconType, () => void> = {
-    logo: () => movePage(route.List, { userId }),
-    login: () => movePage(route.Landing),
-    back: () =>
-      router.pathname === route.HowToUse ? router.back() : movePage(route.List, { userId: router.query.originId }),
-    mypage: () =>
-      movePage(route.MyPage, {
-        originId:
-          router.pathname === route.Key || router.pathname === route.MakeKey
-            ? router.query.originId
-            : router.query.userId,
-      }),
-    key: () =>
-      movePage(route.Key, {
-        originId:
-          router.pathname === route.MyPage || router.pathname === route.MakeKey
-            ? router.query.originId
-            : router.query.userId,
-      }),
+    logo: () => moveToList(),
+    login: () => moveToLogin(),
+    back: () => (router.pathname === route.HowToUse ? router.back() : moveToBack()),
+    myPage: () => moveToMyPage(),
+    key: () => moveToKey(),
     logout: () => {
       localStorage.clear();
       logout.mutate();
@@ -67,9 +64,9 @@ export default function Header() {
               <KeyIcon onClick={handleClickEvent['key']} css={buttonHoverCss} />
             )}
             {router.pathname === route.MyPage ? (
-              <ProfileIconActive onClick={handleClickEvent['mypage']} css={buttonHoverCss} />
+              <ProfileIconActive onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
             ) : (
-              <ProfileIcon onClick={handleClickEvent['mypage']} css={buttonHoverCss} />
+              <ProfileIcon onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
             )}
           </>
         )}
