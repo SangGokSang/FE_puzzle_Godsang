@@ -85,7 +85,7 @@ function Button({
       onClick={onClick}
       disabled={disabled}
       isDisabled={disabled}>
-      {isClicked ? `${Math.ceil((remainingTime as number) / 1000)} 초 후 열쇠를 획득하세요` : children}
+      {isClicked ? `${Math.ceil((remainingTime as number) / 1000)}초 후 열쇠를 획득하세요` : children}
     </Btn>
   );
 }
