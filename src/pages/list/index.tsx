@@ -166,7 +166,6 @@ function PuzzleList() {
   const [activeSliderId, setActiveSliderId] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
   const MaxMessage = 9;
-  const [file, setFile] = useState<File | null>(null);
 
   const { data } = usePuzzles(router.query.userId as string);
   const { data: key } = useGetKeyInfo();
@@ -243,8 +242,8 @@ function PuzzleList() {
     setIsOpen(true);
   }, [data, activeSliderId]);
 
-  const getUrl = useCallback((categories: string, index: number) => {
-    const category = categories.toLowerCase();
+  const getUrl = useCallback((categories: string, index: number, isOpened: boolean) => {
+    const category = isOpened ? categories.toLowerCase() : 'secret';
 
     return `/assets/images/puzzles/${category}/${category}${index}.png`;
   }, []);
@@ -294,7 +293,7 @@ function PuzzleList() {
                                 <PuzzlePiece
                                   key={message.displayOrder}
                                   alt="puzzle-piece"
-                                  src={getUrl(puzzle.category, message.displayOrder)}
+                                  src={getUrl(puzzle.category, message.displayOrder, message.isOpened)}
                                   position={puzzlePosition[message.displayOrder]}
                                   onClick={handleClickPiece(message, puzzle.id)}
                                   {...puzzleSize[message.displayOrder]}
