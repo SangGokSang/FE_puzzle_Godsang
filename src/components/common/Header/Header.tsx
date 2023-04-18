@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
 import { AuthButton, ButtonGroup, buttonHoverCss, Wrapper } from './style';
@@ -16,6 +16,8 @@ export default function Header() {
   const router = useRouter();
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
+  const [keyIsToggled, setKeyIsToggled] = useState<boolean>(false);
+  const [myPageIsToggled, setMyPageIsToggled] = useState<boolean>(false);
 
   const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
     router.push({ pathname, query });
@@ -33,16 +35,32 @@ export default function Header() {
             ? router.query.originId
             : router.query.userId,
       }),
-    key: () =>
-      movePage(route.Key, {
-        originId:
-          router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
-            ? router.query.originId
-            : router.query.userId,
-      }),
+    key: () => {
+      if (router.pathname === route.Key) {
+        if (keyIsToggled) {
+          setKeyIsToggled(false);
+          movePage(route.List, { userId });
+        } else {
+          setKeyIsToggled(true);
+          movePage(route.Key, {
+            originId:
+              router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
+                ? router.query.originId
+                : router.query.userId,
+          });
+        }
+      } else {
+        movePage(route.Key, {
+          originId:
+            router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
+              ? router.query.originId
+              : router.query.userId,
+        });
+      }
+    },
     logout: () => logout.mutate(),
   };
-
+  console.log(keyIsToggled);
   return (
     <Wrapper>
       {router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.HowToUse ? (
