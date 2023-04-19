@@ -65,11 +65,6 @@ const goal = css`
   /* position: relative; */
 `;
 
-const deleteIcon = css`
-  /* position: absolute;
-  right: -22px; */
-`;
-
 const SwiperContainer = styled.div`
   width: 100%;
   display: flex;
@@ -247,7 +242,7 @@ function PuzzleList() {
   };
 
   const handleClickSendMessage = useCallback(() => {
-    setLetterData(data ? data[activeSliderId].id : null); // 가장 마지막에 생성된 퍼즐 id
+    setLetterData(data ? data[activeSliderId].id : null);
     setIsOpen(true);
   }, [data, activeSliderId]);
 
@@ -299,7 +294,7 @@ function PuzzleList() {
                         <div css={goal}>
                           {puzzle.title}
                           {isUser && (
-                            <div css={deleteIcon}>
+                            <div>
                               <DeleteIcon onClick={handleDelete} />
                             </div>
                           )}
@@ -321,8 +316,12 @@ function PuzzleList() {
                               <NoMessage>
                                 <p>😥</p>
                                 <p>도착한 응원의 편지가 없어요.</p>
-                                <p>링크를 공유해</p>
-                                <p>응원의 편지를 요청해보세요!</p>
+                                {isUser && (
+                                  <>
+                                    <p>링크를 공유해</p>
+                                    <p>응원의 편지를 요청해보세요!</p>
+                                  </>
+                                )}
                               </NoMessage>
                             )}
                           </PuzzleWrap>
@@ -357,12 +356,27 @@ function PuzzleList() {
             {isUser ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '아래 버튼을 클릭해 응원의 메세지를 보내주세요!'}
           </Message>
         </Content>
-        <Button
-          buttonType={!data?.length ? ButtonType.Disabled : ButtonType.Basic}
-          onClick={isUser ? handleClickShare : handleClickSendMessage}
-          disabled={!data?.length}>
-          {isUser ? '공유하기' : 'DM 보내기'}
-        </Button>
+        {isUser ? (
+          <Button
+            buttonType={!data?.length ? ButtonType.Disabled : ButtonType.Basic}
+            onClick={handleClickShare}
+            disabled={!data?.length}>
+            공유하기
+          </Button>
+        ) : (
+          <Button
+            buttonType={
+              !(data?.length && data[activeSliderId].messages.length !== MaxMessage)
+                ? ButtonType.Disabled
+                : ButtonType.Basic
+            }
+            onClick={handleClickSendMessage}
+            disabled={!(data?.length && data[activeSliderId].messages.length !== MaxMessage)}>
+            {!(data?.length && data[activeSliderId].messages.length !== MaxMessage)
+              ? '다른 퍼즐에서 DM을 보내주세요!'
+              : 'DM 보내기'}
+          </Button>
+        )}
       </PuzzleListWrap>
       <Letter isOpen={isOpen} onClose={handleClose} data={letterData} isWrite={!isUser} />
     </Layout>
