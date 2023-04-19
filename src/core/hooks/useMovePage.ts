@@ -27,16 +27,22 @@ export default function useMovePage(router: NextRouter, pathname: string, curren
       router.push(!userId ? route.Landing : currentPage === route.HowToUse ? route.Landing : pathname);
     }
 
+    // 미로그인으로 이용방법 접근
     if (currentPage === route.HowToUse && userId) {
       if (pathname === route.List) {
         router.back();
       } else {
         router.push({ pathname, query: { originId: userId.toString() } });
+        return;
       }
-      return;
     }
 
-    router.push({ pathname, query });
+    // 미로그인으로 리스트 접근
+    if (currentPage === route.List) {
+      router.push(route.Landing);
+    } else {
+      router.push({ pathname, query });
+    }
   };
 
   return movePage;
