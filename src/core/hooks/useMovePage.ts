@@ -22,13 +22,21 @@ export default function useMovePage(router: NextRouter, pathname: string, curren
 
   const movePage = () => {
     const query = getQuery();
+
     if (!query) {
       router.push(!userId ? route.Landing : currentPage === route.HowToUse ? route.Landing : pathname);
-    } else if (query && currentPage === route.HowToUse) {
-      router.back();
-    } else {
-      router.push({ pathname, query });
     }
+
+    if (currentPage === route.HowToUse && userId) {
+      if (pathname === route.List) {
+        router.back();
+      } else {
+        router.push({ pathname, query: { originId: userId.toString() } });
+      }
+      return;
+    }
+
+    router.push({ pathname, query });
   };
 
   return movePage;
