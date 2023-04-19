@@ -9,15 +9,15 @@ import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { ParsedUrlQueryInput } from 'querystring';
+import useMovePage from 'src/core/hooks/useMovePage';
 
 type IconType = 'logo' | 'key' | 'myPage' | 'login' | 'logout' | 'back';
+type toggleIconType = 'key' | 'myPage';
 
 export default function Header() {
   const router = useRouter();
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
-  const [keyIsToggled, setKeyIsToggled] = useState<boolean>(false);
-  const [myPageIsToggled, setMyPageIsToggled] = useState<boolean>(false);
 
   const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
     router.push({ pathname, query });
@@ -36,31 +36,28 @@ export default function Header() {
             : router.query.userId,
       }),
     key: () => {
-      if (router.pathname === route.Key) {
-        if (keyIsToggled) {
-          setKeyIsToggled(false);
-          movePage(route.List, { userId });
-        } else {
-          setKeyIsToggled(true);
-          movePage(route.Key, {
-            originId:
-              router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
-                ? router.query.originId
-                : router.query.userId,
-          });
-        }
-      } else {
-        movePage(route.Key, {
-          originId:
-            router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
-              ? router.query.originId
-              : router.query.userId,
-        });
-      }
+      movePage(route.Key, {
+        originId:
+          router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
+            ? router.query.originId
+            : router.query.userId,
+      });
     },
     logout: () => logout.mutate(),
   };
-  console.log(keyIsToggled);
+
+  const test = useMovePage(router, route.Landing);
+  console.log(test);
+
+  const handleBackToList: Record<toggleIconType, () => void> = {
+    key: () => {
+      movePage(route.List, { userId: router.query.originId });
+    },
+    myPage: () => {
+      movePage(route.List, { userId: router.query.originId });
+    },
+  };
+
   return (
     <Wrapper>
       {router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.HowToUse ? (
@@ -77,12 +74,12 @@ export default function Header() {
         ) : (
           <>
             {router.pathname === route.Key ? (
-              <KeyIconActive onClick={handleClickEvent['key']} css={buttonHoverCss} />
+              <KeyIconActive onClick={handleBackToList['key']} css={buttonHoverCss} />
             ) : (
               <KeyIcon onClick={handleClickEvent['key']} css={buttonHoverCss} />
             )}
             {router.pathname === route.MyPage ? (
-              <ProfileIconActive onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
+              <ProfileIconActive onClick={handleBackToList['myPage']} css={buttonHoverCss} />
             ) : (
               <ProfileIcon onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
             )}
