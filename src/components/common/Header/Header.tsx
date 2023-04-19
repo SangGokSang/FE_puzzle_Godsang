@@ -8,7 +8,6 @@ import auth from 'src/recoil/auth';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
-import { ParsedUrlQueryInput } from 'querystring';
 import useMovePage from 'src/core/hooks/useMovePage';
 
 type IconType = 'logo' | 'key' | 'myPage' | 'login' | 'logout' | 'back';
@@ -19,43 +18,24 @@ export default function Header() {
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
 
-  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
-    router.push({ pathname, query });
-  };
+  const toMyPage = useMovePage(router, route.MyPage, router.pathname);
+  const toKey = useMovePage(router, route.Key, router.pathname);
+  const toList = useMovePage(router, route.List, router.pathname);
+  const toBack = useMovePage(router, route.List, router.pathname);
+  const toLanding = useMovePage(router, route.Landing);
 
   const handleClickEvent: Record<IconType, () => void> = {
-    logo: () => movePage(route.List, { userId }),
-    login: () => movePage(route.Landing),
-    back: () =>
-      router.pathname === route.HowToUse ? router.back() : movePage(route.List, { userId: router.query.originId }),
-    myPage: () =>
-      movePage(route.MyPage, {
-        originId:
-          router.pathname === route.Key || router.pathname === route.MyPage || router.pathname === route.MakeKey
-            ? router.query.originId
-            : router.query.userId,
-      }),
-    key: () => {
-      movePage(route.Key, {
-        originId:
-          router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
-            ? router.query.originId
-            : router.query.userId,
-      });
-    },
+    logo: () => toList(),
+    login: () => toLanding(),
+    back: () => toBack(),
+    myPage: () => toMyPage(),
+    key: () => toKey(),
     logout: () => logout.mutate(),
   };
 
-  const test = useMovePage(router, route.Landing);
-  console.log(test);
-
   const handleBackToList: Record<toggleIconType, () => void> = {
-    key: () => {
-      movePage(route.List, { userId: router.query.originId });
-    },
-    myPage: () => {
-      movePage(route.List, { userId: router.query.originId });
-    },
+    key: () => toList(),
+    myPage: () => toList(),
   };
 
   return (
