@@ -39,3 +39,10 @@ export async function readMessage({ puzzleId, messageId }: ReadMessageReq): Prom
   });
   return data;
 }
+
+export async function deletePuzzle(puzzleId: number) {
+  await api({
+    url: `/puzzles/${puzzleId}`,
+    method: 'delete',
+  });
+}

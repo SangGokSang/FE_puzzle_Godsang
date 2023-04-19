@@ -10,7 +10,7 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import { fetchPuzzles, Puzzle, PuzzleMSG, Puzzles, PUZZLES_KEY } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
-import { AddPuzzleIcon } from 'src/core/icons';
+import { AddPuzzleIcon, DeleteIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import { css } from '@emotion/react';
@@ -22,7 +22,7 @@ import isMobile from 'src/recoil/isMobile';
 import { useSnackbar } from 'notistack';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
-import { usePuzzles, useReadMessage } from 'src/module/puzzles/hooks';
+import { useDeletePuzzle, usePuzzles, useReadMessage } from 'src/module/puzzles/hooks';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
@@ -60,6 +60,14 @@ const goal = css`
   margin-bottom: 20px;
   word-wrap: break-word;
   word-break: normal;
+  display: flex;
+  text-align: center;
+  /* position: relative; */
+`;
+
+const deleteIcon = css`
+  /* position: absolute;
+  right: -22px; */
 `;
 
 const SwiperContainer = styled.div`
@@ -169,9 +177,10 @@ function PuzzleList() {
 
   const { data } = usePuzzles(router.query.userId as string);
   const { data: key } = useGetKeyInfo();
-  const { mutate } = useReadMessage({
+  const readMessage = useReadMessage({
     onSuccess: () => setIsOpen(true),
   });
+  const deleteMessage = useDeletePuzzle();
 
   const puzzlePosition = [
     { left: 0, top: 0 },
@@ -206,7 +215,7 @@ function PuzzleList() {
           return alert('보유하고 있는 열쇠가 없습니다! 열쇠를 획득해주세요!');
         }
         if (confirm('열쇠를 사용하여 DM을 열어보시겠나요?')) {
-          mutate({ messageId: data.id, puzzleId });
+          readMessage.mutate({ messageId: data.id, puzzleId });
         }
       } else {
         setIsOpen(true);
@@ -248,6 +257,16 @@ function PuzzleList() {
     return `/assets/images/puzzles/${category}/${category}${index}.png`;
   }, []);
 
+  const handleDelete = useCallback(() => {
+    if (confirm('퍼즐을 삭제하시겠습니까?')) {
+      if (data) {
+        deleteMessage.mutate(data[activeSliderId].id);
+      } else {
+        alert('퍼즐이 없습니다.');
+      }
+    }
+  }, [activeSliderId, data, deleteMessage]);
+
   // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 랜더링 이후 실행
   useEffect(() => {
     if (router.pathname === route.List && !router.query.userId) {
@@ -274,18 +293,17 @@ function PuzzleList() {
               onSlideChange={({ activeIndex }) => setActiveSliderId(activeIndex)}>
               {data && !!data.length ? (
                 <>
-                  {data.map((puzzle, index) => (
+                  {data.map((puzzle) => (
                     <div key={puzzle.id}>
-                      {isUser && index === 0 && puzzle?.messages?.length === MaxMessage && (
-                        <SwiperSlide key={'create'}>
-                          <NoPuzzleWrap>
-                            <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                            <p>퍼즐을 만들어보세요!</p>
-                          </NoPuzzleWrap>
-                        </SwiperSlide>
-                      )}
                       <SwiperSlide key={puzzle.id}>
-                        <div css={goal}>{puzzle.title}</div>
+                        <div css={goal}>
+                          {puzzle.title}
+                          {isUser && (
+                            <div css={deleteIcon}>
+                              <DeleteIcon onClick={handleDelete} />
+                            </div>
+                          )}
+                        </div>
                         <PuzzleContainer>
                           <PuzzleWrap>
                             {puzzle?.messages?.length ? (
@@ -312,6 +330,14 @@ function PuzzleList() {
                       </SwiperSlide>
                     </div>
                   ))}
+                  {isUser && (
+                    <SwiperSlide key={'create'}>
+                      <NoPuzzleWrap>
+                        <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                        <p>퍼즐을 만들어보세요!</p>
+                      </NoPuzzleWrap>
+                    </SwiperSlide>
+                  )}
                 </>
               ) : (
                 <NoPuzzleWrap>
