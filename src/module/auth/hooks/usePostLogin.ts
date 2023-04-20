@@ -18,7 +18,13 @@ export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, L
     ...options,
     onSuccess: (data) => {
       setApiJwt(data.accessToken);
-      setAuth(data);
+      setAuth({
+        userId: data.userId,
+        nickname: data.nickname,
+        birthdate: data.birthdate,
+        isSignUp: data.isSignUp,
+        isWithdrawUser: data.isWithdrawUser,
+      });
       if (data.isWithdrawUser) {
         restore.mutate();
       } else {

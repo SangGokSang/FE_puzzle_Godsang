@@ -9,4 +9,6 @@ const route = {
   MakeKey: '/key/make-key',
 };
 
+export const notUserAllowRoute = [route.List, route.Landing, route.HowToUse];
+
 export default route;
