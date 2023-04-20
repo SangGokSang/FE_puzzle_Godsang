@@ -1,10 +1,10 @@
-import React, { ChangeEventHandler, useEffect, useMemo } from 'react';
+import React, { ChangeEventHandler, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { TextField } from '@mui/material';
 import { CreateFormType } from 'src/pages/create';
 import { getDDay } from 'src/core/util/util';
-import { Container, Description, errorCss, Field } from '../style';
+import { BirthTextField, Container, Description, errorCss, Field } from '../style';
 
 function FirstStep() {
   const {
@@ -51,7 +51,7 @@ D-${d_day} 일 남았어요”`;
               onChange(dayjs(event.currentTarget.value).valueOf());
             };
             const val = dayjs(value).format('YYYY-MM-DD');
-            return <TextField type="date" value={val} onChange={handleChange} />;
+            return <BirthTextField type="date" value={val} onChange={handleChange} />;
           }}
         />
       </Field>
