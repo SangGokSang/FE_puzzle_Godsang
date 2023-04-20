@@ -6,9 +6,6 @@ import Head from 'next/head';
 import { useMediaQuery } from 'react-responsive';
 import { useSetRecoilState } from 'recoil';
 import isMobile from 'src/recoil/isMobile';
-import route, { notUserAllowRoute } from 'src/core/const/route.path';
-import { isEmpty } from 'lodash';
-import { useRouter } from 'next/router';
 
 interface LayoutProps {
   children: ReactNode;
@@ -34,18 +31,11 @@ const Body = styled.main`
 `;
 
 export default function Layout({ children, useHeader = true, layoutCss }: LayoutProps) {
-  const router = useRouter();
   const isMobileSize = useMediaQuery({ maxWidth: 768 });
   const setIsMobile = useSetRecoilState(isMobile);
 
   useEffect(() => {
     setIsMobile(isMobileSize);
-  }, []);
-
-  useEffect(() => {
-    if (!notUserAllowRoute.includes(router.pathname) && isEmpty(router.query)) {
-      router.push(route.Landing);
-    }
   }, []);
 
   return (

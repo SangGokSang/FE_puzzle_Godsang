@@ -15,6 +15,25 @@ const nextConfig = {
     path: '',
     unoptimized: true,
   },
+  redirects: async () => {
+    return [
+      {
+        source: '/key',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/mypage',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/create',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
