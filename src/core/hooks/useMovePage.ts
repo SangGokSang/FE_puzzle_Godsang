@@ -1,11 +1,12 @@
 import { User } from 'src/recoil/auth/type';
-import { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import auth from 'src/recoil/auth';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { useSyncRecoil } from './useSyncRecoil';
 
-export default function useMovePage(router: NextRouter, pathname: string, currentPage?: string) {
+export default function useMovePage(pathname: string, currentPage?: string) {
+  const router = useRouter();
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const paramsId = router.query.userId as string;
   const originId = router.query.originId as string;

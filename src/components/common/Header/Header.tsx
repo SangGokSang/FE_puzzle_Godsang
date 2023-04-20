@@ -18,11 +18,11 @@ export default function Header() {
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
 
-  const toMyPage = useMovePage(router, route.MyPage, router.pathname);
-  const toKey = useMovePage(router, route.Key, router.pathname);
-  const toList = useMovePage(router, route.List, router.pathname);
-  const toBack = useMovePage(router, route.List, router.pathname);
-  const toLanding = useMovePage(router, route.Landing);
+  const toMyPage = useMovePage(route.MyPage, router.pathname);
+  const toKey = useMovePage(route.Key, router.pathname);
+  const toList = useMovePage(route.List, router.pathname);
+  const toBack = useMovePage(route.List, router.pathname);
+  const toLanding = useMovePage(route.Landing);
 
   const handleClickEvent: Record<IconType, () => void> = {
     logo: () => toList(),
