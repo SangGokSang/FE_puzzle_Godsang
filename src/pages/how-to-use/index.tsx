@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import { css } from '@emotion/css';
 import GoogleAd from 'src/components/googleAd/GoogldAd';
+import { BackIcon } from 'src/core/icons';
+import { useRouter } from 'next/router';
 
 const HowToUseWrap = styled.div`
   width: 100%;
@@ -21,10 +23,20 @@ const HowToUseWrap = styled.div`
   }
 `;
 
+const backButtonCss = css`
+  cursor: pointer;
+  position: absolute;
+  top: 5%;
+  left: 5%;
+`;
+
 // 이용방법과 광고가 들어갑니다.
 export default function HowToUse() {
+  const router = useRouter();
+  const handleClickBackButton = () => router.back();
   return (
-    <Layout>
+    <Layout useHeader={false}>
+      <BackIcon onClick={handleClickBackButton} css={backButtonCss} />
       <HowToUseWrap>
         <Image src="/assets/images/how-to-use.png" alt="how-to-use" width="320" height="480" />
         <div className="ad-area">

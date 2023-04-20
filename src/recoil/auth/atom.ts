@@ -3,11 +3,12 @@ import { recoilPersist } from 'recoil-persist';
 import cookieStorage from 'src/core/lib/cookie-storage';
 import { User } from './type';
 
-export const authDefaultValue = {
+export const authDefaultValue: User = {
   birthdate: 0,
   nickname: '',
   userId: null,
   isWithdrawUser: false,
+  isSignUp: false,
 };
 
 const { persistAtom } = recoilPersist({

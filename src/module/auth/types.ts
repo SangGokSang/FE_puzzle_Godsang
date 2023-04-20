@@ -11,4 +11,5 @@ export type LoginResponse = {
   birthdate: number;
   isWithdrawUser: boolean;
   accessToken: string;
+  isSignUp: boolean;
 };
