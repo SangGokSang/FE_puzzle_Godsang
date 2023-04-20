@@ -8,10 +8,9 @@ import { ButtonSection } from 'src/core/styles/common';
 import { BackIcon } from 'src/core/icons';
 import { Controller, useForm } from 'react-hook-form';
 import { useSendDM } from 'src/module/message';
-import { useQueryClient } from '@tanstack/react-query';
-import { PUZZLES_KEY } from 'src/module/puzzles';
 import styled from '@emotion/styled';
 import GoogleAd from 'src/components/googleAd/GoogldAd';
+import { ExceptionCode } from 'src/core/const/enum';
 
 type LetterProps = {
   isOpen: boolean;
@@ -43,12 +42,15 @@ const TextField = styled(MuiTextField)`
 function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
   const { control, getValues, reset } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
-  const client = useQueryClient();
   const sendDM = useSendDM({
     onSuccess: () => {
-      client.invalidateQueries([PUZZLES_KEY]);
       handleCloseModal();
       reset();
+    },
+    onError: ({ code }) => {
+      if (code === ExceptionCode.messageFull) {
+        alert('죄송합니다, 퍼즐이 완성되어 DM을 보낼 수 없습니다.\n다른 퍼즐로 DM을 보내주세요!');
+      }
     },
   });
 

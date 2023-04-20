@@ -1,6 +1,7 @@
 export interface IApiError {
-  errorCode: string;
-  defaultMessage: string;
-  stackTrace: string;
+  code: string;
+  message: string;
+  path: string;
   status: number;
+  time: string;
 }
