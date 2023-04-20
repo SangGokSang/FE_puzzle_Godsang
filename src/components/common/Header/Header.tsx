@@ -8,39 +8,34 @@ import auth from 'src/recoil/auth';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
-import { ParsedUrlQueryInput } from 'querystring';
+import useMovePage from 'src/core/hooks/useMovePage';
 
 type IconType = 'logo' | 'key' | 'myPage' | 'login' | 'logout' | 'back';
+type toggleIconType = 'key' | 'myPage';
 
 export default function Header() {
   const router = useRouter();
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const logout = usePostLogout();
 
-  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
-    router.push({ pathname, query });
-  };
+  const toMyPage = useMovePage(route.MyPage, router.pathname);
+  const toKey = useMovePage(route.Key, router.pathname);
+  const toList = useMovePage(route.List, router.pathname);
+  const toBack = useMovePage(route.List, router.pathname);
+  const toLanding = useMovePage(route.Landing);
 
   const handleClickEvent: Record<IconType, () => void> = {
-    logo: () => movePage(route.List, { userId }),
-    login: () => movePage(route.Landing),
-    back: () =>
-      router.pathname === route.HowToUse ? router.back() : movePage(route.List, { userId: router.query.originId }),
-    myPage: () =>
-      movePage(route.MyPage, {
-        originId:
-          router.pathname === route.Key || router.pathname === route.MyPage || router.pathname === route.MakeKey
-            ? router.query.originId
-            : router.query.userId,
-      }),
-    key: () =>
-      movePage(route.Key, {
-        originId:
-          router.pathname === route.MyPage || router.pathname === route.Key || router.pathname === route.MakeKey
-            ? router.query.originId
-            : router.query.userId,
-      }),
+    logo: () => toList(),
+    login: () => toLanding(),
+    back: () => toBack(),
+    myPage: () => toMyPage(),
+    key: () => toKey(),
     logout: () => logout.mutate(),
+  };
+
+  const handleBackToList: Record<toggleIconType, () => void> = {
+    key: () => toList(),
+    myPage: () => toList(),
   };
 
   return (
@@ -59,12 +54,12 @@ export default function Header() {
         ) : (
           <>
             {router.pathname === route.Key ? (
-              <KeyIconActive onClick={handleClickEvent['key']} css={buttonHoverCss} />
+              <KeyIconActive onClick={handleBackToList['key']} css={buttonHoverCss} />
             ) : (
               <KeyIcon onClick={handleClickEvent['key']} css={buttonHoverCss} />
             )}
             {router.pathname === route.MyPage ? (
-              <ProfileIconActive onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
+              <ProfileIconActive onClick={handleBackToList['myPage']} css={buttonHoverCss} />
             ) : (
               <ProfileIcon onClick={handleClickEvent['myPage']} css={buttonHoverCss} />
             )}
