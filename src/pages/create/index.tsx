@@ -22,6 +22,7 @@ import { scheme } from 'src/core/const/scheme';
 import { usePuzzles } from 'src/module/puzzles';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
+import dayjs from 'dayjs';
 
 export type CreateFormType = {
   nickname: string;
@@ -136,15 +137,9 @@ function Create() {
   };
 
   useLayoutEffect(() => {
-    if (data.length === 0) {
-      createForm.trigger('birth');
-    }
-  }, [data]);
-
-  useLayoutEffect(() => {
     const defaultValues = {
       nickname: '',
-      birth: Date.now(),
+      birth: dayjs().subtract(1, 'day').valueOf(),
       category: Category.exercise,
       goal: '',
     };
@@ -154,7 +149,7 @@ function Create() {
       defaultValues.nickname = user.nickname;
       defaultValues.birth = user.birthdate;
     } else {
-      defaultValues.nickname = user.nickname.slice(0, 7);
+      defaultValues.nickname = user.nickname.slice(0, 10);
     }
     createForm.reset(defaultValues);
   }, [user]);

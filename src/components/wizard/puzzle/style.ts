@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { TextField } from '@mui/material';
 
 export const Description = styled.pre`
   min-height: 35px;
@@ -55,4 +56,10 @@ export const annotateCss = css`
   font-size: 13px;
   letter-spacing: -0.002em;
   color: #727272;
+`;
+
+export const BirthTextField = styled(TextField)`
+  input::-webkit-date-and-time-value {
+    text-align: left;
+  }
 `;
