@@ -66,6 +66,7 @@ const StoryLine = styled.div`
 
   @media screen and (min-width: 768px) {
     width: 100%;
+    padding-top: 10%;
   }
 `;
 

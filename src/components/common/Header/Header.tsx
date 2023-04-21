@@ -26,9 +26,7 @@ export default function Header() {
   const toLanding = useMovePage(route.Landing);
 
   const handleClickEvent: Record<IconType, () => void> = {
-    logo: () => {
-      if (userId !== null) toList();
-    },
+    logo: () => router.push({ pathname: route.List, query: { userId } }),
     login: () => toLanding(),
     back: () => toBack(),
     myPage: () => toMyPage(),

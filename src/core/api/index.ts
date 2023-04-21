@@ -16,10 +16,6 @@ export const api = createApiInstance(getAccessToken({ bearer: true }));
 api.interceptors.response.use(
   (result) => result,
   async (error) => {
-    // console.log(error);
-    // // eslint-disable-next-line no-debugger
-    // debugger;
-
     if (error === undefined) throw error;
     if (error.response?.status === 401 && !error.request?.responseURL?.endsWith('/api/user/login')) {
       try {
@@ -34,7 +30,6 @@ api.interceptors.response.use(
         return;
       }
     } else if (error.response?.status === 401 && error.response?.status === 400) {
-      // 401 unAuthrozied, 400 Bad Request 대응
       logout();
       return;
     } else if (error) {

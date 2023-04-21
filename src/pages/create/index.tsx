@@ -23,6 +23,7 @@ import { usePuzzles } from 'src/module/puzzles';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import dayjs from 'dayjs';
+import { useSetRecoilState } from 'recoil';
 
 export type CreateFormType = {
   nickname: string;
@@ -83,6 +84,7 @@ function Create() {
   const router = useRouter();
   const [disabledButton, setDisabledButton] = useState(true);
   const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
+  const setUser = useSetRecoilState(auth);
 
   const { data = [] } = usePuzzles(router.query.userId as string, { enabled: false });
 
@@ -105,7 +107,8 @@ function Create() {
 
   const join = useJoin({
     onSuccess: () => {
-      const { category, goal } = createForm.getValues();
+      const { category, goal, nickname, birth } = createForm.getValues();
+      setUser((prev) => ({ ...prev, nickname, birthdate: birth }));
       addPuzzle.mutate({ title: goal, category });
     },
     onError: (err) => console.log(err),
