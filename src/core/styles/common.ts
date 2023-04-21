@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const ButtonSection = styled.section`
@@ -5,4 +6,8 @@ export const ButtonSection = styled.section`
   height: 60px;
   position: absolute;
   bottom: 0;
+`;
+
+export const buttonHoverCss = css`
+  cursor: pointer;
 `;

@@ -62,7 +62,7 @@ const goal = css`
   word-break: normal;
   display: flex;
   text-align: center;
-  /* position: relative; */
+  gap: 3px;
 `;
 
 const SwiperContainer = styled.div`

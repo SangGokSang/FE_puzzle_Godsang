@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { BackIcon, KeyIcon, KeyIconActive, Logo, ProfileIcon, ProfileIconActive } from 'src/core/icons';
-import { AuthButton, ButtonGroup, buttonHoverCss, Wrapper } from './style';
+import { AuthButton, ButtonGroup, Wrapper } from './style';
 import { usePostLogout } from 'src/module/auth/hooks/usePostLogout';
 import route from 'src/core/const/route.path';
 import auth from 'src/recoil/auth';
@@ -9,6 +9,7 @@ import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import useMovePage from 'src/core/hooks/useMovePage';
+import { buttonHoverCss } from 'src/core/styles/common';
 
 type IconType = 'logo' | 'key' | 'myPage' | 'login' | 'logout' | 'back';
 type toggleIconType = 'key' | 'myPage';

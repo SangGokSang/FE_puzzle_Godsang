@@ -87,6 +87,10 @@ const UserTextField = styled(TextField)<{ isEdit: boolean }>`
   height: 28px;
   background-color: ${(props) => (props.isEdit ? '#f3f3f3' : '#fff')};
 
+  input::-webkit-date-and-time-value {
+    text-align: left;
+  }
+
   .MuiInputBase-root {
     height: 28px;
   }
@@ -263,7 +267,7 @@ function MyPage() {
                     isEdit={isEdit}
                     inputProps={{
                       minLength: 1,
-                      maxLength: 7,
+                      maxLength: 10,
                     }}
                   />
                 )}
