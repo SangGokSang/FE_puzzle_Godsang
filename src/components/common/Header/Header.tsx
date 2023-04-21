@@ -27,7 +27,11 @@ export default function Header() {
 
   const handleClickEvent: Record<IconType, () => void> = {
     logo: () => {
-      if (userId !== null) toList();
+      if (userId === null) {
+        toLanding();
+      } else {
+        router.push({ pathname: route.List, query: { userId } });
+      }
     },
     login: () => toLanding(),
     back: () => toBack(),

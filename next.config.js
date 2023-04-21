@@ -18,7 +18,7 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
-        source: '/key',
+        source: '/key/:slug*',
         destination: '/',
         permanent: true,
       },

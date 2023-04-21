@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Global } from '@emotion/react';
 import type { AppProps } from 'next/app';
 import { globalStyle } from 'src/core/styles/global';
@@ -7,9 +7,8 @@ import { RecoilRoot } from 'recoil';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
 import { SnackbarProvider } from 'notistack';
-import { useRouter } from 'next/router';
-import route, { notUserAllowRoute } from 'src/core/const/route.path';
-import { isEmpty } from 'lodash';
+import 'dayjs/locale/ko';
+import dayjs from 'dayjs';
 
 const theme = createTheme({
   components: {
@@ -44,7 +43,6 @@ const theme = createTheme({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -57,6 +55,7 @@ export default function App({ Component, pageProps }: AppProps) {
       }),
   );
 
+  dayjs.locale('ko');
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>

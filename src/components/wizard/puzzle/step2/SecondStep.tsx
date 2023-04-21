@@ -15,6 +15,8 @@ const categories: BadgeType[] = [
   { label: '여행', key: Category.travel },
   { label: '커리어', key: Category.career },
   { label: '재태크', key: Category.moneyManagement },
+  { label: '금연', key: Category.quittingSmoking },
+  { label: '연애', key: Category.love },
   { label: '기타', key: Category.etc },
 ];
 

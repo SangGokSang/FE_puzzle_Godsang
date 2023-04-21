@@ -5,15 +5,16 @@ import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import { InfoKeyIcon, XIcon } from 'src/core/icons';
-import { useGetKeyInfo } from 'src/module/keyInfo';
+import { KEY_INFO_KEY, useGetKeyInfo } from 'src/module/keyInfo';
 import auth from 'src/recoil/auth';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
-import GoogleAd from 'src/components/googleAd/GoogldAd';
-import { ParsedUrlQueryInput } from 'querystring';
+import { Close } from '@mui/icons-material';
+import { useQueryClient } from '@tanstack/react-query';
+import { usePetchKey } from 'src/module/keyInfo/hooks/usePetchKey';
 
 export type KeyInfo = {
   keyCount: number;
@@ -81,70 +82,62 @@ const Attention = styled.div`
   color: #9148da;
 `;
 
-const CounterBtn = styled.button<{ remainingTime: number; disabledTime: number; isClicked: boolean }>`
+const CoupanWrapper = styled.div`
   width: 100%;
-  height: 60px;
-  border: 1px solid #000000;
-  border-radius: 6px;
-  font-size: 18px;
-  font-weight: 500;
-  padding: 16px 0;
-  color: ${(props) => (props.isClicked ? '#999' : '#ffffff')};
-  background-color: ${(props) => (props.isClicked ? null : '#9148da')};
-  background-image: ${(props) =>
-    props.isClicked
-      ? `linear-gradient(
-    90deg,
-    #9148da ${((props.disabledTime - props.remainingTime) / props.disabledTime) * 100}%,
-    #e6e6e6 ${((props.disabledTime - props.remainingTime) / props.disabledTime) * 100}%
-  )`
-      : 'none'};
-  cursor: ${(props) => (props.isClicked ? 'not-allowed' : 'pointer')};
+  height: 130px;
+  position: absolute;
+  bottom: 0;
+
+  .pusedo-wrap {
+    width: 100%;
+    height: 100%;
+
+    .close-btn {
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
 `;
 
-const isBrowser = typeof window !== 'undefined';
+const CoupangAdd = styled.iframe`
+  width: 100%;
+  height: 100%;
+`;
 
 function KeyInfo() {
-  const disabledTime = 30000;
   const router = useRouter();
+  const client = useQueryClient();
   const { data } = useGetKeyInfo();
   const { nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
-  const [isClicked, setIsClicked] = useState<boolean>(isBrowser && localStorage.getItem('isButtonClicked') === 'true');
-  const [remainingTime, setRemainingTime] = useState<number>(
-    isBrowser && localStorage.getItem('remainingTime') ? Number(localStorage.getItem('remainingTime')) : disabledTime,
-  );
-
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-    if (isClicked) {
-      intervalId = setInterval(() => {
-        setRemainingTime((time) => time - 1000);
-        isBrowser && localStorage.setItem('remainingTime', (remainingTime - 1000).toString());
-      }, 1000);
-    }
-    return () => clearInterval(intervalId);
-  }, [isClicked, remainingTime]);
-
-  useEffect(() => {
-    if (remainingTime <= 0) {
-      setIsClicked(false);
-      setRemainingTime(disabledTime);
-      isBrowser && localStorage.removeItem('isButtonClicked');
-      isBrowser && localStorage.removeItem('remainingTime');
-    }
-  }, [remainingTime]);
-
-  const movePage = (pathname: string, query?: ParsedUrlQueryInput) => {
-    router.push({ pathname, query });
-  };
+  const [isDisplayAdd, setIsDisplayAdd] = useState(true);
+  const [time, setTime] = useState(5);
+  const { mutate } = usePetchKey({
+    onSuccess: () => {
+      client.invalidateQueries([KEY_INFO_KEY]);
+      router.push({ pathname: route.MakeKey, query: { originId: router.query.originId } });
+    },
+  });
 
   const handleClick = () => {
-    setIsClicked(true);
-    isBrowser && localStorage.setItem('isButtonClicked', 'true');
-    movePage(route.MakeKey, {
-      originId: router.pathname === route.Key ? router.query.originId : router.query.userId,
-    });
+    mutate();
   };
+
+  const handleClose = () => {
+    setIsDisplayAdd(false);
+  };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (time > 0) {
+      interval = setInterval(() => {
+        setTime((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Layout layoutCss={layoutCss}>
@@ -162,16 +155,22 @@ function KeyInfo() {
         </InfoWrap>
       </KeyInfoSection>
       <ButtonSection>
-        <CounterBtn
-          onClick={handleClick}
-          disabled={isClicked}
-          isClicked={isClicked as boolean}
-          remainingTime={remainingTime as number}
-          disabledTime={disabledTime as number}>
-          {isClicked ? `${Math.ceil((remainingTime as number) / 1000)}초 후 열쇠를 획득하세요` : '열쇠 획득하기'}
-        </CounterBtn>
+        {isDisplayAdd && (
+          <CoupanWrapper>
+            <div className="pusedo-wrap">
+              <span className="close-btn">{time > 0 ? time : <Close onClick={handleClose} />}</span>
+              <CoupangAdd
+                // eslint-disable-next-line max-len
+                src="https://ads-partners.coupang.com/widgets.html?id=657024&template=carousel&trackingCode=AF9396669&subId=&width=400&height=120"
+                referrerPolicy="unsafe-url"
+              />
+            </div>
+          </CoupanWrapper>
+        )}
+        <Button onClick={handleClick} buttonType={ButtonType.Basic}>
+          열쇠 획득하기
+        </Button>
       </ButtonSection>
-      <GoogleAd />
     </Layout>
   );
 }
