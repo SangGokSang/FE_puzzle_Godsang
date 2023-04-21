@@ -16,3 +16,10 @@ export async function patchKey(puzzleId: number, messageId: number): Promise<Key
   });
   return data;
 }
+
+export async function petchKey(): Promise<void> {
+  await api({
+    url: `/user/key`,
+    method: 'patch',
+  });
+}

@@ -15,7 +15,7 @@ const AdForKey = () => {
     <div className="googleAd-container">
       <ins
         className="adsbygoogle"
-        style={{ display: 'block', overflow: 'hidden' }}
+        style={{ display: 'block', overflow: 'hidden', height: '100px' }}
         data-ad-slot="9673409455"
         data-ad-format="auto"
         data-full-width-responsive="true"

@@ -29,7 +29,9 @@ api.interceptors.response.use(
         logout();
         return;
       }
-    } else if (error.response?.status === 401 && error.response?.status === 400) {
+    } else if (error.response.status === 400 && !location.href.includes('list')) {
+      logout();
+    } else if (error.response?.status === 401) {
       logout();
       return;
     } else if (error) {
