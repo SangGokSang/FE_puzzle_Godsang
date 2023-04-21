@@ -23,7 +23,6 @@ import { usePuzzles } from 'src/module/puzzles';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import dayjs from 'dayjs';
-import HowToUse from '../how-to-use';
 import { useSetRecoilState } from 'recoil';
 
 export type CreateFormType = {
@@ -82,10 +81,9 @@ const Breadcrumb = styled.p`
 
 function Create() {
   const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
-  const [step, setStep] = useState(user.isSignUp ? 0 : 1);
+  const [step, setStep] = useState(1);
   const router = useRouter();
   const [disabledButton, setDisabledButton] = useState(true);
-  const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const setUser = useSetRecoilState(auth);
 
   const { data = [] } = usePuzzles(router.query.userId as string, { enabled: false });
@@ -132,12 +130,11 @@ function Create() {
   };
 
   const stepMap: Record<number, ReactElement> = {
-    0: <HowToUse />,
     1: <FirstStep />,
     2: <SecondStep />,
     3: <ThirdStep />,
   };
-  console.log(user);
+
   const handleBackClick = () => {
     if (step === 1) {
       if (confirm('퍼즐 생성을 그만두고 퍼즐판 화면으로 돌아가시겠나요?')) {
@@ -188,6 +185,8 @@ function Create() {
     }
     setDisabledButton(flag);
   }, [createForm.formState, createForm.getFieldState, createForm.watch]);
+
+  console.log(user.isSignUp);
 
   return (
     <Layout useHeader={false}>

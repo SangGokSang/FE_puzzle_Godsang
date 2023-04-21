@@ -27,6 +27,8 @@ export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, L
       });
       if (data.isWithdrawUser) {
         restore.mutate();
+      } else if (data.isSignUp) {
+        router.push(route.HowToUse);
       } else {
         router.push({ pathname: route.List, query: { userId: data.userId } });
       }
