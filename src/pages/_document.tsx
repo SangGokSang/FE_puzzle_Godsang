@@ -7,10 +7,6 @@ export default function Document() {
       <Head>
         <link href="https://webfontworld.github.io/ssro/EstablishRetrosans.css" rel="stylesheet" />
         <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet" />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8879317803203947"
-          crossOrigin="anonymous"></Script>
         <meta name="title" property="og:title" content="Dear My 2023" />
         <meta name="description" property="og:description" content="우리에게 선물로 다가온 시간을 채워봐요." />
         <meta name="image" property="og:image" content="/assets/images/thumbnail.png" />
