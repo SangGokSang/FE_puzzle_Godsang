@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useLayoutEffect, useState } from 'react';
 import Layout from 'src/components/common/Layout';
-import { ButtonSection } from 'src/core/styles/common';
+import { buttonHoverCss, ButtonSection } from 'src/core/styles/common';
 import Button from 'src/components/button';
 import { ButtonType } from 'src/components/button/Button';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -133,7 +133,13 @@ function Create() {
   };
 
   const handleBackClick = () => {
-    if (step !== 1) setStep((prev) => --prev);
+    if (step === 1) {
+      if (confirm('퍼즐 생성을 그만두고 퍼즐판 화면으로 돌아가시겠나요?')) {
+        router.back();
+      }
+    } else {
+      setStep((prev) => --prev);
+    }
   };
 
   useLayoutEffect(() => {
@@ -180,11 +186,9 @@ function Create() {
   return (
     <Layout useHeader={false}>
       <StepSection step={step}>
-        {step !== 1 && (
-          <span className="back-button">
-            <BackIcon onClick={handleBackClick} />
-          </span>
-        )}
+        <span className="back-button">
+          <BackIcon css={buttonHoverCss} onClick={handleBackClick} />
+        </span>
         <div className="progress">
           <span className="step" />
         </div>

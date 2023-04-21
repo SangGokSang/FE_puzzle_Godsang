@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.header`
@@ -25,9 +24,5 @@ export const AuthButton = styled.button`
   border: 1px solid #000000;
   color: #000;
   padding: 4px;
-  cursor: pointer;
-`;
-
-export const buttonHoverCss = css`
   cursor: pointer;
 `;
