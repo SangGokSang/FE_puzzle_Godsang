@@ -23,6 +23,7 @@ import { usePuzzles } from 'src/module/puzzles';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import dayjs from 'dayjs';
+
 import { useSetRecoilState } from 'recoil';
 
 export type CreateFormType = {
@@ -80,10 +81,10 @@ const Breadcrumb = styled.p`
 `;
 
 function Create() {
-  const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const [step, setStep] = useState(1);
   const router = useRouter();
   const [disabledButton, setDisabledButton] = useState(true);
+  const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const setUser = useSetRecoilState(auth);
 
   const { data = [] } = usePuzzles(router.query.userId as string, { enabled: false });
@@ -185,8 +186,6 @@ function Create() {
     }
     setDisabledButton(flag);
   }, [createForm.formState, createForm.getFieldState, createForm.watch]);
-
-  console.log(user.isSignUp);
 
   return (
     <Layout useHeader={false}>
