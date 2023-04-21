@@ -3,6 +3,8 @@ export enum Category {
   travel = 'TRAVEL',
   career = 'CAREER',
   moneyManagement = 'MONEY_MANAGEMENT',
+  quittingSmoking = 'QUITTING_SMOKING',
+  love = 'LOVE',
   etc = 'ETC',
 }
 
