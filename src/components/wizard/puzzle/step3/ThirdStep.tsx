@@ -13,6 +13,8 @@ const categoryMap: Record<string, string> = {
   [Category.travel]: '여행',
   [Category.career]: '커리어',
   [Category.moneyManagement]: '재태크',
+  [Category.quittingSmoking]: '금연',
+  [Category.love]: '연애',
   [Category.etc]: '기타',
 };
 
