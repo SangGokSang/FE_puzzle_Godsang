@@ -9,8 +9,8 @@ import { BackIcon } from 'src/core/icons';
 import { Controller, useForm } from 'react-hook-form';
 import { useSendDM } from 'src/module/message';
 import styled from '@emotion/styled';
-import GoogleAd from 'src/components/googleAd/GoogldAd';
 import { ExceptionCode } from 'src/core/const/enum';
+import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
 
 type LetterProps = {
   isOpen: boolean;
@@ -27,7 +27,7 @@ export type MessageData = {
 
 const buttonSectionCss = css`
   position: absolute;
-  bottom: 0;
+  bottom: 40px;
 `;
 
 const TextField = styled(MuiTextField)`
@@ -152,6 +152,7 @@ function Letter(props: LetterProps): ReactElement {
           {isWrite && (
             <>
               <ButtonSection css={buttonSectionCss}>
+                <KakaoAdFit />
                 <Button buttonType={ButtonType.Text} onClick={onSubmit}>
                   DM 보내기
                 </Button>
@@ -160,7 +161,6 @@ function Letter(props: LetterProps): ReactElement {
           )}
         </Layout>
       </Modal>
-      <GoogleAd />
     </>
   );
 }
