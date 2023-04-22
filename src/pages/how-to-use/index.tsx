@@ -11,6 +11,7 @@ import route from 'src/core/const/route.path';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import auth, { authDefaultValue } from 'src/recoil/auth/atom';
 import { buttonHoverCss } from 'src/core/styles/common';
+import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -28,11 +29,6 @@ const HowToUseWrap = styled.div`
   align-items: center;
   background-color: #fff;
   border-radius: 15px;
-
-  .ad-area {
-    width: 100%;
-    height: 60px;
-  }
 `;
 
 const backButtonCss = css`
@@ -57,9 +53,7 @@ export default function HowToUse() {
       </Wrapper>
       <HowToUseWrap>
         <Image src="/assets/images/how-to-use.png" alt="how-to-use" width="320" height="480" />
-        <div className="ad-area">
-          <GoogleAd />
-        </div>
+        <KakaoAdFit />
       </HowToUseWrap>
     </Layout>
   );

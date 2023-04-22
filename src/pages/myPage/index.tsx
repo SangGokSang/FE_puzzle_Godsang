@@ -20,7 +20,7 @@ import { authDefaultValue } from 'src/recoil/auth/atom';
 import { User as RecoilUser } from 'src/recoil/auth/type';
 import { useWithdraw } from 'src/module/auth/hooks/useWithdraw';
 import Image from 'next/image';
-import GoogleAd from 'src/components/googleAd/GoogldAd';
+import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -47,7 +47,7 @@ const layoutCss = css`
 `;
 const MyPageSection = styled.section`
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 140px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,7 +56,7 @@ const MyPageSection = styled.section`
 const StoryLine = styled.div`
   width: 500px;
   height: 100%;
-  padding-top: 40px;
+  padding-top: 25px;
   font-weight: 400;
   font-size: 20px;
   line-height: 26px;
@@ -307,7 +307,7 @@ function MyPage() {
           회원탈퇴
         </Button>
       </ButtonSection>
-      <GoogleAd />
+      <KakaoAdFit />
     </Layout>
   );
 }

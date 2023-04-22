@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import Button, { ButtonType } from '../button/Button';
-import GoogleAd from '../googleAd/GoogldAd';
+import KakaoAdFit from '../kakaoAd/kakaoAdFit';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -36,7 +36,7 @@ export default function NotFound() {
         <div>퍼즐의 주인이 없습니다!</div>
         <div>퍼즐의 주인이 되어주세요!</div>
       </Message>
-      <GoogleAd />
+      <KakaoAdFit />
       <Button buttonType={ButtonType.Basic} onClick={login}>
         로그인 하기
       </Button>
