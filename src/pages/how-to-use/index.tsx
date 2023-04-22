@@ -3,7 +3,6 @@ import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import { css } from '@emotion/css';
-import GoogleAd from 'src/components/googleAd/GoogldAd';
 import { BackIcon, Logo } from 'src/core/icons';
 import { useRouter } from 'next/router';
 import { User } from 'src/recoil/auth/type';
