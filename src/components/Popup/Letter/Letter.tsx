@@ -27,7 +27,7 @@ export type MessageData = {
 
 const buttonSectionCss = css`
   position: absolute;
-  bottom: 40px;
+  bottom: 0;
 `;
 
 const TextField = styled(MuiTextField)`
@@ -36,6 +36,17 @@ const TextField = styled(MuiTextField)`
     width: 100%;
     padding: 0;
   }
+`;
+
+const AdArea = styled.div`
+  @media screen and (min-width: 768px) {
+    /* PC 화면일 때 */
+    margin-top: 180px;
+    margin-bottom: 40px;
+  }
+  width: 100%;
+  margin-top: 130px;
+  margin-bottom: 40px;
 `;
 
 // 편지 읽기와 쓰기 모드 같이
@@ -149,16 +160,19 @@ function Letter(props: LetterProps): ReactElement {
               )}
             </SenderField>
           </MessageCard>
+
           {isWrite && (
             <>
               <ButtonSection css={buttonSectionCss}>
-                <KakaoAdFit />
                 <Button buttonType={ButtonType.Text} onClick={onSubmit}>
                   DM 보내기
                 </Button>
               </ButtonSection>
             </>
           )}
+          <AdArea>
+            <KakaoAdFit />
+          </AdArea>
         </Layout>
       </Modal>
     </>
