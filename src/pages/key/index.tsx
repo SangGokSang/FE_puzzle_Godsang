@@ -95,6 +95,7 @@ const CoupanWrapper = styled.div`
     .close-btn {
       width: 30px;
       height: 30px;
+      cursor: pointer;
       position: absolute;
       top: 0;
       right: 0;

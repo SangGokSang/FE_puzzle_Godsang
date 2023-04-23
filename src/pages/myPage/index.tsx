@@ -53,7 +53,7 @@ const MyPageSection = styled.section`
   justify-content: center;
 `;
 
-const StoryLine = styled.div`
+const StoryLine = styled.div<{ isEdit: boolean }>`
   width: 500px;
   height: 100%;
   padding-top: 25px;
@@ -62,7 +62,7 @@ const StoryLine = styled.div`
   line-height: 26px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: ${(props) => (props.isEdit ? '5px' : '10px')};
 
   @media screen and (min-width: 768px) {
     width: 100%;
@@ -70,11 +70,12 @@ const StoryLine = styled.div`
   }
 `;
 
-const InputField = styled.div`
-  min-height: 95px;
+const InputField = styled.div<{ isEdit: boolean }>`
+  min-height: 60px;
   margin-left: 20px;
   display: flex;
   flex-direction: column;
+  gap: ${(props) => (props.isEdit ? '2px' : '5px')};
   font-size: 14px;
 `;
 
@@ -212,7 +213,7 @@ function MyPage() {
           font-size: 13px;
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 7px;
         `}>
         <div>
           <span>축하해요!</span>
@@ -253,8 +254,8 @@ function MyPage() {
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
       <MyPageSection>
-        <StoryLine>
-          <InputField>
+        <StoryLine isEdit={isEdit}>
+          <InputField isEdit={isEdit}>
             <LabelInputWrap>
               <Text isEdit={isEdit}>별명:</Text>
               <Controller
@@ -274,7 +275,7 @@ function MyPage() {
                 )}
               />
             </LabelInputWrap>
-            <span css={errLabel}>{!!errors?.nickname && errors.nickname.message}</span>
+            {!!errors?.nickname && <span css={errLabel}>{errors.nickname.message}</span>}
             <LabelInputWrap>
               <Text isEdit={isEdit}>생일:</Text>
               <Controller
@@ -291,7 +292,7 @@ function MyPage() {
                 }}
               />
             </LabelInputWrap>
-            <span css={errLabel}>{!!errors?.birth && errors.birth.message}</span>
+            {!!errors?.birth && <span css={errLabel}>{errors.birth.message}</span>}
           </InputField>
           <Story>{description}</Story>
         </StoryLine>

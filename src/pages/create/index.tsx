@@ -86,7 +86,7 @@ function Create() {
   const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const setUser = useSetRecoilState(auth);
 
-  const { data = [] } = usePuzzles(router.query.userId as string, { enabled: false });
+  const { data = [] } = usePuzzles(`${user.userId ?? 0}`, { enabled: user.userId !== null });
 
   const createForm = useForm<CreateFormType>({
     resolver: yupResolver(

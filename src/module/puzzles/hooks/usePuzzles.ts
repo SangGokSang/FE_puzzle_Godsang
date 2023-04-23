@@ -10,7 +10,7 @@ import { Puzzles } from '../types';
 export const usePuzzles = (userId: string, options?: UseQueryOptions<Puzzles, ApiError>) => {
   const router = useRouter();
 
-  return useQuery<Puzzles, ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId), {
+  return useQuery<Puzzles, ApiError>([PUZZLES_KEY, userId], () => fetchPuzzles(userId), {
     ...options,
     onSuccess: (data) => {
       if (data?.code === ExceptionCode.invalidUser) {

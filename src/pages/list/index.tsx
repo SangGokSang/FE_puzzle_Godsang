@@ -20,7 +20,7 @@ import { useRecoilValue } from 'recoil';
 import auth from 'src/recoil/auth';
 import isMobile from 'src/recoil/isMobile';
 import { useSnackbar } from 'notistack';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { dehydrate, QueryClient, useQueryClient } from '@tanstack/react-query';
 import { ApiError } from 'src/core/type/ApiError';
 import { useDeletePuzzle, usePuzzles, useReadMessage } from 'src/module/puzzles/hooks';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
@@ -161,6 +161,7 @@ const NoMessage = styled.div`
 
 function PuzzleList() {
   const router = useRouter();
+  const client = useQueryClient();
   const isMobileView = useRecoilValue(isMobile);
   const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
@@ -171,11 +172,16 @@ function PuzzleList() {
   const MaxMessage = 9;
 
   const { data } = usePuzzles(router.query.userId as string);
-  const { data: key } = useGetKeyInfo();
+
+  const { data: key } = useGetKeyInfo({
+    enabled: !!userId,
+  });
   const readMessage = useReadMessage({
     onSuccess: () => setIsOpen(true),
   });
-  const deleteMessage = useDeletePuzzle();
+  const deleteMessage = useDeletePuzzle({
+    onSuccess: () => client.invalidateQueries([PUZZLES_KEY, userId]),
+  });
 
   const puzzlePosition = [
     { left: 0, top: 0 },
@@ -389,7 +395,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const userId = query.userId as string;
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery<Puzzles, ApiError>([PUZZLES_KEY], () => fetchPuzzles(userId));
+  await queryClient.prefetchQuery<Puzzles, ApiError>([PUZZLES_KEY, userId], () => fetchPuzzles(userId));
 
   return {
     props: {
