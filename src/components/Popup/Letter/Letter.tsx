@@ -30,7 +30,7 @@ export type MessageData = {
 
 const buttonSectionCss = css`
   position: absolute;
-  bottom: 0;
+  bottom: 15px;
 `;
 
 const TextField = styled(MuiTextField)`
@@ -42,14 +42,9 @@ const TextField = styled(MuiTextField)`
 `;
 
 const AdArea = styled.div`
-  @media screen and (min-width: 768px) {
-    /* PC 화면일 때 */
-    position: absolute;
-    bottom: 5%;
-  }
+  position: absolute;
+  bottom: -45px;
   width: 100%;
-  margin-top: 130px;
-  margin-bottom: 40px;
 `;
 
 // 편지 읽기와 쓰기 모드 같이
