@@ -173,7 +173,6 @@ function PuzzleList() {
 
   const { data } = usePuzzles(router.query.userId as string);
 
-  console.log(data);
   const { data: key } = useGetKeyInfo({
     enabled: !!userId,
   });
