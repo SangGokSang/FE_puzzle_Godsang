@@ -181,10 +181,7 @@ function PuzzleList() {
     onSuccess: () => setIsOpen(true),
   });
   const deleteMessage = useDeletePuzzle({
-    onSuccess: () => {
-      console.log('delete complte');
-      client.invalidateQueries([PUZZLES_KEY, userId]);
-    },
+    onSuccess: () => client.invalidateQueries([PUZZLES_KEY, userId]),
   });
 
   const puzzlePosition = [
