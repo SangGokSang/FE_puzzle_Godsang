@@ -30,7 +30,8 @@ api.interceptors.response.use(
         return;
       }
     } else if (error.response.status === 400 && !location.href.includes('list')) {
-      logout();
+      console.log('Err');
+      // logout();
     } else if (error.response?.status === 401) {
       logout();
       return;

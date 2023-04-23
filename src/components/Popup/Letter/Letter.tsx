@@ -11,6 +11,9 @@ import { useSendDM } from 'src/module/message';
 import styled from '@emotion/styled';
 import { ExceptionCode } from 'src/core/const/enum';
 import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { PUZZLES_KEY } from 'src/module/puzzles';
 
 type LetterProps = {
   isOpen: boolean;
@@ -41,8 +44,8 @@ const TextField = styled(MuiTextField)`
 const AdArea = styled.div`
   @media screen and (min-width: 768px) {
     /* PC 화면일 때 */
-    margin-top: 180px;
-    margin-bottom: 40px;
+    position: absolute;
+    bottom: 5%;
   }
   width: 100%;
   margin-top: 130px;
@@ -52,9 +55,13 @@ const AdArea = styled.div`
 // 편지 읽기와 쓰기 모드 같이
 function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { control, getValues, reset } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
   const sendDM = useSendDM({
     onSuccess: () => {
+      const userId = router.query.userId as string;
+      queryClient.invalidateQueries([PUZZLES_KEY, userId]);
       handleCloseModal();
       reset();
     },
