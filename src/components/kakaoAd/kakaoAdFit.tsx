@@ -25,7 +25,7 @@ function KakaoAdFit() {
     if (router.pathname === route.MakeKey) {
       ins.setAttribute('data-ad-width', '320');
       ins.setAttribute('data-ad-height', '250');
-      ins.setAttribute('data-ad-unit', 'DAN-AvqsVnBilaDPDARI');
+      ins.setAttribute('data-ad-unit', 'DAN-MYaane3AJr8IY2V8');
     } else {
       ins.setAttribute('data-ad-width', '320');
       ins.setAttribute('data-ad-height', '50');
