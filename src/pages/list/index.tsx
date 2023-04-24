@@ -8,7 +8,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import { fetchPuzzles, Puzzle, PuzzleMSG, Puzzles, PUZZLES_KEY } from 'src/module/puzzles';
+import { fetchPuzzles, PuzzleMSG, Puzzles, PUZZLES_KEY } from 'src/module/puzzles';
 import Letter from 'src/components/Popup/Letter';
 import { AddPuzzleIcon, DeleteIcon } from 'src/core/icons';
 import { useRouter } from 'next/router';
@@ -176,8 +176,10 @@ function PuzzleList() {
   const { data: key } = useGetKeyInfo({
     enabled: !!userId,
   });
-  const readMessage = useReadMessage({
-    onSuccess: () => setIsOpen(true),
+  const readMessage = useReadMessage(userId ?? 0, {
+    onSuccess: () => {
+      setIsOpen(true);
+    },
   });
   const deleteMessage = useDeletePuzzle({
     onSuccess: () => client.invalidateQueries([PUZZLES_KEY, userId]),
