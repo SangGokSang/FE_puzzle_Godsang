@@ -176,7 +176,7 @@ function PuzzleList() {
   const { data: key } = useGetKeyInfo({
     enabled: !!userId,
   });
-  const readMessage = useReadMessage(userId ?? 0, {
+  const readMessage = useReadMessage({
     onSuccess: () => {
       setIsOpen(true);
     },
