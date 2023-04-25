@@ -4,7 +4,6 @@ export type Puzzle = {
   id: number;
   category: string;
   title: string;
-  userNickname: string;
   messages: PuzzleMSG[];
 };
 

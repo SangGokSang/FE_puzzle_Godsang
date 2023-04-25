@@ -12,7 +12,6 @@ import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
-import { Close } from '@mui/icons-material';
 import { useQueryClient } from '@tanstack/react-query';
 import { usePetchKey } from 'src/module/keyInfo/hooks/usePetchKey';
 
@@ -84,22 +83,13 @@ const Attention = styled.div`
 
 const CoupanWrapper = styled.div`
   width: 100%;
-  height: 130px;
+  height: 60px;
   position: absolute;
-  bottom: 0;
+  bottom: 70px;
 
   .pusedo-wrap {
     width: 100%;
     height: 100%;
-
-    .close-btn {
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
   }
 `;
 
@@ -113,7 +103,6 @@ function KeyInfo() {
   const client = useQueryClient();
   const { data } = useGetKeyInfo();
   const { nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
-  const [isDisplayAdd, setIsDisplayAdd] = useState(true);
   const [time, setTime] = useState(5);
   const { mutate } = usePetchKey({
     onSuccess: () => {
@@ -124,10 +113,6 @@ function KeyInfo() {
 
   const handleClick = () => {
     mutate();
-  };
-
-  const handleClose = () => {
-    setIsDisplayAdd(false);
   };
 
   useEffect(() => {
@@ -156,20 +141,20 @@ function KeyInfo() {
         </InfoWrap>
       </KeyInfoSection>
       <ButtonSection>
-        {isDisplayAdd && (
-          <CoupanWrapper>
-            <div className="pusedo-wrap">
-              <span className="close-btn">{time > 0 ? time : <Close onClick={handleClose} />}</span>
-              <CoupangAdd
-                // eslint-disable-next-line max-len
-                src="https://ads-partners.coupang.com/widgets.html?id=657024&template=carousel&trackingCode=AF9396669&subId=&width=400&height=120"
-                referrerPolicy="unsafe-url"
-              />
-            </div>
-          </CoupanWrapper>
-        )}
-        <Button onClick={handleClick} buttonType={ButtonType.Basic}>
-          열쇠 획득하기
+        <CoupanWrapper>
+          <div className="pusedo-wrap">
+            <CoupangAdd
+              // eslint-disable-next-line max-len
+              src="https://ads-partners.coupang.com/widgets.html?id=657024&template=carousel&trackingCode=AF9396669&subId=&width=400&height=120"
+              referrerPolicy="unsafe-url"
+            />
+          </div>
+        </CoupanWrapper>
+        <Button
+          onClick={handleClick}
+          buttonType={time > 0 ? ButtonType.Disabled : ButtonType.Basic}
+          disabled={time > 0}>
+          {time > 0 ? `${time}초 후에 열쇠를 획득하실 수 있습니다!` : '열쇠 획득하기'}
         </Button>
       </ButtonSection>
     </Layout>

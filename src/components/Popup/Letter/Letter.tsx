@@ -1,24 +1,24 @@
+import React, { ReactElement } from 'react';
 import { css } from '@emotion/react';
 import Button, { ButtonType } from 'src/components/button/Button';
 import { Modal, TextField as MuiTextField } from '@mui/material';
-import React, { ReactElement } from 'react';
 import Layout from 'src/components/common/Layout';
-import { MessageCard, RecipientField, SenderField, TextBodyField } from './style';
+import { MessageCard, RecipientField, SenderField, TextBodyField, letterInterfaceCss } from './style';
 import { ButtonSection } from 'src/core/styles/common';
-import { BackIcon } from 'src/core/icons';
+import { BackIcon, TrashCanIcon } from 'src/core/icons';
 import { Controller, useForm } from 'react-hook-form';
-import { useSendDM } from 'src/module/message';
+import { useDeleteMessage, useSendDM } from 'src/module/message';
 import styled from '@emotion/styled';
 import { ExceptionCode } from 'src/core/const/enum';
 import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import { PUZZLES_KEY } from 'src/module/puzzles';
+import { PUZZLES_KEY, PuzzleMSG, Puzzles } from 'src/module/puzzles';
 
 type LetterProps = {
   isOpen: boolean;
   onClose: () => void;
-  data: MessageData | number | null;
+  data: (PuzzleMSG & { puzzleId: number }) | number | null;
   isWrite: boolean;
 };
 
@@ -53,23 +53,35 @@ function Letter(props: LetterProps): ReactElement {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { control, getValues, reset } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
+
+  const afterLogic = (data: Puzzles) => {
+    const userId = router.query.userId as string;
+    queryClient.setQueryData([PUZZLES_KEY, `${userId}`], data);
+    handleCloseModal();
+    reset();
+  };
   const sendDM = useSendDM({
-    onSuccess: () => {
-      const userId = router.query.userId as string;
-      queryClient.invalidateQueries([PUZZLES_KEY, userId]);
-      handleCloseModal();
-      reset();
-    },
+    onSuccess: (data) => afterLogic(data),
     onError: ({ code }) => {
       if (code === ExceptionCode.messageFull) {
         alert('죄송합니다, 퍼즐이 완성되어 DM을 보낼 수 없습니다.\n다른 퍼즐로 DM을 보내주세요!');
       }
     },
   });
+  const deleteDM = useDeleteMessage({
+    onSuccess: (data) => afterLogic(data),
+  });
 
   const handleCloseModal = () => {
     if (onClose instanceof Function) {
       onClose();
+    }
+  };
+
+  const handleDeleteDM = () => {
+    if (confirm('메세지를 삭제하시겠나요? \n(삭제 후 메세지는 복구되지 않습니다.)')) {
+      const { puzzleId, id } = data as PuzzleMSG & { puzzleId: number };
+      deleteDM.mutate({ puzzleId, messageId: id });
     }
   };
 
@@ -84,9 +96,10 @@ function Letter(props: LetterProps): ReactElement {
     <>
       <Modal open={isOpen} onClose={handleCloseModal}>
         <Layout useHeader={false}>
-          <span className="back-button">
+          <div css={letterInterfaceCss}>
             <BackIcon onClick={handleCloseModal} />
-          </span>
+            {!isWrite && <TrashCanIcon onClick={handleDeleteDM} />}
+          </div>
           <MessageCard>
             <RecipientField>
               {isWrite ? (

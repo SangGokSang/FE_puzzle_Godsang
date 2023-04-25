@@ -19,11 +19,12 @@ import { useAddPuzzle } from 'src/module/puzzles/hooks/useAddPuzzle';
 import auth, { authDefaultValue } from 'src/recoil/auth/atom';
 import route from 'src/core/const/route.path';
 import { scheme } from 'src/core/const/scheme';
-import { usePuzzles } from 'src/module/puzzles';
+import { PUZZLES_KEY, usePuzzles } from 'src/module/puzzles';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import dayjs from 'dayjs';
 import { useSetRecoilState } from 'recoil';
+import { useQueryClient } from '@tanstack/react-query';
 
 export type CreateFormType = {
   nickname: string;
@@ -82,6 +83,7 @@ const Breadcrumb = styled.p`
 function Create() {
   const [step, setStep] = useState(1);
   const router = useRouter();
+  const client = useQueryClient();
   const [disabledButton, setDisabledButton] = useState(true);
   const user = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const setUser = useSetRecoilState(auth);
@@ -101,7 +103,10 @@ function Create() {
   });
 
   const addPuzzle = useAddPuzzle({
-    onSuccess: () => router.push({ pathname: route.List, query: { userId: user.userId } }),
+    onSuccess: (data) => {
+      client.setQueryData([PUZZLES_KEY, `${user.userId}`], data);
+      router.push({ pathname: route.List, query: { userId: user.userId } });
+    },
     onError: (err) => console.log(err),
   });
 
@@ -148,7 +153,7 @@ function Create() {
   useLayoutEffect(() => {
     const defaultValues = {
       nickname: '',
-      birth: dayjs().subtract(1, 'day').valueOf(),
+      birth: user.birthdate || dayjs().subtract(1, 'day').valueOf(),
       category: Category.exercise,
       goal: '',
     };
@@ -156,7 +161,6 @@ function Create() {
     if (data.length > 0 && user.nickname !== '') {
       setStep(2);
       defaultValues.nickname = user.nickname;
-      defaultValues.birth = user.birthdate;
     } else {
       defaultValues.nickname = user.nickname.slice(0, 10);
     }
