@@ -12,6 +12,7 @@ import InfoKeyIcon from 'src/core/icons/svg/info-key-icon.svg';
 import XIcon from 'src/core/icons/svg/x-icon.svg';
 import AddPuzzleIcon from 'src/core/icons/svg/PuzzleAdding.svg';
 import DeleteIcon from 'src/core/icons/svg/delete-icon.svg';
+import TrashCanIcon from 'src/core/icons/svg/trash-can-icon.svg';
 
 export {
   Logo,
@@ -28,4 +29,5 @@ export {
   XIcon,
   AddPuzzleIcon,
   DeleteIcon,
+  TrashCanIcon,
 };

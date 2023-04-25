@@ -26,7 +26,7 @@ import { useDeletePuzzle, usePuzzles, useReadMessage } from 'src/module/puzzles/
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import { authDefaultValue } from 'src/recoil/auth/atom';
-import { useGetKeyInfo } from 'src/module/keyInfo';
+import { KEY_INFO_KEY, useGetKeyInfo } from 'src/module/keyInfo';
 
 const PuzzleListWrap = styled.div`
   height: 100%;
@@ -163,8 +163,8 @@ function PuzzleList() {
   const router = useRouter();
   const client = useQueryClient();
   const isMobileView = useRecoilValue(isMobile);
-  const [letterData, setLetterData] = useState<PuzzleMSG | number | null>(null);
-  const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
+  const [letterData, setLetterData] = useState<(PuzzleMSG & { puzzleId: number }) | number | null>(null);
+  const { userId, nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const [isUser, setIsUser] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeSliderId, setActiveSliderId] = useState(0);
@@ -177,12 +177,14 @@ function PuzzleList() {
     enabled: !!userId,
   });
   const readMessage = useReadMessage({
-    onSuccess: () => {
+    onSuccess: ({ list, keyCount }) => {
+      client.setQueryData([PUZZLES_KEY, `${userId}`], list);
+      client.setQueryData([KEY_INFO_KEY], keyCount);
       setIsOpen(true);
     },
   });
-  const deleteMessage = useDeletePuzzle({
-    onSuccess: () => client.invalidateQueries([PUZZLES_KEY, userId]),
+  const deletePuzzle = useDeletePuzzle({
+    onSuccess: (data) => client.setQueryData([PUZZLES_KEY, `${userId}`], data),
   });
 
   const puzzlePosition = [
@@ -211,8 +213,7 @@ function PuzzleList() {
 
   const handleClickPiece = (data: PuzzleMSG, puzzleId: number) => async () => {
     if (isUser) {
-      // 일단 confirm 으로 처리
-      setLetterData(data);
+      setLetterData({ ...data, puzzleId });
       if (!data.isOpened) {
         if (key?.keyCount === 0) {
           return alert('보유하고 있는 열쇠가 없습니다! 열쇠를 획득해주세요!');
@@ -234,7 +235,6 @@ function PuzzleList() {
     if (navigator.share) {
       navigator.share({
         title: 'Dear My 2023',
-        // text: '우리에게 선물로 다가온 시간을 채워봐요.\n',
         url: location.href,
       });
     } else {
@@ -263,12 +263,12 @@ function PuzzleList() {
   const handleDelete = useCallback(() => {
     if (confirm('퍼즐을 삭제하시겠습니까?')) {
       if (data) {
-        deleteMessage.mutate(data[activeSliderId].id);
+        deletePuzzle.mutate(data[activeSliderId].id);
       } else {
         alert('퍼즐이 없습니다.');
       }
     }
-  }, [activeSliderId, data, deleteMessage]);
+  }, [activeSliderId, data, deletePuzzle]);
 
   // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 랜더링 이후 실행
   useEffect(() => {
@@ -288,7 +288,7 @@ function PuzzleList() {
     <Layout>
       <PuzzleListWrap>
         <Content>
-          <div css={title}>{data?.length ? data[0]?.userNickname : '별명'} 님의 목표</div>
+          <div css={title}>{nickname} 님의 목표</div>
           <SwiperContainer>
             <Swiper
               pagination={true}
@@ -361,7 +361,11 @@ function PuzzleList() {
             </Swiper>
           </SwiperContainer>
           <Message>
-            {isUser ? '친구에게 공유해서 퍼즐조각을 완성해보세요!' : '아래 버튼을 클릭해 응원의 메세지를 보내주세요!'}
+            {data?.length === 0
+              ? '퍼즐을 생성하고 나의 꿈을 펼쳐보아요!'
+              : isUser
+              ? '친구에게 공유해서 퍼즐조각을 완성해보세요!'
+              : '아래 버튼을 클릭해 응원의 메세지를 보내주세요!'}
           </Message>
         </Content>
         {isUser ? (
@@ -397,7 +401,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const userId = query.userId as string;
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery<Puzzles, ApiError>([PUZZLES_KEY, userId], () => fetchPuzzles(userId));
+  await queryClient.prefetchQuery<Puzzles, ApiError>([PUZZLES_KEY, `${userId}`], () => fetchPuzzles(userId));
 
   return {
     props: {
