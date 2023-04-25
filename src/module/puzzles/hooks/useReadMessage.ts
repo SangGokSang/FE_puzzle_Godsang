@@ -10,6 +10,7 @@ import { User } from 'src/recoil/auth/type';
 import auth, { authDefaultValue } from 'src/recoil/auth/atom';
 
 // 메세지 읽고 키 차감
+<<<<<<< Updated upstream
 export const useReadMessage = (options: MutationOptions<number, ApiError, ReadMessageReq> = {}) => {
   const queryClient = useQueryClient();
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
@@ -25,4 +26,13 @@ export const useReadMessage = (options: MutationOptions<number, ApiError, ReadMe
       }
     },
   });
+=======
+export const useReadMessage = (
+  options: MutationOptions<{ keyCount: number; list: Puzzles }, ApiError, ReadMessageReq> = {},
+) => {
+  return useMutation<{ keyCount: number; list: Puzzles }, ApiError, ReadMessageReq>(
+    (param: ReadMessageReq) => readMessage(param),
+    options,
+  );
+>>>>>>> Stashed changes
 };
