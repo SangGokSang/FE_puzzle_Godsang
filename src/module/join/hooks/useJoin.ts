@@ -5,7 +5,5 @@ import { postJoin } from '../api';
 import { InfoEditResponse, UserReq } from '../types';
 
 export const useJoin = (options: MutationOptions<InfoEditResponse, ApiError, UserReq> = {}) => {
-  return useMutation<InfoEditResponse, ApiError, UserReq>((param: UserReq) => postJoin(param), {
-    ...options,
-  });
+  return useMutation<InfoEditResponse, ApiError, UserReq>((param: UserReq) => postJoin(param), options);
 };

@@ -7,7 +7,7 @@ import auth, { authDefaultValue } from 'src/recoil/auth/atom';
 import { signOut } from 'next-auth/react';
 import { logout } from '../api';
 import route from 'src/core/const/route.path';
-// import { clearTokens } from 'src/core/api/auth';
+import { clearTokens } from 'src/core/api/auth';
 
 export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {}) => {
   const router = useRouter();
@@ -17,6 +17,7 @@ export const usePostLogout = (options: MutationOptions<void, ApiError, void> = {
     onSuccess: async () => {
       await signOut({ redirect: false });
       setAuth(authDefaultValue);
+      clearTokens();
       setTimeout(() => {
         router.push(route.Landing);
       }, 300);

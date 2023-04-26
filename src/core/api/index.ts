@@ -1,7 +1,6 @@
-/* eslint-disable no-debugger */
 import qs from 'qs';
 import axios, { AxiosRequestConfig } from 'axios';
-import { signOut } from 'next-auth/react';
+import { getAccessToken, logout, setAccessToken } from './auth';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const initialConfig: AxiosRequestConfig = Object.freeze({
@@ -12,7 +11,7 @@ const initialConfig: AxiosRequestConfig = Object.freeze({
   },
 });
 
-export const api = createApiInstance();
+export const api = createApiInstance(getAccessToken({ bearer: true }));
 
 api.interceptors.response.use(
   (result) => result,
@@ -30,16 +29,7 @@ api.interceptors.response.use(
         logout();
         return;
       }
-      // 리스트일때 키를 조회해야한다면? (로그인이 안되어있는 상태는 패스해도 된다)
-    } else if (
-      error.response.status === 400 &&
-      error.response.data.code === 'INVALID_TOKEN' &&
-      !location.href.includes('list')
-    ) {
-      const accessToken = await useRefresh();
-      console.log(error.response.data.code, accessToken);
-      setApiJwt(accessToken);
-    } else if (error.response?.status === 401) {
+    } else if (error.response?.status === 401 && error.response?.status === 400) {
       logout();
       return;
     } else if (error) {
@@ -69,7 +59,6 @@ async function useRefresh(): Promise<string> {
     });
     return data.accessToken;
   } catch (error) {
-    console.log(error);
     logout();
     throw error;
   }
@@ -81,18 +70,9 @@ function paramsSerializer(params: unknown): string {
 
 function setApiJwt(token: string): void {
   const bearerToken = `Bearer ${token}`;
+  setAccessToken(token);
   api.defaults.headers.common.Authorization = bearerToken;
 }
 
-function logout() {
-  signOut();
-  location.href =
-    process.env.NODE_ENV === 'production'
-      ? 'https://dearmy2023.click'
-      : process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000'
-      : '';
-}
-
-export { API_BASE_URL, setApiJwt, logout };
+export { API_BASE_URL, setApiJwt };
 export default api;

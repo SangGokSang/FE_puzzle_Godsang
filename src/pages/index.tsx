@@ -100,8 +100,8 @@ export default function Home() {
         <IconSection>
           <p>소셜 계정으로 간편하게 로그인하기</p>
           <div className="icon-wrapper">
-            <NaverIcon onClick={handleClickIcon('naver')} />
             <KakaoIcon onClick={handleClickIcon('kakao')} />
+            <NaverIcon onClick={handleClickIcon('naver')} />
             <FacebookIcon onClick={handleClickIcon('facebook')} />
           </div>
         </IconSection>
