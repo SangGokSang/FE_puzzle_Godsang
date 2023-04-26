@@ -3,5 +3,7 @@ export type User = {
   nickname: string;
   isWithdrawUser: boolean;
   isSignUp: boolean;
+  email: string;
+  provider: string;
   userId: number | null;
 };
