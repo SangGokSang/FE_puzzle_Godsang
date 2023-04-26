@@ -21,6 +21,8 @@ export const useRestore = (options: MutationOptions<LoginResponse, ApiError, voi
         birthdate: data.birthdate,
         isSignUp: data.isSignUp,
         isWithdrawUser: data.isWithdrawUser,
+        provider: data.provider,
+        email: data.email,
       });
       setTimeout(() => {
         router.push({ pathname: route.List, query: { userId: data.userId } });
