@@ -23,16 +23,20 @@ export async function fetchPuzzles(userId: string): Promise<Puzzles> {
 }
 
 // add puzzle
-export async function addPuzzle(param: PuzzleReq) {
-  await api({
+export async function addPuzzle(param: PuzzleReq): Promise<Puzzles> {
+  const { data } = await api({
     url: '/puzzles',
     method: 'post',
     data: param,
   });
+  return data;
 }
 
 // Read Message and Use Key
-export async function readMessage({ puzzleId, messageId }: ReadMessageReq): Promise<number> {
+export async function readMessage({
+  puzzleId,
+  messageId,
+}: ReadMessageReq): Promise<{ keyCount: number; list: Puzzles }> {
   const { data } = await api({
     url: `/puzzles/${puzzleId}/messages/${messageId}`,
     method: 'patch',
@@ -40,9 +44,10 @@ export async function readMessage({ puzzleId, messageId }: ReadMessageReq): Prom
   return data;
 }
 
-export async function deletePuzzle(puzzleId: number) {
-  await api({
+export async function deletePuzzle(puzzleId: number): Promise<Puzzles> {
+  const { data } = await api({
     url: `/puzzles/${puzzleId}`,
     method: 'delete',
   });
+  return data;
 }

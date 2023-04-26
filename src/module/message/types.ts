@@ -8,3 +8,8 @@ export type SendMessageRequest = {
   puzzleId: number;
   message: SendMessage;
 };
+
+export type DeleteMessageRequset = {
+  puzzleId: number;
+  messageId: number;
+};

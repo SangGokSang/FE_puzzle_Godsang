@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const MessageCard = styled.form`
@@ -58,4 +59,9 @@ export const SenderField = styled.div`
       text-align: end;
     }
   }
+`;
+
+export const letterInterfaceCss = css`
+  display: flex;
+  gap: 10px;
 `;
