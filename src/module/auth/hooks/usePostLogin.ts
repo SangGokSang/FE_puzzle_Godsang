@@ -24,6 +24,8 @@ export const usePostLogin = (options: MutationOptions<LoginResponse, ApiError, L
         birthdate: data.birthdate,
         isSignUp: data.isSignUp,
         isWithdrawUser: data.isWithdrawUser,
+        email: data.email,
+        provider: data.provider,
       });
       if (data.isWithdrawUser) {
         restore.mutate();

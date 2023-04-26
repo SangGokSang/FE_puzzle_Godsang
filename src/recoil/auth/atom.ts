@@ -9,6 +9,8 @@ export const authDefaultValue: User = {
   userId: null,
   isWithdrawUser: false,
   isSignUp: false,
+  provider: '',
+  email: '',
 };
 
 const { persistAtom } = recoilPersist({

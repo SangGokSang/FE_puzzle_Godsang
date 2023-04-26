@@ -21,6 +21,8 @@ import { User as RecoilUser } from 'src/recoil/auth/type';
 import { useWithdraw } from 'src/module/auth/hooks/useWithdraw';
 import Image from 'next/image';
 import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
+import route from 'src/core/const/route.path';
+import { useRouter } from 'next/router';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -149,11 +151,27 @@ export const ButtonSection = styled.section`
   bottom: 0;
 `;
 
+export const RouteHowToUse = styled.button`
+  background-color: transparent;
+  border: none;
+  color: #9148da;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 28px;
+  text-decoration: underline;
+  margin-right: auto;
+  margin-top: 15px;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
 function MyPage() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const setAuth = useSetRecoilState(auth);
   const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
   const withdraw = useWithdraw();
+  const router = useRouter();
 
   const {
     formState: { errors },
@@ -196,6 +214,10 @@ function MyPage() {
     if (confirm('정말로 탈퇴 하실건가요? 🫣')) {
       withdraw.mutate();
     }
+  };
+
+  const handleHowToUse = () => {
+    router.push(route.HowToUse);
   };
 
   const description = useMemo(() => {
@@ -241,6 +263,7 @@ function MyPage() {
             <Image src={getUrl('lol')} alt="롤" width="35" height="35" />
             캐리 미쳤네? {countLoL} 판 더하고 챌린저!
           </div>
+          <RouteHowToUse onClick={handleHowToUse}>이용방법 바로가기</RouteHowToUse>
         </div>
       </div>
     );

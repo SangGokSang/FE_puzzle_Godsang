@@ -12,4 +12,6 @@ export type LoginResponse = {
   isWithdrawUser: boolean;
   accessToken: string;
   isSignUp: boolean;
+  provider: string;
+  email: string;
 };
