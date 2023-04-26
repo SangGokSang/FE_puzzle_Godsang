@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { ButtonSection } from 'src/core/styles/common';
@@ -103,7 +104,7 @@ function KeyInfo() {
   const client = useQueryClient();
   const { data } = useGetKeyInfo();
   const { nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
-  const [time, setTime] = useState(5);
+  const [time, setTime] = useState(10);
   const { mutate } = usePetchKey({
     onSuccess: () => {
       client.invalidateQueries([KEY_INFO_KEY]);
@@ -141,15 +142,14 @@ function KeyInfo() {
         </InfoWrap>
       </KeyInfoSection>
       <ButtonSection>
-        <CoupanWrapper>
+        {/* <CoupanWrapper>
           <div className="pusedo-wrap">
             <CoupangAdd
-              // eslint-disable-next-line max-len
               src="https://ads-partners.coupang.com/widgets.html?id=657024&template=carousel&trackingCode=AF9396669&subId=&width=400&height=120"
               referrerPolicy="unsafe-url"
             />
           </div>
-        </CoupanWrapper>
+        </CoupanWrapper> */}
         <Button
           onClick={handleClick}
           buttonType={time > 0 ? ButtonType.Disabled : ButtonType.Basic}

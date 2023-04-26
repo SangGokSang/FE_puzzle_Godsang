@@ -3,7 +3,7 @@ import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
 import styled from '@emotion/styled';
-import { FacebookIcon, GoogleIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
+import { FacebookIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
 import useLogin from 'src/core/hooks/useLogin';
 import { Provider } from 'src/core/type/provider';
 import Image from 'next/image';
@@ -100,7 +100,6 @@ export default function Home() {
         <IconSection>
           <p>소셜 계정으로 간편하게 로그인하기</p>
           <div className="icon-wrapper">
-            <GoogleIcon onClick={handleClickIcon('google')} />
             <NaverIcon onClick={handleClickIcon('naver')} />
             <KakaoIcon onClick={handleClickIcon('kakao')} />
             <FacebookIcon onClick={handleClickIcon('facebook')} />
