@@ -36,23 +36,9 @@ api.interceptors.response.use(
       error.response.data.code === 'INVALID_TOKEN' &&
       !location.href.includes('list')
     ) {
-      console.log(error.response.data.code);
-      const token = await useRefresh();
-      console.log(token);
-      debugger;
-      // try {
-      //   const token = await useRefresh();
-      //   debugger;
-      //   const retryConfig = {
-      //     ...error.config,
-      //     headers: { ...error.config.headers, Authorization: `Bearer ${token}` },
-      //   };
-      //   return api(retryConfig);
-      // } catch (error) {
-      //   debugger;
-      //   logout();
-      //   return;
-      // }
+      const accessToken = await useRefresh();
+      console.log(error.response.data.code, accessToken);
+      setApiJwt(accessToken);
     } else if (error.response?.status === 401) {
       logout();
       return;
@@ -74,19 +60,16 @@ function createApiInstance(bearerJwt = '', options: AxiosRequestConfig = {}) {
   return api;
 }
 
-async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
+async function useRefresh(): Promise<string> {
   const refreshApi = createApiInstance();
   try {
-    const { data: token } = await refreshApi({
+    const { data } = await refreshApi({
       url: '/user/refresh-token',
       method: 'post',
     });
-    console.log('data', token);
-    debugger;
-    return token;
+    return data.accessToken;
   } catch (error) {
     console.log(error);
-    debugger;
     logout();
     throw error;
   }
