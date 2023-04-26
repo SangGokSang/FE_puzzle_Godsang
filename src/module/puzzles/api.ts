@@ -1,9 +1,9 @@
 import api from 'src/core/api';
-import { getAccessToken } from 'src/core/api/auth';
+// import { getAccessToken } from 'src/core/api/auth';
 import { PuzzleReq, Puzzles, ReadMessageReq } from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const accessToken = getAccessToken({ bearer: true }) || '';
+// const accessToken = getAccessToken({ bearer: true }) || '';
 
 // fetch puzzles
 export async function fetchPuzzles(userId: string): Promise<Puzzles> {
@@ -14,9 +14,9 @@ export async function fetchPuzzles(userId: string): Promise<Puzzles> {
       }),
     {
       method: 'GET',
-      headers: {
-        Authorization: accessToken as string,
-      },
+      // headers: {
+      //   Authorization: accessToken as string,
+      // },
     },
   ).then((res) => res.json());
   return data;

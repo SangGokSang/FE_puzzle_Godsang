@@ -10,13 +10,6 @@ export const useReadMessage = (
 ) => {
   return useMutation<{ keyCount: number; list: Puzzles }, ApiError, ReadMessageReq>(
     (param: ReadMessageReq) => readMessage(param),
-    {
-      ...options,
-      onSuccess: (...args) => {
-        if (options?.onSuccess instanceof Function) {
-          options.onSuccess(...args);
-        }
-      },
-    },
+    options,
   );
 };

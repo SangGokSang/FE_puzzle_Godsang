@@ -1,6 +1,7 @@
+/* eslint-disable no-debugger */
 import qs from 'qs';
 import axios, { AxiosRequestConfig } from 'axios';
-import { getAccessToken, logout, setAccessToken } from './auth';
+import { signOut } from 'next-auth/react';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const initialConfig: AxiosRequestConfig = Object.freeze({
@@ -11,7 +12,7 @@ const initialConfig: AxiosRequestConfig = Object.freeze({
   },
 });
 
-export const api = createApiInstance(getAccessToken({ bearer: true }));
+export const api = createApiInstance();
 
 api.interceptors.response.use(
   (result) => result,
@@ -29,9 +30,29 @@ api.interceptors.response.use(
         logout();
         return;
       }
-    } else if (error.response.status === 400 && !location.href.includes('list')) {
-      console.log('Err');
-      // logout();
+      // 리스트일때 키를 조회해야한다면? (로그인이 안되어있는 상태는 패스해도 된다)
+    } else if (
+      error.response.status === 400 &&
+      error.response.data.code === 'INVALID_TOKEN' &&
+      !location.href.includes('list')
+    ) {
+      console.log(error.response.data.code);
+      const token = await useRefresh();
+      console.log(token);
+      debugger;
+      // try {
+      //   const token = await useRefresh();
+      //   debugger;
+      //   const retryConfig = {
+      //     ...error.config,
+      //     headers: { ...error.config.headers, Authorization: `Bearer ${token}` },
+      //   };
+      //   return api(retryConfig);
+      // } catch (error) {
+      //   debugger;
+      //   logout();
+      //   return;
+      // }
     } else if (error.response?.status === 401) {
       logout();
       return;
@@ -60,8 +81,12 @@ async function useRefresh(): Promise<{ token: string; refreshToken: string }> {
       url: '/user/refresh-token',
       method: 'post',
     });
+    console.log('data', token);
+    debugger;
     return token;
   } catch (error) {
+    console.log(error);
+    debugger;
     logout();
     throw error;
   }
@@ -73,9 +98,18 @@ function paramsSerializer(params: unknown): string {
 
 function setApiJwt(token: string): void {
   const bearerToken = `Bearer ${token}`;
-  setAccessToken(token);
   api.defaults.headers.common.Authorization = bearerToken;
 }
 
-export { API_BASE_URL, setApiJwt };
+function logout() {
+  signOut();
+  location.href =
+    process.env.NODE_ENV === 'production'
+      ? 'https://dearmy2023.click'
+      : process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : '';
+}
+
+export { API_BASE_URL, setApiJwt, logout };
 export default api;
