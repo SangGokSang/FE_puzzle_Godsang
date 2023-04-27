@@ -23,6 +23,7 @@ import Image from 'next/image';
 import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
 import route from 'src/core/const/route.path';
 import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/react';
 
 export type User = {
   nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
@@ -151,7 +152,7 @@ export const ButtonSection = styled.section`
   bottom: 0;
 `;
 
-export const RouteHowToUse = styled.button`
+export const RouteHowToUse = styled.a`
   background-color: transparent;
   border: none;
   color: #9148da;
@@ -159,8 +160,9 @@ export const RouteHowToUse = styled.button`
   font-size: 13px;
   line-height: 28px;
   text-decoration: underline;
-  margin-right: auto;
-  margin-top: 15px;
+  /* width: 200px; */
+  /* margin-right: auto; */
+  /* margin-top: 15px; */
   :hover {
     cursor: pointer;
   }
@@ -263,7 +265,6 @@ function MyPage() {
             <Image src={getUrl('lol')} alt="롤" width="35" height="35" />
             캐리 미쳤네? {countLoL} 판 더하고 챌린저!
           </div>
-          <RouteHowToUse onClick={handleHowToUse}>이용방법 바로가기</RouteHowToUse>
         </div>
       </div>
     );
@@ -318,6 +319,14 @@ function MyPage() {
             {!!errors?.birth && <span css={errLabel}>{errors.birth.message}</span>}
           </InputField>
           <Story>{description}</Story>
+          <div
+            css={css`
+              display: flex;
+              flex-direction: column;
+            `}>
+            <RouteHowToUse onClick={() => router.push(route.HowToUse)}>이용방법 바로가기</RouteHowToUse>
+            <RouteHowToUse onClick={() => router.push(route.privacyPolicy)}>개인정보 처리방침 바로가기</RouteHowToUse>
+          </div>
         </StoryLine>
       </MyPageSection>
       <ButtonSection>
@@ -334,6 +343,19 @@ function MyPage() {
       <KakaoAdFit />
     </Layout>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+  if (session === null) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} };
 }
 
 export default MyPage;

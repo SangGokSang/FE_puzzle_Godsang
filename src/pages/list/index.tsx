@@ -288,7 +288,7 @@ function PuzzleList() {
     <Layout>
       <PuzzleListWrap>
         <Content>
-          <div css={title}>{nickname} 님의 목표</div>
+          <div css={title}>{data?.length ? data[0]?.userNickname : '별명'} 님의 목표</div>
           <SwiperContainer>
             <Swiper
               pagination={true}

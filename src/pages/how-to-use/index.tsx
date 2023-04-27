@@ -40,7 +40,6 @@ const backButtonCss = css`
 // 이용방법과 광고가 들어갑니다.
 export default function HowToUse() {
   const { userId, isSignUp } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
-
   const router = useRouter();
   const handleClickBackButton = () => router.back();
   const handleClickLoginButton = () => router.push({ pathname: route.List, query: { userId } });

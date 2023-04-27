@@ -6,6 +6,7 @@ const route = {
   Landing: '/',
   NotFound: '/notFound',
   HowToUse: '/how-to-use',
+  privacyPolicy: '/privacy-policy',
   MakeKey: '/key/make-key',
 };
 

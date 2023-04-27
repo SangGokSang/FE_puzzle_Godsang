@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import { useQueryClient } from '@tanstack/react-query';
 import { usePetchKey } from 'src/module/keyInfo/hooks/usePetchKey';
+import { getSession } from 'next-auth/react';
 
 export type KeyInfo = {
   keyCount: number;
@@ -142,14 +143,14 @@ function KeyInfo() {
         </InfoWrap>
       </KeyInfoSection>
       <ButtonSection>
-        {/* <CoupanWrapper>
+        <CoupanWrapper>
           <div className="pusedo-wrap">
             <CoupangAdd
               src="https://ads-partners.coupang.com/widgets.html?id=657024&template=carousel&trackingCode=AF9396669&subId=&width=400&height=120"
               referrerPolicy="unsafe-url"
             />
           </div>
-        </CoupanWrapper> */}
+        </CoupanWrapper>
         <Button
           onClick={handleClick}
           buttonType={time > 0 ? ButtonType.Disabled : ButtonType.Basic}
@@ -159,6 +160,19 @@ function KeyInfo() {
       </ButtonSection>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+  if (session === null) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} };
 }
 
 export default KeyInfo;

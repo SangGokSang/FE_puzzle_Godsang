@@ -25,6 +25,7 @@ import { User } from 'src/recoil/auth/type';
 import dayjs from 'dayjs';
 import { useSetRecoilState } from 'recoil';
 import { useQueryClient } from '@tanstack/react-query';
+import { getSession } from 'next-auth/react';
 
 export type CreateFormType = {
   nickname: string;
@@ -214,6 +215,19 @@ function Create() {
       </ButtonSection>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+  if (session === null) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} };
 }
 
 export default Create;
