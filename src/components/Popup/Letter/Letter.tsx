@@ -116,8 +116,6 @@ function Letter(props: LetterProps): ReactElement {
     }
   };
 
-  console.log(formState.errors);
-
   return (
     <>
       <Modal open={isOpen} onClose={handleCloseModal}>
