@@ -1,15 +1,10 @@
 /* eslint-disable max-len */
 import React from 'react';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import Layout from 'src/components/common/Layout';
 import { BackIcon } from 'src/core/icons';
-import { buttonHoverCss } from 'src/core/styles/common';
-
-const backButton = css`
-  position: absolute;
-`;
+import { backButton, buttonHoverCss } from 'src/core/styles/common';
 
 const Wrapper = styled.div`
   margin: 50px 0%;

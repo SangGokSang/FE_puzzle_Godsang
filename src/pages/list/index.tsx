@@ -164,7 +164,7 @@ function PuzzleList() {
   const client = useQueryClient();
   const isMobileView = useRecoilValue(isMobile);
   const [letterData, setLetterData] = useState<(PuzzleMSG & { puzzleId: number }) | number | null>(null);
-  const { userId, nickname } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
+  const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const [isUser, setIsUser] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeSliderId, setActiveSliderId] = useState(0);

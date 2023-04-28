@@ -1,34 +1,19 @@
-import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { css } from '@emotion/react';
-import Button from 'src/components/button';
-import { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import styled from '@emotion/styled';
-import { TextField } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { getDDay } from 'src/core/util/util';
-import { scheme } from 'src/core/const/scheme';
-import { useSetRecoilState } from 'recoil';
 import auth from 'src/recoil/auth';
-import { useJoin } from 'src/module/join';
-import { isEmpty } from 'lodash';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { authDefaultValue } from 'src/recoil/auth/atom';
 import { User as RecoilUser } from 'src/recoil/auth/type';
-import { useWithdraw } from 'src/module/auth/hooks/useWithdraw';
 import Image from 'next/image';
 import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
 import route from 'src/core/const/route.path';
 import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
-
-export type User = {
-  nickname: string; // 길이 최소 1글자 최대 7글자 공백 안됨, 특수문자 안됨
-  birth: string; // milliseconds
-};
+import { CustomLink } from 'src/core/styles/common';
 
 export type MyPage = {
   countNextAge: number;
@@ -50,22 +35,19 @@ const layoutCss = css`
 `;
 const MyPageSection = styled.section`
   width: 100%;
-  height: calc(100% - 140px);
+  height: calc(100% - 30px);
   display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
-const StoryLine = styled.div<{ isEdit: boolean }>`
+const StoryLine = styled.div`
   width: 500px;
-  height: 100%;
-  padding-top: 25px;
+  padding-top: 40px;
   font-weight: 400;
   font-size: 20px;
   line-height: 26px;
   display: flex;
   flex-direction: column;
-  gap: ${(props) => (props.isEdit ? '5px' : '10px')};
+  gap: 25px;
 
   @media screen and (min-width: 768px) {
     width: 100%;
@@ -73,59 +55,13 @@ const StoryLine = styled.div<{ isEdit: boolean }>`
   }
 `;
 
-const InputField = styled.div<{ isEdit: boolean }>`
-  min-height: 60px;
-  margin-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: ${(props) => (props.isEdit ? '2px' : '5px')};
-  font-size: 14px;
-`;
-
-const LabelInputWrap = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const UserTextField = styled(TextField)<{ isEdit: boolean }>`
-  width: 200px;
-  height: 28px;
-  background-color: ${(props) => (props.isEdit ? '#f3f3f3' : '#fff')};
-
-  input::-webkit-date-and-time-value {
-    text-align: left;
-  }
-
-  .MuiInputBase-root {
-    height: 28px;
-  }
-  .MuiInputBase-input {
-    padding: 3px;
-  }
-  .MuiInputBase-input.Mui-disabled {
-    -webkit-text-fill-color: #000000;
-    font-family: 'GmarketSans';
-    font-size: 15px;
-    padding: 0;
-    padding-left: 10px;
-  }
-`;
-
-const Text = styled.div<{ isEdit: boolean }>`
-  margin-right: ${({ isEdit }) => (isEdit ? '10px' : null)};
-  height: 28px;
-  display: flex;
-  align-items: center;
-`;
-
 const Story = styled.div`
-  margin-left: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 
   .list {
-    margin-left: 4px;
+    margin-left: 10px;
     display: flex;
     gap: 8px;
     flex-direction: column;
@@ -138,13 +74,6 @@ const Story = styled.div`
   }
 `;
 
-const errLabel = css`
-  font-size: 10px;
-  min-height: 20px;
-  line-height: 20px;
-  color: red;
-`;
-
 export const ButtonSection = styled.section`
   width: 100%;
   height: 85px;
@@ -152,81 +81,17 @@ export const ButtonSection = styled.section`
   bottom: 0;
 `;
 
-export const RouteHowToUse = styled.a`
-  background-color: transparent;
-  border: none;
-  color: #9148da;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 28px;
-  text-decoration: underline;
-  /* width: 200px; */
-  /* margin-right: auto; */
-  /* margin-top: 15px; */
-  :hover {
-    cursor: pointer;
-  }
-`;
-
 function MyPage() {
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const setAuth = useSetRecoilState(auth);
   const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
-  const withdraw = useWithdraw();
   const router = useRouter();
-
-  const {
-    formState: { errors },
-    control,
-    getValues,
-    setValue,
-  } = useForm<User>({
-    resolver: yupResolver(yup.object().shape({ nickname: scheme.nickname, birth: scheme.birth })),
-    mode: 'all',
-    defaultValues: {
-      nickname: nickname,
-      birth: dayjs(birthdate).format('YYYY-MM-DD'),
-    },
-  });
-
-  const buttonDisabled = isEdit && !isEmpty(errors);
-
-  const join = useJoin({
-    onSuccess: (data) => {
-      setIsEdit(false);
-      setAuth((prev) => ({ ...prev, ...data }));
-    },
-    onError: (err) => console.log(err),
-  });
-
-  const handleClick = () => {
-    setIsEdit(!isEdit);
-  };
-
-  const handleSubmit = () => {
-    if (isEdit && isEmpty(errors)) {
-      const { nickname, birth } = getValues();
-      const birthdate = dayjs(birth).valueOf();
-      join.mutate({ nickname, birthdate });
-    } else {
-      setIsEdit(false);
-    }
-  };
-  const handleWithdrawal = () => {
-    if (confirm('정말로 탈퇴 하실건가요? 🫣')) {
-      withdraw.mutate();
-    }
-  };
-
-  const handleHowToUse = () => {
-    router.push(route.HowToUse);
-  };
 
   const description = useMemo(() => {
     const d_day = getDDay(dayjs(birthdate));
     const countMeals = d_day * 3; // 하루에 3끼 (남은일수 * 3)
     const countSquat = d_day * 60; // 하루에 60개 기준 (남은일수 * 60)
-    const countBooks = Math.floor(d_day / 7); // 일주일에 한권 기준
+    const countOnePerWeeks = Math.floor(d_day / 7); // 일주일에 한 번 기준
+    const countFishing = Math.floor((d_day / 7) * 20); // 일주일에 한 번 기준 20 번 캐스팅
+    const countCoding = d_day * 100; // 하루에 100줄
     const countLoL = d_day * 2; // 하루에 2판 기준
     const countTravel = Math.round(d_day / 365); // 일년에 2번 기준
     const getUrl = (type: string) => `/assets/images/mypage/${type}.png`;
@@ -237,11 +102,11 @@ function MyPage() {
           font-size: 13px;
           display: flex;
           flex-direction: column;
-          gap: 7px;
+          gap: 15px;
         `}>
         <div>
-          <span>축하해요!</span>
-          <div>{d_day}일 이라는 시간을 선물로 받았어요 🥳</div>
+          <span>{nickname} 님 축하드려요!</span>
+          <div>{d_day} 일 만큼의 시간을 선물로 받았어요 🥳</div>
           <p>선물받은 시간에 우리가 할 수 있는 것을 알아볼까요?</p>
         </div>
         <div className="list">
@@ -255,7 +120,7 @@ function MyPage() {
           </div>
           <div className="row">
             <Image src={getUrl('book')} alt="책" width="35" height="35" />
-            {countBooks} 권을 더 읽어서 척척박사로 진화!
+            {countOnePerWeeks} 권을 더 읽어서 척척박사로 진화!
           </div>
           <div className="row">
             <Image src={getUrl('airplane')} alt="비행" width="35" height="35" />
@@ -265,82 +130,49 @@ function MyPage() {
             <Image src={getUrl('lol')} alt="롤" width="35" height="35" />
             캐리 미쳤네? {countLoL} 판 더하고 챌린저!
           </div>
+          <div className="row">
+            <Image src={getUrl('cycling')} alt="싸이클링" width="35" height="35" />
+            한강 라이딩 궈궈? {countOnePerWeeks} 번의 라이딩 질주!
+          </div>
+          <div className="row">
+            <Image src={getUrl('fishing')} alt="낚시" width="35" height="35" />
+            9자 농어 잡자! {countFishing} 번 더 캐스팅!
+          </div>
+          <div className="row">
+            <Image src={getUrl('programming')} alt="코딩" width="35" height="35" />
+            나는야 코딩왕. {countCoding} 라인 더 코딩하기!
+          </div>
+          <div className="row">
+            <Image src={getUrl('hiking')} alt="롤" width="35" height="35" />
+            이번 주는 한라산이다! {countOnePerWeeks} 번 더 도전해보기!
+          </div>
         </div>
       </div>
     );
   }, [birthdate]);
 
-  useEffect(() => {
-    setValue('nickname', nickname);
-    setValue('birth', dayjs(birthdate).format('YYYY-MM-DD'));
-  }, [birthdate, nickname, setValue]);
-
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
       <MyPageSection>
-        <StoryLine isEdit={isEdit}>
-          <InputField isEdit={isEdit}>
-            <LabelInputWrap>
-              <Text isEdit={isEdit}>별명:</Text>
-              <Controller
-                name="nickname"
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <UserTextField
-                    value={value}
-                    onChange={onChange}
-                    disabled={!isEdit}
-                    isEdit={isEdit}
-                    inputProps={{
-                      minLength: 1,
-                      maxLength: 10,
-                    }}
-                  />
-                )}
-              />
-            </LabelInputWrap>
-            {!!errors?.nickname && <span css={errLabel}>{errors.nickname.message}</span>}
-            <LabelInputWrap>
-              <Text isEdit={isEdit}>생일:</Text>
-              <Controller
-                control={control}
-                name="birth"
-                render={({ field: { value, onChange } }) => {
-                  const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-                    onChange(dayjs(event.currentTarget.value).valueOf());
-                  };
-                  const val = dayjs(value).format('YYYY-MM-DD');
-                  return (
-                    <UserTextField type="date" value={val} isEdit={isEdit} onChange={handleChange} disabled={!isEdit} />
-                  );
-                }}
-              />
-            </LabelInputWrap>
-            {!!errors?.birth && <span css={errLabel}>{errors.birth.message}</span>}
-          </InputField>
+        <StoryLine>
           <Story>{description}</Story>
           <div
             css={css`
               display: flex;
               flex-direction: column;
             `}>
-            <RouteHowToUse onClick={() => router.push(route.HowToUse)}>이용방법 바로가기</RouteHowToUse>
-            <RouteHowToUse onClick={() => router.push(route.privacyPolicy)}>개인정보 처리방침 바로가기</RouteHowToUse>
+            <CustomLink onClick={() => router.push(route.PrivacyUpdate)}>회원정보 수정 바로가기</CustomLink>
+            <CustomLink onClick={() => router.push(route.privacyPolicy)}>개인정보 처리방침 바로가기</CustomLink>
+            <CustomLink onClick={() => router.push(route.HowToUse)}>이용방법 바로가기</CustomLink>
           </div>
         </StoryLine>
       </MyPageSection>
-      <ButtonSection>
-        <Button
-          buttonType={buttonDisabled ? ButtonType.Disabled : ButtonType.Basic}
-          disabled={buttonDisabled}
-          onClick={isEdit ? handleSubmit : handleClick}>
-          {isEdit ? '저장' : '수정'}
-        </Button>
-        <Button buttonType={ButtonType.SignOut} onClick={handleWithdrawal}>
-          회원탈퇴
-        </Button>
-      </ButtonSection>
-      <KakaoAdFit />
+      <KakaoAdFit
+        css={css`
+          position: fixed;
+          bottom: 0;
+        `}
+      />
     </Layout>
   );
 }

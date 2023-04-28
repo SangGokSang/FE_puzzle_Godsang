@@ -1,14 +1,13 @@
+import { SerializedStyles } from '@emotion/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 import route from 'src/core/const/route.path';
 
-function KakaoAdFit() {
-  // 최초 1회만 광고를 불러오기 위한 변수
+function KakaoAdFit({ css }: { css?: SerializedStyles }) {
   const adRef = useRef<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
-    // 로딩된 광고가 있으면, 추가 로딩 X
     if (adRef.current) {
       return;
     }
@@ -18,9 +17,6 @@ function KakaoAdFit() {
 
     ins.className = 'kakao_ad_area';
     ins.style.display = 'none;';
-
-    // 윈도우 사이즈에 따라 광고 사이즈 조정(사이즈마다 해당 광고 단위 ID 적용)
-    const winodwSize = window.innerWidth;
 
     if (router.pathname === route.MakeKey) {
       ins.setAttribute('data-ad-width', '320');
@@ -42,11 +38,8 @@ function KakaoAdFit() {
     // 광고 로딩 여부 상태 변경
     adRef.current = true;
   }, [router.pathname]);
-  return (
-    <>
-      <aside className="aside__kakaoAdFit"></aside>
-    </>
-  );
+
+  return <aside css={css} className="aside__kakaoAdFit"></aside>;
 }
 
 export default React.memo(KakaoAdFit);

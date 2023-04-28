@@ -11,3 +11,21 @@ export const ButtonSection = styled.section`
 export const buttonHoverCss = css`
   cursor: pointer;
 `;
+
+export const backButton = css`
+  position: absolute;
+`;
+
+export const CustomLink = styled.a`
+  width: max-content;
+  background-color: transparent;
+  border: none;
+  color: #9148da;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 28px;
+  text-decoration: underline;
+  :hover {
+    cursor: pointer;
+  }
+`;
