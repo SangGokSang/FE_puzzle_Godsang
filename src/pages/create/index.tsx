@@ -152,9 +152,10 @@ function Create() {
   };
 
   useLayoutEffect(() => {
+    const isToday = dayjs(user.birthdate).format('YYYYMMDD') === dayjs().format('YYYYMMDD');
     const defaultValues = {
       nickname: '',
-      birth: user.birthdate || dayjs().subtract(1, 'day').valueOf(),
+      birth: isToday ? dayjs().subtract(1, 'day').valueOf() : user.birthdate,
       category: Category.exercise,
       goal: '',
     };

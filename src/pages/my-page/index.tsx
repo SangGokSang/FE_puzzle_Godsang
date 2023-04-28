@@ -176,7 +176,9 @@ function MyPage() {
             `}>
             <CustomLink onClick={() => router.push(route.PrivacyUpdate)}>회원정보 수정 바로가기</CustomLink>
             <CustomLink onClick={() => router.push(route.privacyPolicy)}>개인정보 처리방침 바로가기</CustomLink>
-            <CustomLink onClick={() => router.push(route.HowToUse)}>이용방법 바로가기</CustomLink>
+            <CustomLink onClick={() => router.push({ pathname: route.HowToUse, query: { fromMyPage: true } })}>
+              이용방법 바로가기
+            </CustomLink>
             <CustomLink onClick={handleWithdrawal}>회원탈퇴</CustomLink>
           </div>
         </StoryLine>
