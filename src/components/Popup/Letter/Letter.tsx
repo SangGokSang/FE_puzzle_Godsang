@@ -14,6 +14,7 @@ import KakaoAdFit from 'src/components/kakaoAd/kakaoAdFit';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { PUZZLES_KEY, PuzzleMSG, Puzzles } from 'src/module/puzzles';
+import { isEmpty } from 'lodash';
 
 type LetterProps = {
   isOpen: boolean;
@@ -33,11 +34,17 @@ const buttonSectionCss = css`
   bottom: 15px;
 `;
 
-const TextField = styled(MuiTextField)`
+const TextField = styled(MuiTextField)<{ isError: boolean }>`
   height: unset;
   & .MuiInputBase-input {
     width: 100%;
     padding: 0;
+  }
+  input,
+  textarea {
+    &::placeholder {
+      color: ${(props) => (props.isError ? 'red' : 'black')};
+    }
   }
 `;
 
@@ -52,7 +59,10 @@ function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { control, getValues, reset } = useForm<MessageData>({ defaultValues: { from: '', to: '', content: '' } });
+  const { control, getValues, reset, formState, setError, setFocus } = useForm<MessageData>({
+    defaultValues: { from: '', to: '', content: '' },
+    mode: 'onChange',
+  });
 
   const afterLogic = (data: Puzzles) => {
     const userId = router.query.userId as string;
@@ -87,10 +97,26 @@ function Letter(props: LetterProps): ReactElement {
 
   const onSubmit = () => {
     const value = getValues();
-    if (isWrite && typeof data === 'number') {
+
+    if (isEmpty(value.to)) {
+      setError('to', { message: 'To. 를 입력해주세요!' });
+      setFocus('to');
+    }
+    if (isEmpty(value.content)) {
+      setError('content', { message: '메세지를 입력해주세요!' });
+      setFocus('content');
+    }
+    if (isEmpty(value.from)) {
+      setError('from', { message: 'From. 을 입력해주세요!' });
+      setFocus('from');
+    }
+
+    if (isEmpty(formState.errors) && isWrite && typeof data === 'number') {
       sendDM.mutate({ puzzleId: data, message: value });
     }
   };
+
+  console.log(formState.errors);
 
   return (
     <>
@@ -106,13 +132,15 @@ function Letter(props: LetterProps): ReactElement {
                 <Controller
                   name="to"
                   control={control}
+                  rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <TextField
                       value={value}
                       onChange={onChange}
                       inputProps={{ minLength: 1, maxLength: 19 }}
                       className="to"
-                      placeholder="To. 소중한 사람에게"
+                      isError={!!formState.errors.to}
+                      placeholder={formState.errors.to?.message || 'To. 소중한 사람에게'}
                     />
                   )}
                 />
@@ -125,6 +153,7 @@ function Letter(props: LetterProps): ReactElement {
                 <Controller
                   name="content"
                   control={control}
+                  rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <TextField
                       value={value}
@@ -144,7 +173,8 @@ function Letter(props: LetterProps): ReactElement {
                       maxRows="8"
                       className="content"
                       inputProps={{ maxLength: 102 }}
-                      placeholder="응원의 메시지를 보내세요!"
+                      isError={!!formState.errors.content}
+                      placeholder={formState.errors.content?.message || '응원의 메시지를 보내세요!'}
                     />
                   )}
                 />
@@ -157,8 +187,10 @@ function Letter(props: LetterProps): ReactElement {
                 <Controller
                   name="from"
                   control={control}
+                  rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <TextField
+                      isError={!!formState.errors.from}
                       value={value}
                       onChange={onChange}
                       inputProps={{
@@ -166,7 +198,7 @@ function Letter(props: LetterProps): ReactElement {
                         maxLength: 19,
                       }}
                       className="from"
-                      placeholder="From. 귀여운 누군가"
+                      placeholder={formState.errors.from?.message || 'From. 귀여운 누군가'}
                     />
                   )}
                 />
@@ -175,7 +207,6 @@ function Letter(props: LetterProps): ReactElement {
               )}
             </SenderField>
           </MessageCard>
-
           {isWrite && (
             <>
               <ButtonSection css={buttonSectionCss}>

@@ -1,6 +1,6 @@
 const route = {
-  MyPage: '/myPage',
-  PrivacyUpdate: '/myPage/privacy-update',
+  MyPage: '/my-page',
+  PrivacyUpdate: '/my-page/privacy-update',
   Key: '/key',
   List: '/list',
   Create: '/create',

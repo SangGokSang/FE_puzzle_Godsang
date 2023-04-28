@@ -66,7 +66,7 @@ export default function PrivacyPolicy() {
           <li className="list">
             <h5 className="small-title">제 2조 (개인정보의 처리 및 보유 기간)</h5>
             <div className="indent">{`1. <생각> 은 법령에 따른 개인정보 보유·이용기간 또는 정보 주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리, 보유합니다.`}</div>
-            <div className="indent">{`2. 개인정보 처리, 보유기간은 2023년 4월 20일 부터 2023년 7월 1일 까지 입니다.`}</div>
+            <div className="indent">{`2. 개인정보 처리, 보유기간은 2023년 5월 1일 부터 2023년 7월 1일 까지 입니다.`}</div>
             <div className="indent">{`3. 위와 관련된 개인정보는 수집, 이용에 관한 동의일로부터까지 위 이용목적을 위하여 보유, 이용됩니다.`}</div>
           </li>
           <li className="list">

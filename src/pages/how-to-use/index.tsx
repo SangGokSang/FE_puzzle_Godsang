@@ -49,7 +49,7 @@ export default function HowToUse() {
   const handleClickBackButton = () => router.back();
   return (
     <Layout useHeader={false}>
-      {isSignUp && <BackIcon onClick={handleClickBackButton} css={backButtonCss} />}
+      {!isSignUp && <BackIcon onClick={handleClickBackButton} css={backButtonCss} />}
       {isSignUp && <CreatePuzzle onClick={() => router.push(route.Create)}>퍼즐 만들기</CreatePuzzle>}
       <HowToUseWrap>
         <Image

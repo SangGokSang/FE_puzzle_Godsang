@@ -95,6 +95,9 @@ function MyPage() {
     const countLoL = d_day * 2; // 하루에 2판 기준
     const countTravel = Math.round(d_day / 365); // 일년에 2번 기준
     const getUrl = (type: string) => `/assets/images/mypage/${type}.png`;
+    const koreanAge = dayjs().year() - dayjs(birthdate).year() + 1; // 한국나이
+    const subtractAge = Math.ceil(d_day / 365);
+    console.log(d_day / 365);
 
     return (
       <div
@@ -106,8 +109,11 @@ function MyPage() {
         `}>
         <div>
           <span>{nickname} 님 축하드려요!</span>
-          <div>{d_day} 일 만큼의 시간을 선물로 받았어요 🥳</div>
-          <p>선물받은 시간에 우리가 할 수 있는 것을 알아볼까요?</p>
+          <div>
+            만 나이가 적용이 되면서 {koreanAge} 세 에서 {subtractAge} 살이 어려지고
+          </div>
+          <span>{d_day} 일 만큼의 시간을 선물로 받았어요 🥳</span>
+          <p>선물받은 시간동안 우리가 할 수 있는 것을 알아볼까요?</p>
         </div>
         <div className="list">
           <div className="row">
