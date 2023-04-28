@@ -14,6 +14,7 @@ import route from 'src/core/const/route.path';
 import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { CustomLink } from 'src/core/styles/common';
+import { useWithdraw } from 'src/module/auth/hooks/useWithdraw';
 
 export type MyPage = {
   countNextAge: number;
@@ -83,6 +84,7 @@ export const ButtonSection = styled.section`
 
 function MyPage() {
   const { nickname, birthdate } = useSyncRecoil<RecoilUser>({ atom: auth, defaultValue: authDefaultValue });
+  const withdraw = useWithdraw();
   const router = useRouter();
 
   const description = useMemo(() => {
@@ -97,7 +99,6 @@ function MyPage() {
     const getUrl = (type: string) => `/assets/images/mypage/${type}.png`;
     const koreanAge = dayjs().year() - dayjs(birthdate).year() + 1; // 한국나이
     const subtractAge = Math.ceil(d_day / 365);
-    console.log(d_day / 365);
 
     return (
       <div
@@ -157,6 +158,12 @@ function MyPage() {
     );
   }, [birthdate]);
 
+  const handleWithdrawal = () => {
+    if (confirm('정말로 탈퇴 하실건가요? 🫣')) {
+      withdraw.mutate();
+    }
+  };
+
   return (
     <Layout layoutCss={layoutCss} useHeader={true}>
       <MyPageSection>
@@ -170,6 +177,7 @@ function MyPage() {
             <CustomLink onClick={() => router.push(route.PrivacyUpdate)}>회원정보 수정 바로가기</CustomLink>
             <CustomLink onClick={() => router.push(route.privacyPolicy)}>개인정보 처리방침 바로가기</CustomLink>
             <CustomLink onClick={() => router.push(route.HowToUse)}>이용방법 바로가기</CustomLink>
+            <CustomLink onClick={handleWithdrawal}>회원탈퇴</CustomLink>
           </div>
         </StoryLine>
       </MyPageSection>
