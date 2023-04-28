@@ -59,7 +59,7 @@ function Letter(props: LetterProps): ReactElement {
   const { isOpen, onClose, isWrite, data } = props;
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { control, getValues, reset, formState, setError, setFocus } = useForm<MessageData>({
+  const { control, getValues, reset, formState, setError, setFocus, watch } = useForm<MessageData>({
     defaultValues: { from: '', to: '', content: '' },
     mode: 'onChange',
   });
@@ -112,6 +112,7 @@ function Letter(props: LetterProps): ReactElement {
     }
 
     if (isEmpty(formState.errors) && isWrite && typeof data === 'number') {
+      console.log(value.content);
       sendDM.mutate({ puzzleId: data, message: value });
     }
   };
@@ -143,7 +144,7 @@ function Letter(props: LetterProps): ReactElement {
                   )}
                 />
               ) : (
-                <>To.{(data as MessageData)?.to}</>
+                <>To. {(data as MessageData)?.to}</>
               )}
             </RecipientField>
             <TextBodyField>
@@ -206,13 +207,11 @@ function Letter(props: LetterProps): ReactElement {
             </SenderField>
           </MessageCard>
           {isWrite && (
-            <>
-              <ButtonSection css={buttonSectionCss}>
-                <Button buttonType={ButtonType.Text} onClick={onSubmit}>
-                  DM 보내기
-                </Button>
-              </ButtonSection>
-            </>
+            <ButtonSection css={buttonSectionCss}>
+              <Button buttonType={ButtonType.Text} onClick={onSubmit}>
+                DM 보내기
+              </Button>
+            </ButtonSection>
           )}
           <AdArea>
             <KakaoAdFit />

@@ -31,9 +31,11 @@ export const RecipientField = styled.div`
 
 export const TextBodyField = styled.div`
   width: 100%;
-  max-height: 260px;
+  max-height: 230px;
+  overflow-y: auto;
   padding: 0 18px;
   display: flex;
+  white-space: pre-wrap;
   flex: 1;
   .content {
     background: none;
