@@ -34,7 +34,7 @@ function ThirdStep() {
     return `2023년, 6월부터 만 나이가 적용되면서 
 우리에게 ${d_day}일의 시간이 선물처럼 다가왔어요.
 선물로 다가온 소중한 ${d_day}일 동안 ${nickname} 님이 이뤄낼,
-${categoryMap[category]}의 목표를 적고 친구, 지인에게 공유해보세요!
+${categoryMap[category]}의 목표를 한 줄로 적고 친구, 지인에게 공유해보세요!
 `;
   }, [nickname, category, birth]);
 
@@ -56,8 +56,7 @@ ${categoryMap[category]}의 목표를 적고 친구, 지인에게 공유해보�
               inputProps={{ maxLength: 30 }}
               sx={{ height: '170px' }}
               placeholder="목표를 입력해주세요!"
-              multiline={true}
-              maxRows={5}
+              multiline={false}
             />
           )}
         />

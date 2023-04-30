@@ -41,6 +41,21 @@ const CreatePuzzle = styled.button`
   font-size: 14px;
 `;
 
+const ContactUs = styled.div<{ isMobileView: boolean }>`
+  width: ${(props) => (props.isMobileView ? '330px' : '620px')};
+  height: 60px;
+  margin: 10px 0;
+  border-radius: 15px;
+  font-size: 12px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  border: 1px dashed gray;
+`;
+
 // 이용방법과 광고가 들어갑니다.
 export default function HowToUse() {
   const { isSignUp } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
@@ -58,6 +73,10 @@ export default function HowToUse() {
           width={isMobileView ? '330' : '620'}
           height={isMobileView ? '520' : '720'}
         />
+        <ContactUs isMobileView={isMobileView}>
+          <h5>이용 중 개선사항/문의는 아래 메일에 남겨주세요.</h5>
+          <p>kangactor1994@gmail.com</p>
+        </ContactUs>
         <KakaoAdFit />
       </HowToUseWrap>
     </Layout>
