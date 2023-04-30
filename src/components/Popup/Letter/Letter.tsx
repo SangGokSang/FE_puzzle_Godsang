@@ -112,7 +112,6 @@ function Letter(props: LetterProps): ReactElement {
     }
 
     if (isEmpty(formState.errors) && isWrite && typeof data === 'number') {
-      console.log(value.content);
       sendDM.mutate({ puzzleId: data, message: value });
     }
   };
@@ -208,7 +207,10 @@ function Letter(props: LetterProps): ReactElement {
           </MessageCard>
           {isWrite && (
             <ButtonSection css={buttonSectionCss}>
-              <Button buttonType={ButtonType.Text} onClick={onSubmit}>
+              <Button
+                buttonType={sendDM.isLoading ? ButtonType.Disabled : ButtonType.Text}
+                onClick={onSubmit}
+                disabled={sendDM.isLoading}>
                 DM 보내기
               </Button>
             </ButtonSection>

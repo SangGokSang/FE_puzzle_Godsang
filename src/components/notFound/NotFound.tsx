@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import route from 'src/core/const/route.path';
 import Button, { ButtonType } from '../button/Button';
 import KakaoAdFit from '../kakaoAd/kakaoAdFit';
-import { useSession } from 'next-auth/react';
 import { useSyncRecoil } from 'src/core/hooks/useSyncRecoil';
 import { User } from 'src/recoil/auth/type';
 import auth from 'src/recoil/auth';
@@ -33,7 +32,6 @@ const Message = styled.div`
 
 export default function NotFound() {
   const router = useRouter();
-  const session = useSession();
   const { userId } = useSyncRecoil<User>({ atom: auth, defaultValue: authDefaultValue });
   const login = () => router.push(route.Landing);
   const goMyPage = () => router.push({ pathname: route.List, query: { userId } });
@@ -45,7 +43,7 @@ export default function NotFound() {
         <div>퍼즐의 주인이 되어주세요!</div>
       </Message>
       <KakaoAdFit />
-      {session.status === 'authenticated' ? (
+      {userId ? (
         <Button buttonType={ButtonType.Basic} onClick={goMyPage}>
           내 퍼즐판 가기
         </Button>

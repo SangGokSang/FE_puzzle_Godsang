@@ -63,6 +63,7 @@ const goal = css`
   display: flex;
   text-align: center;
   gap: 3px;
+  white-space: pre;
 `;
 
 const SwiperContainer = styled.div`
@@ -171,18 +172,26 @@ function PuzzleList() {
   const { enqueueSnackbar } = useSnackbar();
   const MaxMessage = 9;
 
-  const { data } = usePuzzles(router.query.userId as string);
+  const { data } = usePuzzles(router.query.userId as string, {
+    onSuccess: (data: unknown) => {
+      if ((data as { code: string })?.code === 'INVALID_USER') {
+        router.push(route.NotFound);
+      }
+    },
+  });
 
   const { data: key } = useGetKeyInfo({
     enabled: !!userId,
   });
+
   const readMessage = useReadMessage({
     onSuccess: ({ list, keyCount }) => {
       client.setQueryData([PUZZLES_KEY, `${userId}`], list);
-      client.setQueryData([KEY_INFO_KEY], keyCount);
+      client.setQueryData([KEY_INFO_KEY], { keyCount });
       setIsOpen(true);
     },
   });
+
   const deletePuzzle = useDeletePuzzle({
     onSuccess: (data) => client.setQueryData([PUZZLES_KEY, `${userId}`], data),
   });
@@ -269,18 +278,6 @@ function PuzzleList() {
       }
     }
   }, [activeSliderId, data, deletePuzzle]);
-
-  // queryParam 을 안달고 있는 경우 index 페이지로 랜딩, 초기 랜더링 이후 실행
-  useEffect(() => {
-    if (router.pathname === route.List && !router.query.userId) {
-      location.href =
-        process.env.NODE_ENV === 'production'
-          ? 'https://dearmy2023.click'
-          : process.env.NODE_ENV === 'development'
-          ? 'http://localhost:3000'
-          : '';
-    }
-  }, []);
 
   useEffect(() => setIsUser(Number(userId) === Number(router.query.userId)), [router.query.userId, userId]);
 
@@ -400,7 +397,14 @@ export default PuzzleList;
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const userId = query.userId as string;
   const queryClient = new QueryClient();
-
+  if (!query.userId || !userId) {
+    return {
+      redirect: {
+        destination: '/notFound',
+        permanent: false,
+      },
+    };
+  }
   await queryClient.prefetchQuery<Puzzles, ApiError>([PUZZLES_KEY, `${userId}`], () => fetchPuzzles(userId));
 
   return {
