@@ -9,7 +9,6 @@ import { SessionProvider } from 'next-auth/react';
 import { SnackbarProvider } from 'notistack';
 import 'dayjs/locale/ko';
 import dayjs from 'dayjs';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 dayjs.locale('ko');
 
 const theme = createTheme({
@@ -65,7 +64,6 @@ export default function App({ Component, pageProps }: AppProps) {
             <ThemeProvider theme={theme}>
               <Global styles={globalStyle} />
               <SnackbarProvider autoHideDuration={4000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                {/* <ReactQueryDevtools /> */}
                 <Component {...pageProps} />
               </SnackbarProvider>
             </ThemeProvider>

@@ -10,6 +10,7 @@ COPY package.json ./
 COPY yarn.lock ./
 
 # Install dependencies
+RUN yarn cache clean
 RUN yarn install
 
 # Copy source code
