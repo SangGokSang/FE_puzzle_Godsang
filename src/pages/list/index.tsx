@@ -334,11 +334,21 @@ function PuzzleList() {
                       </SwiperSlide>
                     </div>
                   ))}
-                  {isUser && (
+                  {isUser && data.length < 10 ? (
                     <SwiperSlide key={'create'}>
                       <NoPuzzleWrap>
                         <AddPuzzleIcon onClick={handleClickMakePuzzle} />
                         <p>퍼즐을 만들어보세요!</p>
+                      </NoPuzzleWrap>
+                    </SwiperSlide>
+                  ) : (
+                    <SwiperSlide>
+                      <NoPuzzleWrap>
+                        <>
+                          <p>🤩</p>
+                          <p>퍼즐은 열 개 까지</p>
+                          <p>생성하실 수 있습니다!</p>
+                        </>
                       </NoPuzzleWrap>
                     </SwiperSlide>
                   )}
