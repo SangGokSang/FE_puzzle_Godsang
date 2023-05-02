@@ -3,7 +3,7 @@ import Button, { ButtonType } from 'src/components/button/Button';
 import Layout from 'src/components/common/Layout';
 import { ButtonSection } from 'src/core/styles/common';
 import styled from '@emotion/styled';
-import { FacebookIcon, KakaoIcon, NaverIcon } from 'src/core/icons';
+import { KakaoIcon, NaverIcon } from 'src/core/icons';
 import useLogin from 'src/core/hooks/useLogin';
 import { Provider } from 'src/core/type/provider';
 import Image from 'next/image';
@@ -102,7 +102,6 @@ export default function Home() {
           <div className="icon-wrapper">
             <KakaoIcon onClick={handleClickIcon('kakao')} />
             <NaverIcon onClick={handleClickIcon('naver')} />
-            <FacebookIcon onClick={handleClickIcon('facebook')} />
           </div>
         </IconSection>
         <ButtonSection>

@@ -1,1 +1,1 @@
-export type Provider = 'naver' | 'kakao' | 'facebook';
+export type Provider = 'naver' | 'kakao';
