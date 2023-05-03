@@ -1,5 +1,3 @@
-# Dear My 2023
-
 <div align="center">
  <img src="https://user-images.githubusercontent.com/106578705/235829659-0ea28d0b-5928-4568-87ac-4e476297bb82.png"/>
 </div>
