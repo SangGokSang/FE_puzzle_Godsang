@@ -385,13 +385,13 @@ function PuzzleList() {
         ) : (
           <Button
             buttonType={
-              !(data?.length && data[activeSliderId].messages.length !== MaxMessage)
+              !(data?.length && data[activeSliderId]?.messages.length !== MaxMessage)
                 ? ButtonType.Disabled
                 : ButtonType.Basic
             }
             onClick={handleClickSendMessage}
-            disabled={!(data?.length && data[activeSliderId].messages.length !== MaxMessage)}>
-            {!(data?.length && data[activeSliderId].messages.length !== MaxMessage)
+            disabled={!(data?.length && data[activeSliderId]?.messages.length !== MaxMessage)}>
+            {!(data?.length && data[activeSliderId]?.messages.length !== MaxMessage)
               ? '다른 퍼즐에서 DM을 보내주세요!'
               : 'DM 보내기'}
           </Button>
