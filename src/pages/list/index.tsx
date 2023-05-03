@@ -334,24 +334,25 @@ function PuzzleList() {
                       </SwiperSlide>
                     </div>
                   ))}
-                  {isUser && data.length < 10 ? (
-                    <SwiperSlide key={'create'}>
-                      <NoPuzzleWrap>
-                        <AddPuzzleIcon onClick={handleClickMakePuzzle} />
-                        <p>퍼즐을 만들어보세요!</p>
-                      </NoPuzzleWrap>
-                    </SwiperSlide>
-                  ) : (
-                    <SwiperSlide>
-                      <NoPuzzleWrap>
-                        <>
-                          <p>🤩</p>
-                          <p>퍼즐은 열 개 까지</p>
-                          <p>생성하실 수 있습니다!</p>
-                        </>
-                      </NoPuzzleWrap>
-                    </SwiperSlide>
-                  )}
+                  {isUser &&
+                    (data.length < 10 ? (
+                      <SwiperSlide key={'create'}>
+                        <NoPuzzleWrap>
+                          <AddPuzzleIcon onClick={handleClickMakePuzzle} />
+                          <p>퍼즐을 만들어보세요!</p>
+                        </NoPuzzleWrap>
+                      </SwiperSlide>
+                    ) : (
+                      <SwiperSlide>
+                        <NoPuzzleWrap>
+                          <>
+                            <p>🤩</p>
+                            <p>퍼즐은 열 개 까지</p>
+                            <p>생성하실 수 있습니다!</p>
+                          </>
+                        </NoPuzzleWrap>
+                      </SwiperSlide>
+                    ))}
                 </>
               ) : (
                 <NoPuzzleWrap>
@@ -385,13 +386,13 @@ function PuzzleList() {
         ) : (
           <Button
             buttonType={
-              !(data?.length && data[activeSliderId]?.messages.length !== MaxMessage)
+              !(data?.length && data[activeSliderId]?.messages?.length !== MaxMessage)
                 ? ButtonType.Disabled
                 : ButtonType.Basic
             }
             onClick={handleClickSendMessage}
-            disabled={!(data?.length && data[activeSliderId]?.messages.length !== MaxMessage)}>
-            {!(data?.length && data[activeSliderId]?.messages.length !== MaxMessage)
+            disabled={!(data?.length && data[activeSliderId]?.messages?.length !== MaxMessage)}>
+            {!(data?.length && data[activeSliderId]?.messages?.length !== MaxMessage)
               ? '다른 퍼즐에서 DM을 보내주세요!'
               : 'DM 보내기'}
           </Button>
