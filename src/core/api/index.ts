@@ -17,19 +17,20 @@ api.interceptors.response.use(
   (result) => result,
   async (error) => {
     if (error === undefined) throw error;
-    if (error.response?.status === 401 && !error.request?.responseURL?.endsWith('/api/user/login')) {
+    if (error.response?.status === 401 && error.response?.code === 'EXPIRED_TOKEN') {
       try {
         const token = await useRefresh();
         const retryConfig = {
           ...error.config,
           headers: { ...error.config.headers, Authorization: `Bearer ${token}` },
         };
+        console.log(token);
         return api(retryConfig);
       } catch (error) {
         logout();
         return;
       }
-    } else if (error.response?.status === 401 && error.response?.status === 400) {
+    } else if (error.response?.status === 401) {
       logout();
       return;
     } else if (error) {

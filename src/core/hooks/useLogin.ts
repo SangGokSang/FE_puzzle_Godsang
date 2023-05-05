@@ -21,7 +21,7 @@ export default function useLogin() {
           provider: localStorageProvider as Provider,
           providerId,
           email,
-          nickname: name?.slice(0, 10),
+          nickname: name?.slice(0, 10) || '',
         };
         postLogin.mutate(payload);
       }

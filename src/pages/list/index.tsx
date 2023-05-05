@@ -63,7 +63,6 @@ const goal = css`
   display: flex;
   text-align: center;
   gap: 3px;
-  white-space: pre;
 `;
 
 const SwiperContainer = styled.div`
