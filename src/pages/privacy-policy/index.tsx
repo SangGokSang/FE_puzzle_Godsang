@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Layout from 'src/components/common/Layout';
 import { BackIcon } from 'src/core/icons';
 import { backButton, buttonHoverCss } from 'src/core/styles/common';
+import { useGetUserCount } from 'src/module/auth';
 
 const Wrapper = styled.div`
   margin: 50px 0%;
@@ -45,9 +46,11 @@ const Wrapper = styled.div`
 
 export default function PrivacyPolicy() {
   const router = useRouter();
+  const { data } = useGetUserCount();
   const handleBackClick = () => {
     router.back();
   };
+  console.log('userCount: ', data);
   return (
     <Layout useHeader={false}>
       <BackIcon css={[buttonHoverCss, backButton]} onClick={handleBackClick} />

@@ -31,3 +31,12 @@ export async function withdraw(): Promise<void> {
     method: 'patch',
   });
 }
+
+// admin
+export async function getUserCount(): Promise<number> {
+  const { data } = await api({
+    url: '/user',
+    method: 'get',
+  });
+  return data;
+}
