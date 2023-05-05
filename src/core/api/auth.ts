@@ -54,7 +54,7 @@ export function clearTokens(): void {
 }
 
 export function logout() {
-  signOut();
+  signOut({ redirect: false, callbackUrl: '/' });
   clearTokens();
   location.href =
     process.env.NODE_ENV === 'production'
