@@ -17,7 +17,10 @@ api.interceptors.response.use(
   (result) => result,
   async (error) => {
     if (error === undefined) throw error;
-    if (error.response?.status === 401 && error.response?.code === 'EXPIRED_TOKEN') {
+    if (
+      error.response?.code === 'EXPIRED_TOKEN' ||
+      (error.response?.status === 400 && error.response?.code === 'INVALID_TOKEN')
+    ) {
       try {
         const token = await useRefresh();
         const retryConfig = {
