@@ -36,7 +36,9 @@ export const TextBodyField = styled.div`
   padding: 0 18px;
   display: flex;
   white-space: pre-wrap;
+  word-break: break-all;
   flex: 1;
+  line-height: 22px;
   .content {
     background: none;
     width: 100%;
