@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import qs from 'qs';
 import axios, { AxiosRequestConfig } from 'axios';
 import { getAccessToken, logout, setAccessToken } from './auth';
@@ -17,19 +18,26 @@ api.interceptors.response.use(
   (result) => result,
   async (error) => {
     if (error === undefined) throw error;
+    console.log('here', error);
+    // console.log(error.response?.status === 400, error.response?.data?.code === 'INVALID_TOKEN');
+
     if (
-      error.response?.code === 'EXPIRED_TOKEN' ||
-      (error.response?.status === 400 && error.response?.code === 'INVALID_TOKEN')
+      error.response?.data?.code === 'EXPIRED_TOKEN' ||
+      (error.response?.status === 400 && error.response?.data?.code === 'INVALID_TOKEN')
     ) {
       try {
+        // console.log('here', error);
         const token = await useRefresh();
         const retryConfig = {
           ...error.config,
           headers: { ...error.config.headers, Authorization: `Bearer ${token}` },
         };
         console.log(token);
+        // debugger;
         return api(retryConfig);
       } catch (error) {
+        console.log('error', error);
+        debugger;
         logout();
         return;
       }
@@ -61,8 +69,10 @@ async function useRefresh(): Promise<string> {
       url: '/user/refresh-token',
       method: 'post',
     });
+    // debugger;
     return data.accessToken;
   } catch (error) {
+    // debugger;
     logout();
     throw error;
   }
